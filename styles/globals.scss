@@ -1,0 +1,56 @@
+//assets
+@import "../public/assets/css/styles.css";
+@import "../public/assets/scss/variables";
+@import 'simplebar-react/dist/simplebar.min.css';
+
+@import 'swiper/css';
+@import 'swiper/css/pagination';
+@import 'swiper/css/navigation';
+@import 'swiper/css/effect-coverflow';
+@import 'swiper/css/thumbs';
+@import 'swiper/css/effect-flip';
+@import 'swiper/css/effect-fade';
+@import 'swiper/css/effect-cube';
+@import "swiper/css/effect-cards"; // swiper effect-cards
+@import "swiper/css/zoom"; //Swipper Zoom css
+@import 'swiper/css/scrollbar';
+@import 'swiper/css/free-mode';
+@import "react-color-palette/css";
+@import 'suneditor/dist/css/suneditor.min.css';
+@import 'filepond/dist/filepond.min.css'; // filepond
+@import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"; // filepond
+@import 'react-toastify/dist/ReactToastify.css';
+@import 'react-range-slider-input/dist/style.css';
+@import "react-datepicker/dist/react-datepicker.css";
+@import "yet-another-react-lightbox/styles.css";
+@import "yet-another-react-lightbox/plugins/thumbnails.css";
+@import "react-color-palette/css";
+@import "gridjs/dist/theme/mermaid.css";
+@import 'leaflet/dist/leaflet.css';
+
+
+.productdetails-leftsection {
+    position: sticky;
+    top: 0;
+}
+.productdesc {
+
+    .swiper-slide:not(.swiper-slide-active) {
+        height: 120px !important;
+    }
+}
+[data-bg-img=bgimg1] {
+    --menu-bg: url(../public/assets/images/menu-bg-images/bg-img1.jpg) !important;
+}
+[data-bg-img=bgimg2] {
+    --menu-bg: url(../public/assets/images/menu-bg-images/bg-img2.jpg) !important;
+}
+[data-bg-img=bgimg3] {
+    --menu-bg: url(../public/assets/images/menu-bg-images/bg-img3.jpg) !important;
+}
+[data-bg-img=bgimg4] {
+    --menu-bg: url(../public/assets/images/menu-bg-images/bg-img4.jpg) !important;
+}
+[data-bg-img=bgimg5] {
+    --menu-bg: url(../public/assets/images/menu-bg-images/bg-img5.jpg) !important;
+}
