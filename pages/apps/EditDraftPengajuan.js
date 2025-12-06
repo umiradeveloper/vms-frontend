@@ -63,6 +63,7 @@ const FormEditDraftVms = () => {
         //         setSelectedOptions(selected);
         //     }
         // };
+        
         const handleSelectKualifikasiUsaha = async(select) => {
             // console.log(select.value);
             // setSelectKualifikasiUsaha(select.value);
@@ -245,27 +246,53 @@ const FormEditDraftVms = () => {
             // console.log(vendorData);
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             setLoader(true);
+            const formData = new FormData();
+		
+            formData.append("nama_perusahaan", vendorData.nama_perusahaan);
+            formData.append("id_kualifikasi_usaha", vendorData.id_kualifikasi_usaha);
+            formData.append("klasifikasi_usaha", vendorData.klasifikasi_usaha);
+            formData.append("alamat_perusahaan", vendorData.alamat_perusahaan);
+            formData.append("kategori", vendorData.kategori);
+            formData.append("spesialis", vendorData.spesialis);
+            formData.append("nama_pic", vendorData.nama_pic);
+            formData.append("email_pic", vendorData.email_pic);
+            formData.append("no_hp_pic", vendorData.no_hp_pic);
+            formData.append("nama_direktur", vendorData.nama_direktur);
+            formData.append("email_direktur", vendorData.email_direktur);
+            formData.append("no_hp_direktur", vendorData.no_hp_direktur);
+            formData.append("website", vendorData.website);
+            files.map(async (item, index) => {
+                
+
+                item.items.forEach(fileObj => {
+                    
+                    formData.append(`id_dokumen`, item.id_dokumen);
+                    formData.append(`files`, fileObj.file || fileObj);
+                });
+                
+            });
             try {
-                const response = await axios.post(apiUrl+"/vms/update-pengajuan-vendor?id="+router.query.ref, vendorData,{
+                const response = await axios.post(apiUrl+"/vms//update-vendor/update-bulk?id="+router.query.ref, formData,{
                     headers:{
-                        "Content-Type":"application/json",
+                        "Content-Type": "multipart/form-data",
                         "Authorization": "Bearer "+localStorage.getItem("token")
                     }
                 });
-                const data = response.data.data;
-                if(data){
+                const data = response.data;
+                // console.log(formData.getAll)
+                if(data.success){
                     // console.log(data);
                     
                     // setSelectedOptions(kualifikasiArr);
                     // setTableData(userArr);
                     // swalAlert("Pengajuan Vendor Terkirim", "Register Vendor", "success");
-                    const upload = await uploadDaftarVendorNew(router.query.ref);
-                    if(upload){
+                    // const upload = await uploadDaftarVendorNew(router.query.ref);
+                    // if(upload){
                         setLoader(false);
-                        swalAlert("Pengajuan Vendor Terkirim", "Register Vendor", "success");
+                        swalAlert("Edit data berhasil", "Register Vendor", "success");
                         setAppStatus(true);
                         router.push("/apps/DraftPengajuanVms");
-                    }
+                    // }
                     
                 }
                 

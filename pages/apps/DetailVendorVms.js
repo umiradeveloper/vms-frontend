@@ -158,7 +158,7 @@ const DetailVendorVms = ({open, setOpen, openLoader, setOpenLoader}) => {
 
    const LihatDokumen = () =>{
     return(
-        <Modal size="lg" show={modalDokumen} onHide={() => setModalDokumen(false)} className="fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <Modal size="lg" show={modalDokumen} onHide={() => {setFrameSrc();setModalDokumen(false)}} className="fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <Modal.Header closeButton>
                 <h6 className="modal-title" id="exampleModalLabel">Dokumen Upload</h6>
             </Modal.Header>

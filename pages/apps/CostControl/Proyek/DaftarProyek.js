@@ -5,12 +5,19 @@ import Seo from "@/shared/layout-components/seo/seo";
 import PageHeaderVms from "../../Component/PageHeaderVms";
 import LoadersSimUmira from "../../Component/LoaderSimUmira";
 import apiConfig from "@/utils/AxiosConfig";
+import Swal from "sweetalert2";
+import EditProyek from "@/pages/apps/CostControl/Proyek/modals/EditProyek";
 
 
 
 const DaftarProyek = () => {
-    const [loader, setLoader] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [datatable, setDataTable] = useState([]);
+    const [reload, setReload] = useState(false);
+    const [openModalEdit, setOpenModalEdit] = useState({
+        id_proyek: "",
+        open_modal: false
+    });
      const COLUMNS = [
         {
             Header: "Kode Proyek",
@@ -43,7 +50,7 @@ const DaftarProyek = () => {
         },
     ];
     const getDaftarProyek = async() => {
-        setLoader(true);
+        setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek", {
@@ -60,26 +67,140 @@ const DaftarProyek = () => {
                         nama_proyek: data.nama_proyek,
                         deskripsi_proyek: data.deskripsi_proyek,
                         tanggal_kontrak: data.tanggal_akhir_kontrak,
-                        rap: data.biaya_rap,
-                        rab: data.biaya_rab
+                        rap: toCurrency(data.biaya_rap),
+                        rab: toCurrency(data.biaya_rab),
+                        aksi:   <div className="d-flex flex-row gap-2">
+                                    <button className="btn btn-success" onClick={() => setOpenModalEdit({id_proyek:data.id_proyek, open_modal: true})}>Edit</button>
+                                    <button className="btn btn-danger" onClick={() => deleteData(data.id_proyek)}>Delete</button>
+                                </div>
                     })
                 }
                 setDataTable(daftarArr);
-                setLoader(false)
+                setLoading(false)
             }
             // console.log(result);
         } catch (error) {
             console.log("e = "+error);
         }
     }
+    const toCurrency = (value) => {
+        if (!value) return "Rp0";
+
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0
+        }).format(Number(value));
+    };
+
+    const deleteData = async(id) => {
+        const resultConfirm = await AlertConfirm("Apakah anda yakin ingin menghapus data ini ? ", "warning", "Hapus", false, "Data berhasil di hapus");
+        if(resultConfirm.status){
+            setLoading(true);
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            try {
+                const result = await apiConfig.delete(apiUrl + "/CostControl/Proyek/delete-proyek?id="+id, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+                if(result.status == 200){
+                    setLoading(false);
+				    swalAlert(result.data.message, result.statusText, "success");
+                }
+                
+            } catch (error) {
+                console.log(error);
+                setLoading(false);
+			    swalAlert(error.message, error.code, "error");
+            }
+            
+
+        }
+        // console.log(id)
+    }
+    const AlertConfirm = async(message, icon, confirmButtonName, textarea = false, messageDeleted = "Your file has been deleted.") => {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger me-2"
+            },
+            buttonsStyling: false
+        });
+        let objSwall = {
+            title: "Apakah Yakin?",
+            text: message,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonText: confirmButtonName,
+            cancelButtonText: "Kembali",
+            reverseButtons: true,
+           
+        };
+        
+        if(textarea){
+            objSwall.input = 'textarea';
+            objSwall.inputLabel = 'Catatan';
+            objSwall.inputPlaceholder = 'Catatan....';
+        
+        }
+        const result = await swalWithBootstrapButtons.fire(objSwall);
+        if (result.isConfirmed) {
+                setReload(prev => !prev);
+                return {
+                    status: true,
+                    value: result.value
+                }; 
+                    // ✅ user confirmed
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // await swalWithBootstrapButtons.fire(
+            //     "Cancelled",
+            //     // "Your imaginary file is safe :)",
+            //     "error"
+            // );
+            return {
+                status: false,
+                // value: result.value
+            }; // ✅ user cancelled
+        }
+
+        return false;
+    }
+    const swalAlert = (message, title, icon) => {
+        let timerInterval;
+
+        Swal.fire({
+            title: title,
+            html: message,
+            icon: icon,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            willClose: () => {
+                clearInterval(timerInterval);
+            },
+        }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+                setReload(prev => !prev);
+                console.log("I was closed by the timer");
+            }
+        });
+    }
+    
+
     useEffect(() => {
         getDaftarProyek();
-    },[])
+    },[reload])
     return (
         <Fragment>
             <Seo title={"Daftar Proyek"} />
             <PageHeaderVms title='Daftar Proyek' item='Daftar Proyek' active_item='Daftar Proyek' />
-            <LoadersSimUmira open={loader} />
+            <LoadersSimUmira open={loading} />
+            <EditProyek openModal={openModalEdit} setOpenModal={setOpenModalEdit} loader={loading} setLoader={setLoading}/>
              <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
