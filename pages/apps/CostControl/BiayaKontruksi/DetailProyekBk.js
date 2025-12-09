@@ -245,8 +245,9 @@ const DetailProyekBk = () => {
                             <h5>Tanggal Berakhir Kontrak : {dataProyek.tanggal_kontrak}</h5>
                             <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(dataProyek.biaya_rab)}</h5>
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
+                            <h5>Pendapatan Usaha : {toCurrency(BiayaBk.posisi_bk)}</h5>
                             <h5>Posisi Biaya Konstruksi : {toCurrency(BiayaBk.posisi_bk)}</h5>
-                            <h5>Persentase (RAP) : {formatPercent(calcPercentage(BiayaBk.posisi_bk, dataProyek.biaya_rap))}</h5>
+                            <h5>Persentase BK/PU : {formatPercent(calcPercentage(BiayaBk.posisi_bk, dataProyek.biaya_rap))}</h5>
                         </Card.Body>
                     </Card>
                 </Col>
