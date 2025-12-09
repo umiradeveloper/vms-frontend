@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 
 
 
-const UploadDataRapa = ({openModal, setOpenModal}) => {
+const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
     const [loader, setLoader] = useState(false);
     const [dataTable, setDataTable] = useState([]);
     const [dataProyek, setDataProyek] = useState({
@@ -147,6 +147,7 @@ const UploadDataRapa = ({openModal, setOpenModal}) => {
                 Swal.showLoading();
             },
             willClose: () => {
+                setReload(prev => !prev);
                 clearInterval(timerInterval);
             },
         }).then((result) => {

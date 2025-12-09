@@ -274,7 +274,7 @@ const DetailRapa = () => {
             <Seo title={"Detail Rapa"} />
             <PageHeaderVms title='Daftar Rapa' item='Daftar Rapa' active_item='Detail Rapa' />
             <LoadersSimUmira open={loader} />
-            <UploadDataRapa openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
+            <UploadDataRapa openModal={openModalUpload} setOpenModal={setOpenModalUpload} reload={reload} setReload={setReload} />
             <EditDataRapa openModal={openModalEdit} setOpenModal={setOpenModalEdit}/>
              <Row>
                 <Col xl={12}>
