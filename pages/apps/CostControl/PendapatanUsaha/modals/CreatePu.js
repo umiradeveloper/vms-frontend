@@ -16,15 +16,15 @@ const CreatePu = ({ openModal, setOpenModal }) => {
     const [data, setData] = useState({
         nominal_pu: "",
         id_proyek: "",
-        id_week: ""
+        week: ""
     })
 
-    const getDaftarWeek = async (id_proyek) => {
+    const getDaftarWeek = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
         try {
             const result = await apiConfig.get(
-                `${apiUrl}/master/get-week-by-project?id_project=${id_proyek}`,
+                `${apiUrl}/master/get-week-by-project?id_project=${openModal.id_proyek}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -85,10 +85,13 @@ const CreatePu = ({ openModal, setOpenModal }) => {
     const submit = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
+        const splitweek = data.week.split("|");
         const dataSubmit = {
             nominal_pu: data.nominal_pu,
             id_proyek: openModal.id_proyek,
-            id_week: data.id_week
+            week_pu: splitweek[0],
+            tanggal_awal: splitweek[1],
+            tanggal_akhir: splitweek[2]
         };
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/PendapatanUsaha/create-pu", dataSubmit, {
@@ -137,13 +140,14 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         setData({
             nominal_pu: "",
             id_proyek: "",
-            id_week: ""
+            week_pu: ""
         })
     }
     //useEffect(() => {},[data])
     useEffect(() => {
         if (openModal.open_modal) {
             getDaftarProyek();
+            getDaftarWeek();
         }
 
     }, [openModal.open_modal])
@@ -160,28 +164,6 @@ const CreatePu = ({ openModal, setOpenModal }) => {
                             <Row>
                                 <Col xl={12} className="rounded-3">
                                     <div className="row gy-2 pb-3">
-                                        <Col xl={12}>
-                                            <label className="form-label mt-3">
-                                                Pilih Proyek <span style={{ color: "red" }}>*</span> :
-                                            </label>
-
-                                            <select
-                                                className="form-select"
-                                                value={data.id_proyek}
-                                                onChange={(e) => {
-                                                    setData({ ...data, id_proyek: e.target.value });
-                                                    getDaftarWeek(e.target.value);
-                                                }}
-                                            >
-                                                <option value="">-- Pilih Proyek --</option>
-
-                                                {daftarProyek.map((item) => (
-                                                    <option key={item.id_proyek} value={item.id_proyek}>
-                                                        {item.nama_proyek}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </Col>
                                         <Col x1={12}>
                                             <label className="form-label mt-3">
                                                 Pilih Week <span style={{ color: "red" }}>*</span> :
@@ -189,13 +171,13 @@ const CreatePu = ({ openModal, setOpenModal }) => {
 
                                             <select
                                                 className="form-select"
-                                                value={data.id_week}
-                                                onChange={(e) => setData({ ...data, id_week: e.target.value })}
+                                                value={data.week}
+                                                onChange={(e) => setData({ ...data, week: e.target.value })}
                                             >
                                                 <option value="">-- Pilih Week --</option>
 
                                                 {daftarWeek.map((item, index) => (
-                                                    <option key={index} value={item.week}>
+                                                    <option key={index} value={item.week + "|" + item.startDate + "|" + item.endDate }>
                                                         Week {item.week} ({item.startDate} s/d {item.endDate})
                                                     </option>
                                                 ))}
@@ -205,9 +187,6 @@ const CreatePu = ({ openModal, setOpenModal }) => {
                                             <label htmlFor="pendapatan-usaha" className="form-label ">Nominal Pendapatan Usaha <span style={{ color: "red" }}>*</span> :</label>
                                             <input type="text" className={`form-control`} id="nominal_pu" placeholder="Pendapatan Usaha" onChange={(val) => setData({ ...data, nominal_pu: val.target.value })} />
                                         </Col>
-                                    </div>
-                                    <div className="text-center mt-4">
-                                        <button className="btn btn-primary btn-wave" onClick={submit}>Submit</button>
                                     </div>
                                 </Col>
                             </Row>

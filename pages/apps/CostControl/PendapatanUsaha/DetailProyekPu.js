@@ -8,6 +8,7 @@ import apiConfig from "@/utils/AxiosConfig";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import CreatePu from "./modals/CreatePu";
+import Datatables from "@/pages/components/apps/tables/datatable";
 //import DetailBk from "./modals/DetailBk";
 
 
@@ -40,41 +41,16 @@ const DetailProyekPu = () => {
     })
      const COLUMNS = [
         {
-            Header: "Kode RAP",
-            accessor: "kode_rap",
+            Header: "Week",
+            accessor: "week_pu",
         },
         {
-            Header: "Kategori",
-            accessor: "kategori",
+            Header: "Rentang Tanggal",
+            accessor: "tanggal",
         },
         {
-            Header: "Group",
-            accessor: "group",
-        },
-        {
-            Header: "Item Pekerjaan",
-            accessor: "item_pekerjaan",
-        },
-       
-        {
-            Header: "Spesifikasi",
-            accessor: "spesifikasi",
-        },
-        {
-            Header: "satuan",
-            accessor: "satuan",
-        },
-        {
-            Header: "Volume",
-            accessor: "volume",
-        },
-        {
-            Header: "Harga Satuan",
-            accessor: "harga_satuan",
-        },
-        {
-            Header: "Harga Total",
-            accessor: "harga_total",
+            Header: "Nominal Pendapatan Usaha",
+            accessor: "nominal_pu",
         },
         {
             Header: "Aksi",
@@ -143,11 +119,15 @@ const DetailProyekPu = () => {
             );
 
             if (result.status === 200) {
-                const total = result.data.data.reduce((sum, d) => sum + Number(d.nominal), 0);
-                setPendapatanUsaha({
-                    total_pu: total,
-                    detail: result.data.data
-                });
+                const arrpu = [];
+                for(const a of result.data.data){
+                    arrpu.push({
+                        week_pu : a.week_pu,
+                        tanggal : a.tanggal_awal + " s/d " + a.tanggal_akhir,
+                        nominal_pu: toCurrency(a.nominal_pu)   
+                    })
+                }
+                setDataTable(arrpu);
             }
 
             setLoader(false);
@@ -216,26 +196,11 @@ const DetailProyekPu = () => {
                         </Card.Header>
 
                         <Card.Body>
-                            {(PendapatanUsaha?.detail ??[]).length === 0 ? (
+                            {(dataTable).length === 0 ? (
                                 <p className="text-muted">Belum ada data PU</p>
                             ) : (
                                 <div className="table-responsive">
-                                    <table className="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Deskripsi</th>
-                                                <th>Nominal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(PendapatanUsaha?.detail ??[]).map((d, i) => (
-                                                <tr key={i}>
-                                                    <td>{d.deskripsi || "-"}</td>
-                                                    <td>{toCurrency(d.nominal_pu)}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                    <BasicTableCostControl column={COLUMNS} datatable={dataTable} />
                                 </div>
                             )}
                         </Card.Body>
