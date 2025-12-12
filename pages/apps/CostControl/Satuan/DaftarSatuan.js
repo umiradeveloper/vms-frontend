@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 
 const DaftarSatuan = () => {
     const [loader, setLoader] = useState(false);
+    const [reload, setReload] = useState(false);
     const [datatable, setDataTable] = useState([]);
      const COLUMNS = [
         {
@@ -72,7 +73,7 @@ const DaftarSatuan = () => {
                 showConfirmButton: false
             });
 
-            getDaftarSatuan(); // ← Refresh tabel
+            setReload(prev => !prev) // ← Refresh tabel
 
         } catch (error) {
             console.log(error);
@@ -128,7 +129,7 @@ const DaftarSatuan = () => {
     }
     useEffect(() => {
         getDaftarSatuan();
-    },[])
+    },[reload])
     return (
         <Fragment>
             <Seo title={"Daftar Satuan"} />
