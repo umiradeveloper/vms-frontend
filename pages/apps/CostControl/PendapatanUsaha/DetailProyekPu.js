@@ -248,7 +248,7 @@ const DetailProyekPu = () => {
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
                             <h5>Pendapatan Usaha : {toCurrency(dataProyek.total_pu)}</h5>
                             <h5>Posisi Biaya Konstruksi : {toCurrency(dataProyek.total_bk)}</h5>
-                            <h5>Persentase BK/PU : {(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
+                            <h5>Persentase BK/PU : {formatPercent(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
                         </Card.Body>
                     </Card>
                 </Col>  

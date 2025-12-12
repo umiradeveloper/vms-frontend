@@ -24,7 +24,9 @@ const DetailProyekBk = () => {
         deskripsi_proyek: "",
         tanggal_kontrak: "",
         biaya_rap: "",
-        biaya_rab:""
+        biaya_rab:"",
+        total_bk: "",
+        total_pu: ""
     })
     const [BiayaBk, setBiayaBk] = useState({
         posisi_bk: 0,
@@ -78,6 +80,10 @@ const DetailProyekBk = () => {
             accessor: "harga_total",
         },
         {
+            Header: "Total Biaya Konstruksi",
+            accessor: "total_bk_rapa",
+        },
+        {
             Header: "Aksi",
             accessor: "aksi",
         },
@@ -104,7 +110,7 @@ const DetailProyekBk = () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id?id="+params.get("id"), {
+            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id="+params.get("id"), {
 				headers: {
 					"Content-Type": "application/json",
 					"Authorization": "Bearer " + localStorage.getItem("token")
@@ -112,12 +118,14 @@ const DetailProyekBk = () => {
 			});
             if(result.status){
                 setDataProyek({
-                    nama_proyek: result.data.data.nama_proyek,
-                    kode_proyek: result.data.data.kode_proyek,
-                    deskripsi_proyek: result.data.data.deskripsi_proyek,
-                    tanggal_kontrak: (result.data.data.tanggal_akhir_kontrak)?result.data.data.tanggal_akhir_kontrak:"",
-                    biaya_rap: (result.data.data.biaya_rap)?result.data.data.biaya_rap:"",
-                    biaya_rab: (result.data.data.biaya_rab)?result.data.data.biaya_rab:""
+                   total_bk: result.data.data.total_bk,
+                    total_pu: result.data.data.total_pu,
+                    nama_proyek: result.data.data.proyek.nama_proyek,
+                    kode_proyek: result.data.data.proyek.kode_proyek,
+                    deskripsi_proyek: result.data.data.proyek.deskripsi_proyek,
+                    tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
+                    biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
+                    biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : ""
                 });
                 
             }
@@ -132,7 +140,7 @@ const DetailProyekBk = () => {
          setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/CostControl/Rapa/get-rapa-proyek?id_proyek="+params.get("id"), {
+            const result = await apiConfig.get(apiUrl + "/CostControl/PendapatanUsaha/get-rapa-proyek?id_proyek="+params.get("id"), {
 				headers: {
 					"Content-Type": "application/json",
 					"Authorization": "Bearer " + localStorage.getItem("token")
@@ -151,6 +159,7 @@ const DetailProyekBk = () => {
                         volume: (data.volume)?data.volume:"",
                         harga_satuan: (data.harga_satuan)?toCurrency(data.harga_satuan):"",
                         harga_total: (data.harga_total)?toCurrency(data.harga_total):"",
+                        total_bk_rapa: (data.total_bk_rapa)?toCurrency(data.total_bk_rapa): "",
                         aksi: <div className="d-flex flex-row gap-2">
                                     <button className="btn btn-success" onClick={() => setOpenModalEdit({id_rapa: data.id_rapa,open: true})}>Detail Biaya Konstruksi</button>
                                 </div>
@@ -245,9 +254,9 @@ const DetailProyekBk = () => {
                             <h5>Tanggal Berakhir Kontrak : {dataProyek.tanggal_kontrak}</h5>
                             <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(dataProyek.biaya_rab)}</h5>
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
-                            <h5>Pendapatan Usaha : {toCurrency(BiayaBk.posisi_bk)}</h5>
-                            <h5>Posisi Biaya Konstruksi : {toCurrency(BiayaBk.posisi_bk)}</h5>
-                            <h5>Persentase BK/PU : {formatPercent(calcPercentage(BiayaBk.posisi_bk, dataProyek.biaya_rap))}</h5>
+                            <h5>Pendapatan Usaha : {toCurrency(dataProyek.total_pu)}</h5>
+                            <h5>Posisi Biaya Konstruksi : {toCurrency(dataProyek.total_bk)}</h5>
+                            <h5>Persentase BK/PU : {formatPercent(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
                         </Card.Body>
                     </Card>
                 </Col>
