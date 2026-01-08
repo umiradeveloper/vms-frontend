@@ -21,7 +21,10 @@ const CreateProyek = () => {
 		kode_proyek: "",
 		deskripsi_proyek: "",
 		tanggal_awal_kontrak: "",
-		tanggal_akhir_kontrak: ""
+		tanggal_akhir_kontrak: "",
+		bk_pu_awal:"",
+		kerja_tambah:0,
+		kerja_kurang:0
 	})
 
 	const handleChangeRab = (e) => {
@@ -35,11 +38,24 @@ const CreateProyek = () => {
 		setValueRap(val);
 	};
 
+	const handleChangeKerjaTambah = (e) => {
+		let val = e.target.value.replace(/[^\d]/g, ""); // hanya angka
+		val = val ? new Intl.NumberFormat("id-ID").format(val) : "";
+		setData({...data, kerja_tambah: val});
+	};
+	const handleChangeKerjaKurang = (e) => {
+		let val = e.target.value.replace(/[^\d]/g, ""); // hanya angka
+		val = val ? new Intl.NumberFormat("id-ID").format(val) : "";
+		setData({...data, kerja_kurang: val});
+	};
+
 	const submit = async () => {
 		const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 		setLoader(true);
 		const valueRapClean = (valueRap) ? valueRap.replace(/\./g, "") : "";
 		const valueRabClean = (valueRab) ? valueRab.replace(/\./g, "") : "";
+		const valueKerjaTambahClean = (data.kerja_tambah) ? data.kerja_tambah.replace(/\./g, ""): 0;
+		const valueKerjaKurangClean = (data.kerja_kurang) ? data.kerja_kurang.replace(/\./g, ""): 0;
 		const dataSubmit = {
 			nama_proyek: data.nama_proyek,
 			kode_proyek: data.kode_proyek,
@@ -47,7 +63,10 @@ const CreateProyek = () => {
 			tanggal_awal_kontrak: data.tanggal_awal_kontrak,
 			tanggal_akhir_kontrak: data.tanggal_akhir_kontrak,
 			biaya_rap: parseInt(valueRapClean),
-			biaya_rab: parseInt(valueRabClean)
+			biaya_rab: parseInt(valueRabClean),
+			// bk_pu_awal: data.bk_pu_awal,
+			kerja_tambah: parseInt(valueKerjaTambahClean),
+			kerja_kurang: parseInt(valueKerjaKurangClean)
 		};
 		try {
 			const result = await apiConfig.post(apiUrl + "/CostControl/Proyek/create-proyek", dataSubmit, {
@@ -157,6 +176,10 @@ const CreateProyek = () => {
 											placeholder="Tanggal Akhir Kontrak"
 										/>
 									</Col>
+									{/* <Col xl={12}>
+										<label htmlFor="nama-proyek" className="form-label ">BK / PU Awal (%) <span style={{ color: "red" }}>*</span> :</label>
+										<input type="text" className={`form-control`} id="nama_proyek" placeholder="BK / PU Awal (%)" onChange={(val) => setData({ ...data, bk_pu_awal: val.target.value })} />
+									</Col> */}
 									<Col xl={12}>
 										<label htmlFor="nama-proyek" className="form-label ">Total RAB (Rincian Anggaran Biaya) <span style={{ color: "red" }}>*</span> :</label>
 										<input type="text" className={`form-control`} id="rab" placeholder="Rincian Anggaran Biaya" onChange={handleChangeRab} value={valueRab ? `${valueRab}` : ""} />
@@ -165,6 +188,15 @@ const CreateProyek = () => {
 										<label htmlFor="nama-proyek" className="form-label ">Total RAP (Rincian Anggaran Proyek) <span style={{ color: "red" }}>*</span> :</label>
 										<input type="text" className={`form-control`} id="rap" placeholder="Rincian Anggaran Proyek" onChange={handleChangeRap} value={valueRap ? `${valueRap}` : ""} />
 									</Col>
+									<Col xl={12}>
+										<label htmlFor="nama-proyek" className="form-label ">Kerja Tambah :</label>
+										<input type="text" className={`form-control`} id="rab" placeholder="Rincian Anggaran Biaya" onChange={handleChangeKerjaTambah} value={data.kerja_tambah ? `${data.kerja_tambah}` : ""} />
+									</Col>
+									<Col xl={12}>
+										<label htmlFor="nama-proyek" className="form-label ">Kerja Kurang :</label>
+										<input type="text" className={`form-control`} id="rab" placeholder="Rincian Anggaran Biaya" onChange={handleChangeKerjaKurang} value={data.kerja_kurang ? `${data.kerja_kurang}` : ""} />
+									</Col>
+
 								</div>
 								<div className="text-center mt-4">
 									<button className="btn btn-primary btn-wave" onClick={submit}>Submit</button>

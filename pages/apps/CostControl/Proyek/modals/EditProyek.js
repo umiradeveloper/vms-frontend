@@ -16,7 +16,9 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
         kode_proyek: "",
         deskripsi_proyek: "",
         tanggal_awal_kontrak: "",
-        tanggal_akhir_kontrak: ""
+        tanggal_akhir_kontrak: "",
+        kerja_tambah:"",
+        kerja_kurang:""
     })
     const handleChangeRab = (e) => {
 		let val = e.target.value.replace(/[^\d]/g, ""); // hanya angka
@@ -50,6 +52,7 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
             // console.log(result);
             if(result.status == 200){
                 setLoader(false);
+                setOpenModal({...openModal, open_modal: false});
 			    swalAlert(result.data.message, result.statusText, "success");
             }
            
@@ -106,6 +109,17 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
             .replace(/[^0-9]/g, "") // hapus semua selain angka
         );
     };
+
+    const handleChangeKerjaTambah = (e) => {
+		let val = e.target.value.replace(/[^\d]/g, ""); // hanya angka
+		val = val ? new Intl.NumberFormat("id-ID").format(val) : "";
+		setData({...data, kerja_tambah: val});
+	};
+	const handleChangeKerjaKurang = (e) => {
+		let val = e.target.value.replace(/[^\d]/g, ""); // hanya angka
+		val = val ? new Intl.NumberFormat("id-ID").format(val) : "";
+		setData({...data, kerja_kurang: val});
+	};
 
     useEffect(() => {
         // console.log(openModal.id_proyek)
@@ -198,6 +212,7 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
                                 <label htmlFor="nama-proyek" className="form-label ">Total RAP (Rincian Anggaran Proyek) <span style={{ color: "red" }}>*</span> :</label>
                                 <input type="text" className={`form-control`} id="rap" placeholder="Rincian Anggaran Proyek" onChange={handleChangeRap} value={valueRap ? `${valueRap}` : ""} />
                             </Col>
+                           
                         </div>
                        
                     </Col>

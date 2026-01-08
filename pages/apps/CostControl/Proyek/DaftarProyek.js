@@ -32,8 +32,12 @@ const DaftarProyek = () => {
             accessor: "deskripsi_proyek",
         },
         {
-            Header: "Tanggal Kontrak",
-            accessor: "tanggal_kontrak",
+            Header: "Tanggal Awal Kontrak",
+            accessor: "tanggal_awal_kontrak",
+        },
+        {
+            Header: "Tanggal Akhir Kontrak",
+            accessor: "tanggal_akhir_kontrak",
         },
        
         {
@@ -43,6 +47,11 @@ const DaftarProyek = () => {
         {
             Header: "RAB (Rincian Anggaran Biaya)",
             accessor: "rab",
+        },
+        
+        {
+            Header: "BK / PU awal",
+            accessor: "bk_pu_awal",
         },
         {
             Header: "Aksi",
@@ -62,13 +71,16 @@ const DaftarProyek = () => {
             if(result.status == 200){
                 const daftarArr = [];
                 for await (const data of result.data.data) {
+                    console.log(data)
                     daftarArr.push({
                         kode_proyek: data.kode_proyek,
                         nama_proyek: data.nama_proyek,
                         deskripsi_proyek: data.deskripsi_proyek,
-                        tanggal_kontrak: data.tanggal_akhir_kontrak,
+                        tanggal_awal_kontrak: data.tanggal_awal_kontrak,
+                        tanggal_akhir_kontrak: data.tanggal_akhir_kontrak,
                         rap: toCurrency(data.biaya_rap),
                         rab: toCurrency(data.biaya_rab),
+                        bk_pu_awal: (data.bk_pu_awal)?data.bk_pu_awal+" %":"",
                         aksi:   <div className="d-flex flex-row gap-2">
                                     <button className="btn btn-success" onClick={() => setOpenModalEdit({id_proyek:data.id_proyek, open_modal: true})}>Edit</button>
                                     <button className="btn btn-danger" onClick={() => deleteData(data.id_proyek)}>Delete</button>
@@ -111,7 +123,7 @@ const DaftarProyek = () => {
                 }
                 
             } catch (error) {
-                console.log(error);
+                // console.log(error);
                 setLoading(false);
 			    swalAlert(error.message, error.code, "error");
             }
@@ -180,6 +192,7 @@ const DaftarProyek = () => {
                 Swal.showLoading();
             },
             willClose: () => {
+                setReload(prev => !prev);
                 clearInterval(timerInterval);
             },
         }).then((result) => {
@@ -194,7 +207,7 @@ const DaftarProyek = () => {
 
     useEffect(() => {
         getDaftarProyek();
-    },[reload])
+    },[reload, openModalEdit.open_modal])
     return (
         <Fragment>
             <Seo title={"Daftar Proyek"} />

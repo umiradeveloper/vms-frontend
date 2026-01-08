@@ -18,7 +18,59 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         id_proyek: "",
         week: ""
     })
+    const [rapa, setRapa] = useState([]);
+    const [items, setItems] = useState([
+        { id: Date.now(), rapa: '', volume: 0 },
+    ]);
 
+    const addItem = () => {
+        setItems([
+            ...items,
+            { id: Date.now() + Math.random(), rapa: '', volume: 0 },
+        ]);
+    };
+
+    const removeItem = (id) => {
+        setItems(items.filter((item) => item.id !== id));
+    };
+
+    const updateItem = (id, field, value) => {
+        setItems(
+            items.map((item) =>
+                item.id === id ? { ...item, [field]: value } : item
+            )
+        );
+    };
+    const getRapa = async() => {
+        setLoading(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            const result = await apiConfig.get(apiUrl + "/CostControl/Rapa/get-rapa-proyek?id_proyek="+openModal.id_proyek, {
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "Bearer " + localStorage.getItem("token")
+				}
+			});
+            if(result.status == 200){
+                if(result.data.data.length > 0){
+                    const rapaArr = [];
+                    for(const res of result.data.data){
+                        rapaArr.push({
+                            value: res.id_rapa,
+                            label: res.kode_rap+" | "+res.kategori+" | "+res.item_pekerjaan
+                        })
+                    }
+                    setRapa(rapaArr);
+                }
+                
+                // console.log(result.data)
+                setLoading(false);
+            }
+        }catch(e){
+            setLoading(false);
+            console.log("e = "+e);
+        }
+    }
     const getDaftarWeek = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -39,6 +91,13 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         } catch (error) {
             console.log("Error fetching weeks:", error);
         }
+    };
+
+    const handleChangePu = (e) => {
+        let val = e.target.value.replace(/[^\d]/g, ""); // hanya angka
+        val = val ? new Intl.NumberFormat("id-ID").format(val) : "";
+        setData({ ...data, nominal_pu: val })
+        // setValueRab(val);
     };
 
     const getDaftarProyek = async () => {
@@ -86,8 +145,9 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         const splitweek = data.week.split("|");
+        const valueNominalPuClean = (data.nominal_pu) ? data.nominal_pu.replace(/\./g, "") : "";
         const dataSubmit = {
-            nominal_pu: data.nominal_pu,
+            nominal_pu: valueNominalPuClean,
             id_proyek: openModal.id_proyek,
             week_pu: splitweek[0],
             tanggal_awal: splitweek[1],
@@ -101,6 +161,36 @@ const CreatePu = ({ openModal, setOpenModal }) => {
                 }
             });
             if (result.status == 200) {
+                // setLoader(false);
+                await submitMos(result.data.data.id_pu);
+                // swalAlert(result.data.message, result.statusText, "success");
+                // setOpenModal({ ...openModal, open_modal: false });
+                // console.log(result)
+            }
+        } catch (error) {
+            setLoader(false);
+            console.log("e submit pu = " + error);
+        }
+
+        // console.log(dataSubmit);
+    }
+
+    const submitMos = async(id) => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const dataSubmit = {
+            id_rapa: items.map(i => i.rapa),
+            volume: items.map(i => i.volume),
+            id_proyek: openModal.id_proyek,
+            id_pu : id
+        }
+        try {
+            const result = await apiConfig.post(apiUrl + "/CostControl/Mos/create-mos-bulk", dataSubmit, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            if (result.status == 200) {
                 setLoader(false);
                 swalAlert(result.data.message, result.statusText, "success");
                 setOpenModal({ ...openModal, open_modal: false });
@@ -108,10 +198,9 @@ const CreatePu = ({ openModal, setOpenModal }) => {
             }
         } catch (error) {
             setLoader(false);
-            console.log("e = " + error);
+            console.log("e submit mos = " + error);
         }
 
-        // console.log(dataSubmit);
     }
     const swalAlert = (message, title, icon) => {
         let timerInterval;
@@ -148,6 +237,7 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         if (openModal.open_modal) {
             getDaftarProyek();
             getDaftarWeek();
+            getRapa();
         }
 
     }, [openModal.open_modal])
@@ -160,36 +250,74 @@ const CreatePu = ({ openModal, setOpenModal }) => {
             </Modal.Header>
             <Modal.Body className="">
                 <Row>
-                   <Col xl={12}>
-                            <Row>
-                                <Col xl={12} className="rounded-3">
-                                    <div className="row gy-2 pb-3">
-                                        <Col x1={12}>
-                                            <label className="form-label mt-3">
-                                                Pilih Week <span style={{ color: "red" }}>*</span> :
-                                            </label>
+                    <Col xl={12}>
+                        <Row>
+                            <Col xl={12} className="rounded-3">
+                                <div className="row gy-2 pb-3">
+                                    <Col x1={12}>
+                                        <label className="form-label mt-3">
+                                            Pilih Week <span style={{ color: "red" }}>*</span> :
+                                        </label>
 
-                                            <select
-                                                className="form-select"
-                                                value={data.week}
-                                                onChange={(e) => setData({ ...data, week: e.target.value })}
+                                        <select
+                                            className="form-select"
+                                            value={data.week}
+                                            onChange={(e) => setData({ ...data, week: e.target.value })}
+                                        >
+                                            <option value="">-- Pilih Week --</option>
+
+                                            {daftarWeek.map((item, index) => (
+                                                <option key={index} value={item.week + "|" + item.startDate + "|" + item.endDate}>
+                                                    Week {item.week} ({item.startDate} s/d {item.endDate})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </Col>
+                                    <Col xl={12}>
+                                        <label htmlFor="pendapatan-usaha" className="form-label ">Nominal Pendapatan Usaha <span style={{ color: "red" }}>*</span> :</label>
+                                        <input type="text" className={`form-control`} id="nominal_pu" placeholder="Pendapatan Usaha" onChange={handleChangePu} value={data.nominal_pu ? `${data.nominal_pu}` : ""} />
+                                    </Col>
+                                    <hr />
+                                    {items.length > 0 && (
+                                        <h6>Material yang di gunakan</h6>
+                                    )}
+                                    {items.map((item) => (
+                                        <div className="position-relative border p-3 rounded mb-2">
+                                            <Button
+                                                type="button"
+                                                onClick={() => removeItem(item.id)}
+                                                className="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
                                             >
-                                                <option value="">-- Pilih Week --</option>
+                                                ✕
+                                            </Button>
+                                            <Col xl={12}>
+                                                <label htmlFor="pendapatan-usaha" className="form-label ">Rapa <span style={{ color: "red" }}>*</span> :</label>
+                                                {/* <input type="text" className={`form-control`} id="rapa" placeholder="Rapa" onChange={(e) => updateItem(item.id, 'rapa', e.target.value)}
+                                                    value={item.name} /> */}
+                                                    <Select name="state" options={rapa} className="basic-multi-select " isSearchable
+                                                        menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Rapa" onChange={(e) => updateItem(item.id, 'rapa', e.value)}
+                                                    />
+                                            </Col>
+                                            <Col xl={12}>
+                                                <label htmlFor="pendapatan-usaha" className="form-label ">volume <span style={{ color: "red" }}>*</span> :</label>
+                                                <input type="text" className={`form-control`} id="volume" placeholder="Volume" onChange={(e) => updateItem(item.id, 'volume', e.target.value)}
+                                                    value={item.name} />
+                                            </Col>
 
-                                                {daftarWeek.map((item, index) => (
-                                                    <option key={index} value={item.week + "|" + item.startDate + "|" + item.endDate }>
-                                                        Week {item.week} ({item.startDate} s/d {item.endDate})
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </Col>
-                                        <Col xl={12}>
-                                            <label htmlFor="pendapatan-usaha" className="form-label ">Nominal Pendapatan Usaha <span style={{ color: "red" }}>*</span> :</label>
-                                            <input type="text" className={`form-control`} id="nominal_pu" placeholder="Pendapatan Usaha" onChange={(val) => setData({ ...data, nominal_pu: val.target.value })} />
-                                        </Col>
-                                    </div>
-                                </Col>
-                            </Row>
+                                        </div>
+                                    ))}
+                                    <Col xl={12}>
+                                        <Button
+                                            type="button"
+                                            onClick={addItem}
+                                            className="bg-blue-600 text-white px-4 py-2"
+                                        >
+                                            + Add Row
+                                        </Button>
+                                    </Col>
+                                </div>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
             </Modal.Body>

@@ -40,7 +40,7 @@ const DetailRapa = () => {
     const [datatable, setDataTable] = useState([]);
     const COLUMNS = [
         {
-            Header: "Kode RAP",
+            Header: "Cost Code",
             accessor: "kode_rap",
         },
         {
@@ -52,7 +52,7 @@ const DetailRapa = () => {
             accessor: "group",
         },
         {
-            Header: "Item Pekerjaan",
+            Header: "Item",
             accessor: "item_pekerjaan",
         },
        

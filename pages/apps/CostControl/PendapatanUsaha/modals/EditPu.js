@@ -30,7 +30,7 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
 
             const data = res.data.data;
 
-            console.log(data);
+            // console.log(data);
 
             setFormData({
                 id_pu: data.id_pu,
