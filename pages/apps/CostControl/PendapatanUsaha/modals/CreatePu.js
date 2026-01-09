@@ -178,7 +178,6 @@ const CreatePu = ({ openModal, setOpenModal }) => {
             });
             if (result.status == 200) {
                 setLoader(false);
-                // await submitMos(result.data.data.id_pu);
                 swalAlert(result.data.message, result.statusText, "success");
                 setOpenModal({ ...openModal, open_modal: false });
                 // console.log(result)

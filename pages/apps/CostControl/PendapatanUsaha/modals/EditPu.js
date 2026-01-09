@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
+registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
 const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload }) => {
     const [formData, setFormData] = useState({
@@ -11,6 +15,7 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
         tanggal_awal: "",
         tanggal_akhir: "",
     });
+    const [dokumenFiles ,setDokumenFiles] = useState();
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -35,7 +40,7 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
             setFormData({
                 id_pu: data.id_pu,
                 week_pu: data.week_pu,
-                nominal_pu: data.nominal_pu,
+                nominal_pu: toCurrency(data.nominal_pu),
                 tanggal_awal: data.tanggal_awal,
                 tanggal_akhir: data.tanggal_akhir,
             });
@@ -46,28 +51,46 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
             setLoader(false);
         }
     };
+    const handleChangePu = (e) => {
+        let val = e.target.value.replace(/[^\d]/g, ""); // hanya angka
+        val = val ? new Intl.NumberFormat("id-ID").format(val) : "";
+        setFormData({ ...formData, nominal_pu: val })
+        // setValueRab(val);
+    };
 
     // Submit Update Nominal
     const handleSave = async () => {
         try {
             setLoader(true);
-
-            const payload = {
-                id_pu: formData.id_pu,
-                nominal_pu: formData.nominal_pu,
-                week_pu: formData.week_pu,
-                tanggal_awal: formData.tanggal_awal,
-                tanggal_akhir: formData.tanggal_akhir
-            };
+            const valueNominalPuClean = (formData.nominal_pu) ? formData.nominal_pu.replace(/\D/g, "") : "";
+            const form = new FormData();
+            form.append("id_pu", formData.id_pu);
+            form.append("nominal_pu", valueNominalPuClean);
+            form.append("week_pu", formData.week_pu);
+            form.append("tanggal_awal", formData.tanggal_awal);
+            form.append("tanggal_akhir", formData.tanggal_akhir);
+            if(dokumenFiles != undefined){
+                form.append("dokumen_upload", dokumenFiles[0].file);
+            }
             
-            console.log(payload);
+            // formData.append("dokumen_upload", dokumenFiles[0].file);
+
+            // const payload = {
+            //     id_pu: formData.id_pu,
+            //     nominal_pu: formData.nominal_pu,
+            //     week_pu: formData.week_pu,
+            //     tanggal_awal: formData.tanggal_awal,
+            //     tanggal_akhir: formData.tanggal_akhir
+            // };
+            
+            // console.log(payload);
 
             const res = await apiConfig.post(
                 apiUrl + "/CostControl/PendapatanUsaha/update-pu",
-                payload,
+                form,
                 {
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "multipart/form-data",
                         Authorization: "Bearer " + localStorage.getItem("token")
                     }
                 }
@@ -94,6 +117,15 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
         } finally {
             setLoader(false);
         }
+    };
+    const toCurrency = (value) => {
+        if (!value) return "Rp0";
+
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0
+        }).format(Number(value));
     };
 
     useEffect(() => {
@@ -126,12 +158,28 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
                     <Form.Group className="mb-3">
                         <Form.Label>Nominal Pendapatan Usaha</Form.Label>
                         <Form.Control
-                            type="number"
+                            type="text"
                             value={formData.nominal_pu}
-                            onChange={(e) => setFormData({ ...formData, nominal_pu: e.target.value })}
+                            onChange={handleChangePu}
                             placeholder="Masukkan nominal baru"
                         />
                     </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Dokumen Upload</Form.Label>
+                        <FilePond
+                            className="filepond-custom"
+                            name="files"
+                            acceptedFileTypes={['application/pdf']}
+                            maxFileSize="5MB"
+                            labelIdle='Drag & Drop file atau klik'
+                            labelMaxFileSizeExceeded="File terlalu besar"
+                            labelMaxFileSize="Maksimal ukuran file: 5MB"
+                            files={dokumenFiles}
+                            onupdatefiles={setDokumenFiles}
+                        />
+                    </Form.Group>
+
                 </Form>
             </Modal.Body>
 
