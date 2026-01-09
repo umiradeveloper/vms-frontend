@@ -20,6 +20,7 @@ const CreatePu = ({ openModal, setOpenModal }) => {
     const [loader, setLoader] = useState(false);
     const [daftarWeek, setDaftarWeek] = useState([]);
     const [daftarProyek, setDaftarProyek] = useState([]);
+    const [dokumenFiles, setDokumenFiles] = useState();
     const [data, setData] = useState({
         nominal_pu: "",
         id_proyek: "",
@@ -153,25 +154,33 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         setLoader(true);
         const splitweek = data.week.split("|");
         const valueNominalPuClean = (data.nominal_pu) ? data.nominal_pu.replace(/\./g, "") : "";
-        const dataSubmit = {
-            nominal_pu: valueNominalPuClean,
-            id_proyek: openModal.id_proyek,
-            week_pu: splitweek[0],
-            tanggal_awal: splitweek[1],
-            tanggal_akhir: splitweek[2]
-        };
+        const formData = new FormData();
+        formData.append("nominal_pu", valueNominalPuClean);
+        formData.append("id_proyek", openModal.id_proyek);
+        formData.append("week_pu", splitweek[0]);
+        formData.append("tanggal_awal", splitweek[1]);
+        formData.append("tanggal_akhir", splitweek[2]);
+        formData.append("dokumen_upload", dokumenFiles[0].file);
+        // const dataSubmit = {
+        //     nominal_pu: valueNominalPuClean,
+        //     id_proyek: openModal.id_proyek,
+        //     week_pu: splitweek[0],
+        //     tanggal_awal: splitweek[1],
+        //     tanggal_akhir: splitweek[2]
+        // };
+        // console.log(dokumenFiles[0].file)
         try {
-            const result = await apiConfig.post(apiUrl + "/CostControl/PendapatanUsaha/create-pu", dataSubmit, {
+            const result = await apiConfig.post(apiUrl + "/CostControl/PendapatanUsaha/create-pu", formData, {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             if (result.status == 200) {
-                // setLoader(false);
-                await submitMos(result.data.data.id_pu);
-                // swalAlert(result.data.message, result.statusText, "success");
-                // setOpenModal({ ...openModal, open_modal: false });
+                setLoader(false);
+                // await submitMos(result.data.data.id_pu);
+                swalAlert(result.data.message, result.statusText, "success");
+                setOpenModal({ ...openModal, open_modal: false });
                 // console.log(result)
             }
         } catch (error) {
@@ -293,20 +302,14 @@ const CreatePu = ({ openModal, setOpenModal }) => {
 
                                         <FilePond
                                             className="filepond-custom"
-                                            files={
-                                                files.find(f => f.id_dokumen === item.dokumen.id_mst_dokumen)?.items || []
-                                            }
-                                            onupdatefiles={(items) =>
-                                                handleUploadUpdate(item.dokumen.id_mst_dokumen, items)
-                                            }
-                                            allowMultiple
-                                            maxFiles={3}
                                             name="files"
                                             acceptedFileTypes={['application/pdf']}
                                             maxFileSize="5MB"
                                             labelIdle='Drag & Drop file atau klik'
                                             labelMaxFileSizeExceeded="File terlalu besar"
                                             labelMaxFileSize="Maksimal ukuran file: 5MB"
+                                            files={dokumenFiles}
+                                            onupdatefiles={setDokumenFiles}
                                         />
                                     </Col>
                                 </div>
