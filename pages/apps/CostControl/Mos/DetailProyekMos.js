@@ -7,15 +7,15 @@ import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl
 import apiConfig from "@/utils/AxiosConfig";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import CreatePu from "./modals/CreatePu";
+import CreateMos from "./modals/CreateMos";
 import Datatables from "@/pages/components/apps/tables/datatable";
 import Swal from "sweetalert2";
-import EditPu from "./modals/EditPu";
-import DetailMaterialPu from "./modals/DetailMaterialPu";
+import EditMos from "./modals/EditMos";
+import DetailMaterialMos from "./modals/DetailMaterialMos";
 
 
 
-const DetailProyekPu = () => {
+const DetailProyekMos = () => {
     const [dataTable, setDataTable] = useState([]);
     const [loading, setLoading] = useState(false);
     const [loader, setLoader] = useState(false);
@@ -47,7 +47,7 @@ const DetailProyekPu = () => {
         id_proyek: "",
         open_modal: false
     })
-    const [openDetailMaterialPu, setOpenDetailMaterialPu] = useState({
+    const [openDetailMaterialMos, setOpenDetailMaterialMos] = useState({
         id_pu: "",
         open: false
     })
@@ -61,7 +61,7 @@ const DetailProyekPu = () => {
             accessor: "tanggal",
         },
         {
-            Header: "Nominal Pendapatan Usaha",
+            Header: "Jumlah Material On-Site",
             accessor: "nominal_pu",
         },
         {
@@ -168,8 +168,8 @@ const DetailProyekPu = () => {
 
     const handleDelete = async (item) => {
         const confirmed = await Swal.fire({
-            title: "Hapus Pendapatan Usaha",
-            text: `Apakah Anda yakin ingin menghapus Pendapatan Usaha?`,
+            title: "Hapus Material On-Site",
+            text: `Apakah Anda yakin ingin menghapus Material On-Site?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -222,20 +222,20 @@ const DetailProyekPu = () => {
 
     return (
         <Fragment>
-            <Seo title={"Detail Pendapatan Usaha Proyek"} />
+            <Seo title={"Detail Material On-Site Proyek"} />
 
-            <PageHeaderVms title='Pendapatan Usaha' item='Daftar Proyek Pendapatan Usaha' active_item='Detail Pendapatan Usaha' />
+            <PageHeaderVms title='Material On-Site' item='Daftar Material On-Site' active_item='Detail Material On-Site' />
             <LoadersSimUmira open={loader} />
-            <CreatePu openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
-            <EditPu openModal={openModalEdit} setOpenModal={setOpenModalEdit} loader={loading} setLoader={setLoading} reload={reload} setReload={setReload}/>
-            <DetailMaterialPu openModal={openDetailMaterialPu} setOpenModal={setOpenDetailMaterialPu} loader={loading} setLoader={setLoading} />
+            <CreateMos openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
+            <EditMos openModal={openModalEdit} setOpenModal={setOpenModalEdit} loader={loading} setLoader={setLoading} reload={reload} setReload={setReload}/>
+            <DetailMaterialMos openModal={openDetailMaterialMos} setOpenModal={setOpenDetailMaterialMos} loader={loading} setLoader={setLoading} />
             <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
                         <Card.Header className="d-flex align-items-center justify-content-between">
                             <button
                                 type="button" className="btn btn-warning label-btn rounded-pill"
-                                onClick={() => navigate.push("/apps/CostControl/PendapatanUsaha/DaftarProyekPu")}
+                                onClick={() => navigate.push("/apps/CostControl/Mos/DaftarProyekMos")}
                             >
                                 <i className="ri-arrow-left-line label-btn-icon me-2 rounded-pill" />
                                 kembali
@@ -247,7 +247,7 @@ const DetailProyekPu = () => {
                             // onClick={() => navigate.push("/apps/CostControl/Rapa/DaftarRapa")}
                             >
                                 <i className="ri-add-circle-line label-btn-icon me-2 rounded-pill" />
-                                Input Pendapatan Usaha
+                                Input Material On-Site
                             </button>
 
                         </Card.Header>
@@ -271,12 +271,12 @@ const DetailProyekPu = () => {
                 <Col xl={12}>
                     <Card className="custom-card">
                         <Card.Header>
-                            <div className="card-title">Detail Pendapatan Usaha</div>
+                            <div className="card-title">Detail Material On-Site</div>
                         </Card.Header>
 
                         <Card.Body>
                             {(dataTable).length === 0 ? (
-                                <p className="text-muted">Belum ada data PU</p>
+                                <p className="text-muted">Belum ada data Material On-Site</p>
                             ) : (
                                 <div className="table-responsive">
                                     <BasicTableCostControl column={COLUMNS} datatable={dataTable} />
@@ -291,6 +291,6 @@ const DetailProyekPu = () => {
 
 }
 
-DetailProyekPu.layout = "ContentlayoutVms";
+DetailProyekMos.layout = "ContentlayoutVms";
 
-export default DetailProyekPu;
+export default DetailProyekMos;

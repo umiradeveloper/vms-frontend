@@ -75,13 +75,13 @@ const DaftarProyekPu = () => {
                                         type="button" className="btn btn-sm btn-info label-btn label-end rounded-pill"
                                         onClick={() => navigate.push(
                                         {
-                                            pathname: "/apps/CostControl/PendapatanUsaha/DetailProyekPu",
+                                            pathname: "/apps/CostControl/Mos/DetailProyekMos",
                                             query: { id: data.id_proyek }
                                         }
                                      )}
                                     >
                                         <i className="ri-arrow-right-line label-btn-icon me-2 rounded-pill"/>
-                                        Pendapatan Usaha
+                                        Material On-Site
                                     </button>
                                 </div>
                     })
@@ -110,8 +110,8 @@ const DaftarProyekPu = () => {
 
     return(
         <Fragment>
-            <Seo title={"Daftar Proyek Pendapatan Usaha"} />
-            <PageHeaderVms title='Daftar Proyek Pendapatan Usaha' item='Pendapatan Usaha' active_item='Daftar Proyek' />
+            <Seo title={"Daftar Material On-Site"} />
+            <PageHeaderVms title='Daftar Material On-Site' item='Mos' active_item='Daftar Proyek' />
             <LoadersSimUmira open={loader} />
             <Row>
                 <Col xl={12}>

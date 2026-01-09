@@ -12,6 +12,8 @@ import Datatables from "@/pages/components/apps/tables/datatable";
 import Swal from "sweetalert2";
 import EditPu from "./modals/EditPu";
 import DetailMaterialPu from "./modals/DetailMaterialPu";
+import DetailDokumen from "./modals/DetailDokumen";
+
 
 
 
@@ -30,11 +32,13 @@ const DetailProyekPu = () => {
         nama_proyek: "",
         deskripsi_proyek: "",
         tanggal_kontrak: "",
-        tanggal_awal_kontrak:"",
+        tanggal_awal_kontrak: "",
         biaya_rap: "",
         biaya_rab: "",
         bk_pu_awal: ""
     });
+
+    const [frameSrc, setFrameSrc] = useState();
 
     const [PendapatanUsaha, setPendapatanUsaha] = useState({
         datail: []
@@ -65,6 +69,10 @@ const DetailProyekPu = () => {
             accessor: "nominal_pu",
         },
         {
+            Header: "Dokumen Pendukung",
+            accessor: "dokumen_pendukung",
+        },
+        {
             Header: "Aksi",
             accessor: "aksi",
         },
@@ -86,7 +94,44 @@ const DetailProyekPu = () => {
         const p = (Number(part) / t) * 100;
         return p;
     }
-
+    const getFile = async(id) => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            setLoader(true);
+            try {
+                const response = await apiConfig.get(apiUrl+"/CostControl/PendapatanUsaha/dokumen-file", {
+                    responseType: "blob",
+                    headers:{
+                        "Content-Type":"application/json",
+                        "Authorization": "Bearer "+localStorage.getItem("token")
+                    },
+                    params:{
+                        id: id
+                    }
+                });
+                // const typeData = {};
+                // typeData.type = "application/pdf";
+                const data = response.data;
+                console.log(response);
+                if(data){
+                    // console.log(data);
+                    const fileURL = window.URL.createObjectURL(
+                        new Blob([data], {type: "application/pdf"})
+                    );
+                    //setFrameSrc(fileURL);
+                    setOpenDetailDokumen({
+                        ...openDetailDokumen, file_url: fileURL
+                    });
+                    // setSelectedOptions(kualifikasiArr);
+                    // setTableData(userArr);
+                    setLoader(false);
+                }
+                
+            } catch (error) {
+                console.log(error);
+                // setError(error.message);
+                setLoader(false);
+            }
+       }
     const getDataById = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -109,7 +154,7 @@ const DetailProyekPu = () => {
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
                     biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
-                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal+" %" :""
+                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
                 });
 
             }
@@ -143,17 +188,33 @@ const DetailProyekPu = () => {
                         week_pu: a.week_pu,
                         tanggal: a.tanggal_awal + " s/d " + a.tanggal_akhir,
                         nominal_pu: toCurrency(a.nominal_pu),
-                        aksi: <div className="d-flex gap-2">
-                                <button 
-                                    className="btn btn-sm btn-danger"
-                                    onClick={() => {handleDelete(a.id_pu)}}
+                        dokumen_pendukung: (
+                            <div className="d-flex gap-2">
+                                <button
+                                    className="btn btn-sm btn-info"
+                                    onClick={() =>
+                                        {getFile(
+                                            a.id_pu
+                                        );
+                                        setOpenDetailDokumen({...openDetailDokumen, open:true});
+                                    }
+                                    }
                                 >
-                                    Delete
+                                    Lihat Dokumen
                                 </button>
-                                <button 
-                                    className="btn btn-success" 
-                                    onClick={() => setOpenModalEdit({id_pu:a.id_pu, open_modal: true})}>Edit</button>
-                            </div>,
+                            </div>
+                        ),
+                        aksi: <div className="d-flex gap-2">
+                            <button
+                                className="btn btn-sm btn-danger"
+                                onClick={() => { handleDelete(a.id_pu) }}
+                            >
+                                Delete
+                            </button>
+                            <button
+                                className="btn btn-success"
+                                onClick={() => setOpenModalEdit({ id_pu: a.id_pu, open_modal: true })}>Edit</button>
+                        </div>,
                     })
                 }
                 setDataTable(arrpu);
@@ -165,6 +226,11 @@ const DetailProyekPu = () => {
             console.log("err =", error);
         }
     };
+
+    const [openDetailDokumen, setOpenDetailDokumen] = useState({
+        open: false,
+        file_url: ""
+    });
 
     const handleDelete = async (item) => {
         const confirmed = await Swal.fire({
@@ -216,7 +282,7 @@ const DetailProyekPu = () => {
         if (params.get("id")) {
             getDataById();
             getPuByProyek();
-        
+
         }
     }, [params.get("id"), openModalUpload, reload])
 
@@ -226,8 +292,9 @@ const DetailProyekPu = () => {
 
             <PageHeaderVms title='Pendapatan Usaha' item='Daftar Proyek Pendapatan Usaha' active_item='Detail Pendapatan Usaha' />
             <LoadersSimUmira open={loader} />
+            <DetailDokumen openModal={openDetailDokumen} setOpenModal={setOpenDetailDokumen} />
             <CreatePu openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
-            <EditPu openModal={openModalEdit} setOpenModal={setOpenModalEdit} loader={loading} setLoader={setLoading} reload={reload} setReload={setReload}/>
+            <EditPu openModal={openModalEdit} setOpenModal={setOpenModalEdit} loader={loading} setLoader={setLoading} reload={reload} setReload={setReload} />
             <DetailMaterialPu openModal={openDetailMaterialPu} setOpenModal={setOpenDetailMaterialPu} loader={loading} setLoader={setLoading} />
             <Row>
                 <Col xl={12}>
@@ -265,7 +332,7 @@ const DetailProyekPu = () => {
                             <h5>Persentase BK/PU : {formatPercent(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
                         </Card.Body>
                     </Card>
-                </Col>  
+                </Col>
             </Row>
             <Row>
                 <Col xl={12}>
