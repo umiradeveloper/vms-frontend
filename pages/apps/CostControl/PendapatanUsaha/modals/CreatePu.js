@@ -148,8 +148,29 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         }
     }
 
+    const validateForm = () => {
+        if (!data.week) {
+            Swal.fire("Validasi", "Week wajib dipilih", "warning");
+            return false;
+        }
+
+        if (!data.nominal_pu || data.nominal_pu === "0") {
+            Swal.fire("Validasi", "Nominal Pendapatan Usaha wajib diisi", "warning");
+            return false;
+        }
+
+        if (!dokumenFiles || dokumenFiles.length === 0) {
+            Swal.fire("Validasi", "Dokumen pendukung wajib di-upload", "warning");
+            return false;
+        }
+
+        return true;
+    };
+
+
 
     const submit = async () => {
+        if (!validateForm()) return;
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         const splitweek = data.week.split("|");
@@ -191,33 +212,6 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         // console.log(dataSubmit);
     }
 
-    const submitMos = async (id) => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const dataSubmit = {
-            id_rapa: items.map(i => i.rapa),
-            volume: items.map(i => i.volume),
-            id_proyek: openModal.id_proyek,
-            id_pu: id
-        }
-        try {
-            const result = await apiConfig.post(apiUrl + "/CostControl/Mos/create-mos-bulk", dataSubmit, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-            if (result.status == 200) {
-                setLoader(false);
-                swalAlert(result.data.message, result.statusText, "success");
-                setOpenModal({ ...openModal, open_modal: false });
-                // console.log(result)
-            }
-        } catch (error) {
-            setLoader(false);
-            console.log("e submit mos = " + error);
-        }
-
-    }
     const swalAlert = (message, title, icon) => {
         let timerInterval;
 
