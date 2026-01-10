@@ -15,14 +15,15 @@ const Select = dynamic(() => import("react-select"), { ssr: false });
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
 
-const CreatePu = ({ openModal, setOpenModal }) => {
+const CreateMos = ({ openModal, setOpenModal }) => {
     const [loading, setLoading] = useState(false);
     const [loader, setLoader] = useState(false);
     const [daftarWeek, setDaftarWeek] = useState([]);
     const [daftarProyek, setDaftarProyek] = useState([]);
+    const [dokumenFiles, setDokumenFiles] = useState();
     const [data, setData] = useState({
-        nominal_pu: "",
-        id_proyek: "",
+        nominal_mos: "",
+        id_rapa: "",
         week: ""
     })
     const [rapa, setRapa] = useState([]);
@@ -147,68 +148,64 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         }
     }
 
+    const validateForm = () => {
+        if (!data.week) {
+            Swal.fire("Validasi", "Week wajib dipilih", "warning");
+            return false;
+        }
+
+        if (!data.nominal_mos || data.nominal_mos === "0") {
+            Swal.fire("Validasi", "Jumlah Material On-Site wajib diisi", "warning");
+            return false;
+        }
+
+        if (!dokumenFiles || dokumenFiles.length === 0) {
+            Swal.fire("Validasi", "Dokumen pendukung wajib di-upload", "warning");
+            return false;
+        }
+
+        return true;
+    };
+
+
 
     const submit = async () => {
+        if (!validateForm()) return;
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         const splitweek = data.week.split("|");
-        const valueNominalPuClean = (data.nominal_pu) ? data.nominal_pu.replace(/\./g, "") : "";
-        const dataSubmit = {
-            nominal_pu: valueNominalPuClean,
-            id_proyek: openModal.id_proyek,
-            week_pu: splitweek[0],
-            tanggal_awal: splitweek[1],
-            tanggal_akhir: splitweek[2]
-        };
+        const formData = new FormData();
+        formData.append("id_proyek", openModal.id_proyek);
+       // formData.append("id_rapa", data.id_rapa);
+        formData.append("nominal_mos", data.nominal_mos);
+        formData.append("week", splitweek[0]);
+        formData.append("tanggal_awal", splitweek[1]);
+        formData.append("tanggal_akhir", splitweek[2]);
+        formData.append("dokumen_upload", dokumenFiles[0].file);
+       // alert('test');
         try {
-            const result = await apiConfig.post(apiUrl + "/CostControl/PendapatanUsaha/create-pu", dataSubmit, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+            const result = await apiConfig.post(
+                apiUrl + "/CostControl/MaterialOnSite/create-mos",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
                 }
-            });
-            if (result.status == 200) {
-                // setLoader(false);
-                await submitMos(result.data.data.id_pu);
-                // swalAlert(result.data.message, result.statusText, "success");
-                // setOpenModal({ ...openModal, open_modal: false });
-                // console.log(result)
-            }
-        } catch (error) {
-            setLoader(false);
-            console.log("e submit pu = " + error);
-        }
+            );
 
-        // console.log(dataSubmit);
-    }
-
-    const submitMos = async (id) => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const dataSubmit = {
-            id_rapa: items.map(i => i.rapa),
-            volume: items.map(i => i.volume),
-            id_proyek: openModal.id_proyek,
-            id_pu: id
-        }
-        try {
-            const result = await apiConfig.post(apiUrl + "/CostControl/Mos/create-mos-bulk", dataSubmit, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-            if (result.status == 200) {
+            if (result.status === 200) {
                 setLoader(false);
-                swalAlert(result.data.message, result.statusText, "success");
+                swalAlert(result.data.message, "Berhasil", "success");
                 setOpenModal({ ...openModal, open_modal: false });
-                // console.log(result)
             }
         } catch (error) {
             setLoader(false);
-            console.log("e submit mos = " + error);
+            console.log("submit mos error:", error);
         }
+    };
 
-    }
     const swalAlert = (message, title, icon) => {
         let timerInterval;
 
@@ -255,7 +252,7 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         <Modal size="md" show={openModal.open_modal} onHide={() => setOpenModal({ ...openModal, open_modal: false })} className="fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <LoadersSimUmira open={loader} />
             <Modal.Header closeButton>
-                <h6 className="modal-title" id="exampleModalLabel">Tambah Pendapatan Usaha</h6>
+                <h6 className="modal-title" id="exampleModalLabel">Tambah Material On-Site</h6>
             </Modal.Header>
             <Modal.Body className="">
                 <Row>
@@ -283,32 +280,20 @@ const CreatePu = ({ openModal, setOpenModal }) => {
                                         </select>
                                     </Col>
                                     <Col xl={12}>
-                                        <label htmlFor="pendapatan-usaha" className="form-label ">Nominal Pendapatan Usaha <span style={{ color: "red" }}>*</span> :</label>
-                                        <input type="text" className={`form-control`} id="nominal_pu" placeholder="Pendapatan Usaha" onChange={handleChangePu} value={data.nominal_pu ? `${data.nominal_pu}` : ""} />
+                                        <label htmlFor="nominal_mos" className="form-label ">Jumlah Material On-Site <span style={{ color: "red" }}>*</span> :</label>
+                                        <input type="number" className={`form-control`} id="nominal_mos" placeholder="Material On-Site" onChange={(e) => setData({ ...data, nominal_mos: e.target.value })} value={data.nominal_mos ? `${data.nominal_mos}` : ""} />
                                     </Col>
-                                    <Col xl={12}>
-                                        <label className="form-label mt-3">
-                                            Upload Dokumen Pendukung <span style={{ color: "red" }}>*</span> :
-                                        </label>
-
-                                        <FilePond
-                                            className="filepond-custom"
-                                            files={
-                                                files.find(f => f.id_dokumen === item.dokumen.id_mst_dokumen)?.items || []
-                                            }
-                                            onupdatefiles={(items) =>
-                                                handleUploadUpdate(item.dokumen.id_mst_dokumen, items)
-                                            }
-                                            allowMultiple
-                                            maxFiles={3}
-                                            name="files"
-                                            acceptedFileTypes={['application/pdf']}
-                                            maxFileSize="5MB"
-                                            labelIdle='Drag & Drop file atau klik'
-                                            labelMaxFileSizeExceeded="File terlalu besar"
-                                            labelMaxFileSize="Maksimal ukuran file: 5MB"
-                                        />
-                                    </Col>
+                                    <FilePond
+                                        className="filepond-custom"
+                                        name="files"
+                                        acceptedFileTypes={['application/pdf']}
+                                        maxFileSize="5MB"
+                                        labelIdle='Drag & Drop file atau klik'
+                                        labelMaxFileSizeExceeded="File terlalu besar"
+                                        labelMaxFileSize="Maksimal ukuran file: 5MB"
+                                        files={dokumenFiles}
+                                        onupdatefiles={setDokumenFiles}
+                                    />
                                 </div>
                             </Col>
                         </Row>
@@ -325,5 +310,5 @@ const CreatePu = ({ openModal, setOpenModal }) => {
 
     )
 }
-CreatePu.layout = "ContentlayoutVms";
-export default CreatePu;
+CreateMos.layout = "ContentlayoutVms";
+export default CreateMos;

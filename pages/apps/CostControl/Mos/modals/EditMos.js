@@ -2,25 +2,32 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 
-const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload }) => {
+registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
+
+const EditMos = ({ openModal, setOpenModal, loader, setLoader, setReload, reload }) => {
     const [formData, setFormData] = useState({
-        id_pu: "",
+        id_mos: "",
         week_pu: "",
         nominal_pu: "",
         tanggal_awal: "",
         tanggal_akhir: "",
     });
 
+    const [dokumenFiles, setDokumenFiles] = useState();
+
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     // Ambil detail PU berdasarkan ID
-    const getDetailPu = async (id_pu) => {
+    const getDetailMos = async (id_mos) => {
         try {
             setLoader(true);
 
             const res = await apiConfig.get(
-                apiUrl + `/CostControl/PendapatanUsaha/get-pu-by-id?id=${id_pu}`,
+                apiUrl + `/CostControl/MaterialOnSite/get-mos-by-id?id=${id_mos}`,
                 {
                     headers: {
                         Authorization: "Bearer " + localStorage.getItem("token")
@@ -30,12 +37,12 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
 
             const data = res.data.data;
 
-            // console.log(data);
+            console.log(data);
 
             setFormData({
-                id_pu: data.id_pu,
-                week_pu: data.week_pu,
-                nominal_pu: data.nominal_pu,
+                id_mos: data.id_mos,
+                week_pu: data.week,
+                nominal_mos: data.nominal_mos,
                 tanggal_awal: data.tanggal_awal,
                 tanggal_akhir: data.tanggal_akhir,
             });
@@ -46,28 +53,41 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
             setLoader(false);
         }
     };
+    
 
     // Submit Update Nominal
     const handleSave = async () => {
+        //console.log(formData.tanggal_awal);
         try {
             setLoader(true);
+            const form = new FormData();
+            form.append("id_proyek", openModal.id_proyek);
+            form.append("id_mos", formData.id_mos);
+            form.append("nominal_mos", formData.nominal_mos);
+            form.append("week", formData.week_pu);
+            form.append("tanggal_awal", formData.tanggal_awal);
+            form.append("tanggal_akhir", formData.tanggal_akhir);
+            if (dokumenFiles != undefined) {
+                form.append("dokumen_upload", dokumenFiles[0].file);
+            }
 
-            const payload = {
-                id_pu: formData.id_pu,
-                nominal_pu: formData.nominal_pu,
-                week_pu: formData.week_pu,
-                tanggal_awal: formData.tanggal_awal,
-                tanggal_akhir: formData.tanggal_akhir
-            };
-            
-            console.log(payload);
+            // const payload = {
+            //     id_mos: formData.id_mos,
+            //     nominal_mos: formData.nominal_mos,
+            //     week_pu: formData.week,
+            //     tanggal_awal: formData.tanggal_awal,
+            //     tanggal_akhir: formData.tanggal_akhir,
 
-            const res = await apiConfig.post(
-                apiUrl + "/CostControl/PendapatanUsaha/update-pu",
-                payload,
+            // };
+
+            // console.log(payload);
+
+            const res = await apiConfig.patch(
+                apiUrl + "/CostControl/MaterialOnSite/update-mos",
+                form,
                 {
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "multipart/form-data",
                         Authorization: "Bearer " + localStorage.getItem("token")
                     }
                 }
@@ -83,7 +103,7 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
 
             setOpenModal({ id_pu: "", open_modal: false });
             setReload(prev => !prev);
-            
+
         } catch (error) {
             console.log(error);
             Swal.fire({
@@ -97,19 +117,20 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
     };
 
     useEffect(() => {
-        if (openModal.open_modal && openModal.id_pu) {
-            getDetailPu(openModal.id_pu);
+        if (openModal.open_modal && openModal.id_mos) {
+            //console.log(openModal.id_proyek);
+            getDetailMos(openModal.id_mos);
         }
     }, [openModal.open_modal]);
 
     return (
         <Modal
             show={openModal.open_modal}
-            onHide={() => setOpenModal({ id_pu: "", open_modal: false })}
+            onHide={() => setOpenModal({ id_mos: "", open_modal: false })}
             centered
         >
             <Modal.Header closeButton>
-                <Modal.Title>Edit Pendapatan Usaha</Modal.Title>
+                <Modal.Title>Edit Material On-Site</Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
@@ -124,20 +145,34 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Label>Nominal Pendapatan Usaha</Form.Label>
+                        <Form.Label>Nominal Material On-Site</Form.Label>
                         <Form.Control
                             type="number"
-                            value={formData.nominal_pu}
-                            onChange={(e) => setFormData({ ...formData, nominal_pu: e.target.value })}
+                            value={formData.nominal_mos}
+                            onChange={(e) => setFormData({ ...formData, nominal_mos: e.target.value })}
                             placeholder="Masukkan nominal baru"
                         />
                     </Form.Group>
+                    <Form.Group>
+                        <FilePond
+                            className="filepond-custom"
+                            name="files"
+                            acceptedFileTypes={['application/pdf']}
+                            maxFileSize="5MB"
+                            labelIdle='Drag & Drop file atau klik'
+                            labelMaxFileSizeExceeded="File terlalu besar"
+                            labelMaxFileSize="Maksimal ukuran file: 5MB"
+                            files={dokumenFiles}
+                            onupdatefiles={setDokumenFiles}
+                        />
+                    </Form.Group>
+
                 </Form>
             </Modal.Body>
 
             <Modal.Footer>
                 <Button variant="secondary"
-                    onClick={() => setOpenModal({ id_pu: "", open_modal: false })}
+                    onClick={() => setOpenModal({ id_mos: "", open_modal: false })}
                 >
                     Batal
                 </Button>
@@ -150,4 +185,4 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
     );
 };
 
-export default EditPu;
+export default EditMos;

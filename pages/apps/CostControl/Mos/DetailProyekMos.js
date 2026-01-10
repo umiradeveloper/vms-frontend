@@ -12,6 +12,7 @@ import Datatables from "@/pages/components/apps/tables/datatable";
 import Swal from "sweetalert2";
 import EditMos from "./modals/EditMos";
 import DetailMaterialMos from "./modals/DetailMaterialMos";
+import DetailDokumen from "./modals/DetailDokumenMos";
 
 
 
@@ -30,17 +31,19 @@ const DetailProyekMos = () => {
         nama_proyek: "",
         deskripsi_proyek: "",
         tanggal_kontrak: "",
-        tanggal_awal_kontrak:"",
+        tanggal_awal_kontrak: "",
+        nominal_mos: "",
         biaya_rap: "",
         biaya_rab: "",
         bk_pu_awal: ""
     });
 
-    const [PendapatanUsaha, setPendapatanUsaha] = useState({
+    const [MaterialOnSite, setMaterialOnSite] = useState({
         datail: []
     });
     const [openModalEdit, setOpenModalEdit] = useState({
-        id_pu: "",
+        id_mos: "",
+        id_proyek: "",
         open: false
     })
     const [openModalUpload, setOpenModalUpload] = useState({
@@ -51,6 +54,50 @@ const DetailProyekMos = () => {
         id_pu: "",
         open: false
     })
+
+    const [openDetailDokumen, setOpenDetailDokumen] = useState({
+        open: false,
+        file_url: ""
+    });
+
+    const getFile = async (id) => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        setLoader(true);
+        try {
+            const response = await apiConfig.get(apiUrl + "/CostControl/MaterialOnSite/dokumen-file", {
+                responseType: "blob",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                params: {
+                    id: id
+                }
+            });
+            // const typeData = {};
+            // typeData.type = "application/pdf";
+            const data = response.data;
+            console.log(response);
+            if (data) {
+                // console.log(data);
+                const fileURL = window.URL.createObjectURL(
+                    new Blob([data], { type: "application/pdf" })
+                );
+                //setFrameSrc(fileURL);
+                setOpenDetailDokumen({
+                    file_url: fileURL, open: true
+                });
+                // setSelectedOptions(kualifikasiArr);
+                // setTableData(userArr);
+                setLoader(false);
+            }
+
+        } catch (error) {
+            console.log(error);
+            // setError(error.message);
+            setLoader(false);
+        }
+    }
     const COLUMNS = [
         {
             Header: "Week",
@@ -62,7 +109,11 @@ const DetailProyekMos = () => {
         },
         {
             Header: "Jumlah Material On-Site",
-            accessor: "nominal_pu",
+            accessor: "nominal_mos",
+        },
+        {
+            Header: "Dokumen Pendukung",
+            accessor: "dokumen_upload",
         },
         {
             Header: "Aksi",
@@ -104,12 +155,13 @@ const DetailProyekMos = () => {
                     total_pu: result.data.data.total_pu,
                     nama_proyek: result.data.data.proyek.nama_proyek,
                     kode_proyek: result.data.data.proyek.kode_proyek,
+                    nominal_mos: result.data.data.nominal_mos,   
                     deskripsi_proyek: result.data.data.proyek.deskripsi_proyek,
                     tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
                     biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
-                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal+" %" :""
+                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
                 });
 
             }
@@ -120,13 +172,13 @@ const DetailProyekMos = () => {
             console.log("e = " + error);
         }
     }
-    const getPuByProyek = async () => {
+    const getMosByProyek = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
         try {
             const result = await apiConfig.get(
-                apiUrl + "/CostControl/PendapatanUsaha/get-pu-by-proyek?id_proyek=" + params.get("id"),
+                apiUrl + "/CostControl/MaterialOnSite/get-mos?id=" + params.get("id"),
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -139,21 +191,37 @@ const DetailProyekMos = () => {
                 const arrpu = [];
                 for (const a of result.data.data) {
                     arrpu.push({
-                        id_pu: a.id_pu,
-                        week_pu: a.week_pu,
+                        id_mos: a.id_mos,
+                        week_pu: a.week,
                         tanggal: a.tanggal_awal + " s/d " + a.tanggal_akhir,
-                        nominal_pu: toCurrency(a.nominal_pu),
-                        aksi: <div className="d-flex gap-2">
-                                <button 
-                                    className="btn btn-sm btn-danger"
-                                    onClick={() => {handleDelete(a.id_pu)}}
+                        nominal_mos: toCurrency(a.nominal_mos),
+                        dokumen_upload: (
+                            <div className="d-flex gap-2">
+                                <button
+                                    className="btn btn-sm btn-info"
+                                    onClick={() => {
+                                        getFile(
+                                            a.id_mos
+                                        );
+                                        //setOpenDetailDokumen({ ...openDetailDokumen, open: true });
+                                    }
+                                    }
                                 >
-                                    Delete
+                                    Lihat Dokumen
                                 </button>
-                                <button 
-                                    className="btn btn-success" 
-                                    onClick={() => setOpenModalEdit({id_pu:a.id_pu, open_modal: true})}>Edit</button>
-                            </div>,
+                            </div>
+                        ),
+                        aksi: <div className="d-flex gap-2">
+                            <button
+                                className="btn btn-sm btn-danger"
+                                onClick={() => { handleDelete(a.id_mos) }}
+                            >
+                                Delete
+                            </button>
+                            <button
+                                className="btn btn-success"
+                                onClick={() => setOpenModalEdit({ id_mos: a.id_mos, id_proyek: params.get("id"), open_modal: true })}>Edit</button>
+                        </div>,
                     })
                 }
                 setDataTable(arrpu);
@@ -184,7 +252,7 @@ const DetailProyekMos = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
             const response = await apiConfig.delete(
-                apiUrl + `/CostControl/PendapatanUsaha/delete-pu?id=${item}`,
+                apiUrl + `/CostControl/MaterialOnSite/delete-mos?id=${item}`,
                 {
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -215,8 +283,8 @@ const DetailProyekMos = () => {
     useEffect(() => {
         if (params.get("id")) {
             getDataById();
-            getPuByProyek();
-        
+            getMosByProyek();
+
         }
     }, [params.get("id"), openModalUpload, reload])
 
@@ -227,7 +295,8 @@ const DetailProyekMos = () => {
             <PageHeaderVms title='Material On-Site' item='Daftar Material On-Site' active_item='Detail Material On-Site' />
             <LoadersSimUmira open={loader} />
             <CreateMos openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
-            <EditMos openModal={openModalEdit} setOpenModal={setOpenModalEdit} loader={loading} setLoader={setLoading} reload={reload} setReload={setReload}/>
+            <DetailDokumen openModal={openDetailDokumen} setOpenModal={setOpenDetailDokumen} />
+            <EditMos openModal={openModalEdit} setOpenModal={setOpenModalEdit} loader={loading} setLoader={setLoading} reload={reload} setReload={setReload} />
             <DetailMaterialMos openModal={openDetailMaterialMos} setOpenModal={setOpenDetailMaterialMos} loader={loading} setLoader={setLoading} />
             <Row>
                 <Col xl={12}>
@@ -260,12 +329,12 @@ const DetailProyekMos = () => {
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
                             <h5>Pendapatan Usaha : {toCurrency(dataProyek.total_pu)}</h5>
                             <h5>Posisi Biaya Konstruksi : {toCurrency(dataProyek.total_bk)}</h5>
-                            <h5>Material On Site: </h5>
+                            <h5>Material On Site: {dataProyek.nominal_mos} </h5>
                             <h5>BK / PU Awal : {dataProyek.bk_pu_awal}</h5>
                             <h5>Persentase BK/PU : {formatPercent(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
                         </Card.Body>
                     </Card>
-                </Col>  
+                </Col>
             </Row>
             <Row>
                 <Col xl={12}>

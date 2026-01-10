@@ -119,7 +119,7 @@ const DetailProyekPu = () => {
                     );
                     //setFrameSrc(fileURL);
                     setOpenDetailDokumen({
-                        ...openDetailDokumen, file_url: fileURL
+                        file_url: fileURL, open: true
                     });
                     // setSelectedOptions(kualifikasiArr);
                     // setTableData(userArr);
@@ -196,7 +196,7 @@ const DetailProyekPu = () => {
                                         {getFile(
                                             a.id_pu
                                         );
-                                        setOpenDetailDokumen({...openDetailDokumen, open:true});
+                                        //setOpenDetailDokumen({...openDetailDokumen, open:true});
                                     }
                                     }
                                 >
