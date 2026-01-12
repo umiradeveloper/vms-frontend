@@ -155,7 +155,7 @@ const DetailProyekMos = () => {
                     total_pu: result.data.data.total_pu,
                     nama_proyek: result.data.data.proyek.nama_proyek,
                     kode_proyek: result.data.data.proyek.kode_proyek,
-                    nominal_mos: result.data.data.nominal_mos,   
+                    nominal_mos: result.data.data.current_mos,   
                     deskripsi_proyek: result.data.data.proyek.deskripsi_proyek,
                     tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
@@ -329,7 +329,7 @@ const DetailProyekMos = () => {
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
                             <h5>Pendapatan Usaha : {toCurrency(dataProyek.total_pu)}</h5>
                             <h5>Posisi Biaya Konstruksi : {toCurrency(dataProyek.total_bk)}</h5>
-                            <h5>Material On Site: {dataProyek.nominal_mos} </h5>
+                            <h5>Material On Site: {toCurrency(dataProyek.nominal_mos)} </h5>
                             <h5>BK / PU Awal : {dataProyek.bk_pu_awal}</h5>
                             <h5>Persentase BK/PU : {formatPercent(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
                         </Card.Body>

@@ -176,13 +176,13 @@ const CreateMos = ({ openModal, setOpenModal }) => {
         const splitweek = data.week.split("|");
         const formData = new FormData();
         formData.append("id_proyek", openModal.id_proyek);
-       // formData.append("id_rapa", data.id_rapa);
+        // formData.append("id_rapa", data.id_rapa);
         formData.append("nominal_mos", data.nominal_mos);
         formData.append("week", splitweek[0]);
         formData.append("tanggal_awal", splitweek[1]);
         formData.append("tanggal_akhir", splitweek[2]);
         formData.append("dokumen_upload", dokumenFiles[0].file);
-       // alert('test');
+        // alert('test');
         try {
             const result = await apiConfig.post(
                 apiUrl + "/CostControl/MaterialOnSite/create-mos",
@@ -228,7 +228,7 @@ const CreateMos = ({ openModal, setOpenModal }) => {
             }
         });
     }
-
+    
     const [files, setFiles] = useState([]);
 
     const resetData = () => {
@@ -281,19 +281,25 @@ const CreateMos = ({ openModal, setOpenModal }) => {
                                     </Col>
                                     <Col xl={12}>
                                         <label htmlFor="nominal_mos" className="form-label ">Jumlah Material On-Site <span style={{ color: "red" }}>*</span> :</label>
-                                        <input type="number" className={`form-control`} id="nominal_mos" placeholder="Material On-Site" onChange={(e) => setData({ ...data, nominal_mos: e.target.value })} value={data.nominal_mos ? `${data.nominal_mos}` : ""} />
+                                        <input type="text" className={`form-control`} id="nominal_mos" placeholder="Material On-Site" onChange={(e) => setData({ ...data, nominal_mos: e.target.value })} value={data.nominal_mos ? `${data.nominal_mos}` : ""} />
                                     </Col>
-                                    <FilePond
-                                        className="filepond-custom"
-                                        name="files"
-                                        acceptedFileTypes={['application/pdf']}
-                                        maxFileSize="5MB"
-                                        labelIdle='Drag & Drop file atau klik'
-                                        labelMaxFileSizeExceeded="File terlalu besar"
-                                        labelMaxFileSize="Maksimal ukuran file: 5MB"
-                                        files={dokumenFiles}
-                                        onupdatefiles={setDokumenFiles}
-                                    />
+                                    <Col xl={12}>
+                                        <label className="form-label mt-3">
+                                            Upload Dokumen Pendukung <span style={{ color: "red" }}>*</span> :
+                                        </label>
+
+                                        <FilePond
+                                            className="filepond-custom"
+                                            name="files"
+                                            acceptedFileTypes={['application/pdf']}
+                                            maxFileSize="5MB"
+                                            labelIdle='Drag & Drop file atau klik'
+                                            labelMaxFileSizeExceeded="File terlalu besar"
+                                            labelMaxFileSize="Maksimal ukuran file: 5MB"
+                                            files={dokumenFiles}
+                                            onupdatefiles={setDokumenFiles}
+                                        />
+                                    </Col>
                                 </div>
                             </Col>
                         </Row>

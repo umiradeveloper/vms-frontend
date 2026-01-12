@@ -23,10 +23,13 @@ const DetailProyekBk = () => {
         nama_proyek: "",
         deskripsi_proyek: "",
         tanggal_kontrak: "",
+        tanggal_awal_kontrak: "",
+        nominal_mos: "",
         biaya_rap: "",
         biaya_rab:"",
         total_bk: "",
-        total_pu: ""
+        total_pu: "",
+        bk_pu_awal: ""
     })
     const [BiayaBk, setBiayaBk] = useState({
         posisi_bk: 0,
@@ -122,10 +125,13 @@ const DetailProyekBk = () => {
                     total_pu: result.data.data.total_pu,
                     nama_proyek: result.data.data.proyek.nama_proyek,
                     kode_proyek: result.data.data.proyek.kode_proyek,
+                    nominal_mos: result.data.data.current_mos,
                     deskripsi_proyek: result.data.data.proyek.deskripsi_proyek,
                     tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
+                    tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
-                    biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : ""
+                    biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
+                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
                 });
                 
             }
@@ -251,11 +257,14 @@ const DetailProyekBk = () => {
                         <Card.Body>
                             <h5>Kode Proyek : {dataProyek.kode_proyek}</h5>
                             <h5>Nama Proyek : {dataProyek.nama_proyek}</h5>
+                            <h5>Tanggal Awal Kontrak : {dataProyek.tanggal_awal_kontrak}</h5>
                             <h5>Tanggal Berakhir Kontrak : {dataProyek.tanggal_kontrak}</h5>
                             <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(dataProyek.biaya_rab)}</h5>
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
                             <h5>Pendapatan Usaha : {toCurrency(dataProyek.total_pu)}</h5>
                             <h5>Posisi Biaya Konstruksi : {toCurrency(dataProyek.total_bk)}</h5>
+                            <h5>Material On Site: {toCurrency(dataProyek.nominal_mos)}</h5>
+                            <h5>BK / PU Awal : {dataProyek.bk_pu_awal}</h5>
                             <h5>Persentase BK/PU : {formatPercent(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
                         </Card.Body>
                     </Card>
