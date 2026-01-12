@@ -7,14 +7,24 @@ import LoadersSimUmira from "../../Component/LoaderSimUmira";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
 import EditProyek from "@/pages/apps/CostControl/Proyek/modals/EditProyek";
-
+import AddKontrakAdendum from "./modals/AddKontrakAdendum";
+import DaftarKontrakAdendum from "./modals/DaftarKontrakAdendum";
 
 
 const DaftarProyek = () => {
     const [loading, setLoading] = useState(false);
     const [datatable, setDataTable] = useState([]);
     const [reload, setReload] = useState(false);
+
     const [openModalEdit, setOpenModalEdit] = useState({
+        id_proyek: "",
+        open_modal: false
+    });
+    const [openModalAddKontrak, setOpenModalKontrak] = useState({
+        id_proyek: "",
+        open_modal: false
+    });
+    const [openModalDaftarKontrak, setOpenModalDaftarKontrak] = useState({
         id_proyek: "",
         open_modal: false
     });
@@ -27,10 +37,10 @@ const DaftarProyek = () => {
             Header: "Nama Proyek",
             accessor: "nama_proyek",
         },
-        {
-            Header: "Deskripsi Proyek",
-            accessor: "deskripsi_proyek",
-        },
+        // {
+        //     Header: "Deskripsi Proyek",
+        //     accessor: "deskripsi_proyek",
+        // },
         {
             Header: "Tanggal Awal Kontrak",
             accessor: "tanggal_awal_kontrak",
@@ -48,10 +58,17 @@ const DaftarProyek = () => {
             Header: "RAB (Rincian Anggaran Biaya)",
             accessor: "rab",
         },
-        
         {
             Header: "BK / PU awal",
             accessor: "bk_pu_awal",
+        },
+        {
+            Header: "Add Kontrak Adendum",
+            accessor: "add_adendum",
+        },
+        {
+            Header: "Daftar Kontrak Adendum",
+            accessor: "daftar_adendum",
         },
         {
             Header: "Aksi",
@@ -71,16 +88,21 @@ const DaftarProyek = () => {
             if(result.status == 200){
                 const daftarArr = [];
                 for await (const data of result.data.data) {
-                    console.log(data)
                     daftarArr.push({
                         kode_proyek: data.kode_proyek,
                         nama_proyek: data.nama_proyek,
-                        deskripsi_proyek: data.deskripsi_proyek,
+                        // deskripsi_proyek: data.deskripsi_proyek,
                         tanggal_awal_kontrak: data.tanggal_awal_kontrak,
                         tanggal_akhir_kontrak: data.tanggal_akhir_kontrak,
                         rap: toCurrency(data.biaya_rap),
                         rab: toCurrency(data.biaya_rab),
                         bk_pu_awal: (data.bk_pu_awal)?data.bk_pu_awal+" %":"",
+                        add_adendum: <div className="d-flex flex-row gap-2">
+                                        <button className="btn btn-info" onClick={() => setOpenModalKontrak({id_proyek: data.id_proyek, open_modal: true})}>Add Adendum</button>
+                                    </div>,
+                        daftar_adendum: <div className="d-flex flex-row gap-2">
+                                        <button className="btn btn-warning" onClick={() => setOpenModalDaftarKontrak({id_proyek: data.id_proyek, open_modal: true})}>Daftar Adendum</button>
+                                    </div>,
                         aksi:   <div className="d-flex flex-row gap-2">
                                     <button className="btn btn-success" onClick={() => setOpenModalEdit({id_proyek:data.id_proyek, open_modal: true})}>Edit</button>
                                     <button className="btn btn-danger" onClick={() => deleteData(data.id_proyek)}>Delete</button>
@@ -214,6 +236,8 @@ const DaftarProyek = () => {
             <PageHeaderVms title='Daftar Proyek' item='Daftar Proyek' active_item='Daftar Proyek' />
             <LoadersSimUmira open={loading} />
             <EditProyek openModal={openModalEdit} setOpenModal={setOpenModalEdit} loader={loading} setLoader={setLoading}/>
+            <AddKontrakAdendum openModal={openModalAddKontrak} setOpenModal={setOpenModalKontrak} loading={loading} setLoading={setLoading} />
+            <DaftarKontrakAdendum openModal={openModalDaftarKontrak} setOpenModal={setOpenModalDaftarKontrak} loading={loading} setLoading={setLoading} />
              <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
