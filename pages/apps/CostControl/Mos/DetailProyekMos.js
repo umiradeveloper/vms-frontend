@@ -35,7 +35,9 @@ const DetailProyekMos = () => {
         nominal_mos: "",
         biaya_rap: "",
         biaya_rab: "",
-        bk_pu_awal: ""
+        bk_pu_awal: "",
+        kerja_kurang: "",
+        kerja_tambah: ""
     });
 
     const [MaterialOnSite, setMaterialOnSite] = useState({
@@ -148,20 +150,22 @@ const DetailProyekMos = () => {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            console.log(result);
+            console.log(result);    
             if (result.status) {
                 setDataProyek({
                     total_bk: result.data.data.total_bk,
                     total_pu: result.data.data.total_pu,
                     nama_proyek: result.data.data.proyek.nama_proyek,
                     kode_proyek: result.data.data.proyek.kode_proyek,
-                    nominal_mos: result.data.data.current_mos,   
+                    nominal_mos: result.data.data.current_mos,
                     deskripsi_proyek: result.data.data.proyek.deskripsi_proyek,
                     tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
                     biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
-                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
+                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : "",
+                    kerja_kurang: (result.data.data.proyek.kerja_kurang) ? result.data.data.proyek.kerja_kurang_total : "",
+                    kerja_tambah: (result.data.data.proyek.kerja_tambah) ? result.data.data.proyek.kerja_tambah_total : ""
                 });
 
             }
@@ -232,6 +236,19 @@ const DetailProyekMos = () => {
             setLoader(false);
             console.log("err =", error);
         }
+    };
+
+    const calcBkAfterMos = (bk, mos) => {
+        const totalBk = Number(bk) || 0;
+        const totalMos = Number(mos) || 0;
+        return totalBk - totalMos;
+    };
+
+    const calcRabAkhir = (rab, kerjaKurang, kerjaTambah) => {
+        const r = Number(rab) || 0;
+        const kk = Number(kerjaKurang) || 0;
+        const kt = Number(kerjaTambah) || 0;
+        return r - kk + kt;
     };
 
     const handleDelete = async (item) => {
@@ -326,10 +343,23 @@ const DetailProyekMos = () => {
                             <h5>Tanggal Awal Kontrak : {dataProyek.tanggal_awal_kontrak}</h5>
                             <h5>Tanggal Berakhir Kontrak : {dataProyek.tanggal_kontrak}</h5>
                             <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(dataProyek.biaya_rab)}</h5>
+                            <h5 className="fw-bold">
+                                RAB Terkini :{" "}
+                                {toCurrency(
+                                    calcRabAkhir(
+                                        dataProyek.biaya_rab,
+                                        dataProyek.kerja_kurang_total,
+                                        dataProyek.kerja_tambah_total
+                                    )
+                                )}
+                            </h5>
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
                             <h5>Pendapatan Usaha : {toCurrency(dataProyek.total_pu)}</h5>
-                            <h5>Posisi Biaya Konstruksi : {toCurrency(dataProyek.total_bk)}</h5>
-                            <h5>Material On Site: {toCurrency(dataProyek.nominal_mos)} </h5>
+                            <h5>Material On Site : {toCurrency(dataProyek.nominal_mos)}</h5>
+                            <h5>
+                                Posisi Biaya Konstruksi :{" "}
+                                {toCurrency(calcBkAfterMos(dataProyek.total_bk, dataProyek.nominal_mos))}
+                            </h5>
                             <h5>BK / PU Awal : {dataProyek.bk_pu_awal}</h5>
                             <h5>Persentase BK/PU : {formatPercent(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
                         </Card.Body>
