@@ -76,10 +76,9 @@ const DashboardProyek = () => {
                             <Col xl={12}>
                                 <Card className="custom-card">
                                     <Card.Body>
-                                        <h5>Kode Proyek : {p.kode_proyek}</h5>
-                                        <h5>Nama Proyek : {p.nama_proyek}</h5>
-                                        <h5>Tanggal Awal Kontrak : {p.tanggal_awal_kontrak}</h5>
-                                        <h5>Tanggal Berakhir Kontrak : {p.tanggal_kontrak}</h5>
+                                        <h2>{p.nama_proyek}</h2>
+                                        <h5>Plan (S Curve) : {p.nominal_scurve}</h5>
+                                        <h5>Plan (Action Plan) : {p.nominal_action_plan}</h5>
                                         <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(p.biaya_rab)}</h5>
                                         <h5 className="fw-bold">
                                             RAB Terkini :{" "}
@@ -92,12 +91,12 @@ const DashboardProyek = () => {
                                             )}
                                         </h5>
                                         <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(p.biaya_rap)}</h5>
-                                        <h5>Pendapatan Usaha : {toCurrency(p.total_pu)}</h5>
                                         <h5>Material On Site : {toCurrency(p.nominal_mos)}</h5>
                                         <h5>
                                             Posisi Biaya Konstruksi :{" "}
                                             {toCurrency(calcBkAfterMos(p.total_bk, p.nominal_mos))}
                                         </h5>
+                                        <h5>Pendapatan Usaha : {toCurrency(p.total_pu)}</h5>
                                         <h5>BK / PU Awal : {p.bk_pu_awal}</h5>
                                         <h5>Persentase BK/PU : {formatPercent(calcPercentage(p.total_bk, p.total_pu))}</h5>
                                     </Card.Body>

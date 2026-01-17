@@ -143,7 +143,8 @@ const DetailProyekPu = () => {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            console.log(result);
+            
+            console.log("data="+result);
             if (result.status) {
                 setDataProyek({
                     total_bk: result.data.data.total_bk,
