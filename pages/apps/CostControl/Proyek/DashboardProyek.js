@@ -122,7 +122,7 @@ const DashboardProyek = () => {
 
                                             <h5>Plan (Action Plan) : {(p.proyek.action_plan.length > 0) ?
                                                  <Accordion>
-                                                        <TextScurve eventKey={1+p.proyek.id_proyek}> week {p.proyek.action_plan[0].week} - {toCurrency(p.proyek.action_plan[0].nominal_scurve)}</TextScurve>
+                                                        <TextScurve eventKey={1+p.proyek.id_proyek}> week {p.proyek.action_plan[0].week} - {toCurrency(p.proyek.action_plan[0].nominal_action_plan)}</TextScurve>
                                                         <Accordion.Collapse eventKey={1+p.proyek.id_proyek}>
                                                             <Card.Body>
                                                                 <ListGroup>
@@ -171,7 +171,7 @@ const DashboardProyek = () => {
                                                 {toCurrency(calcBkAfterMos(p.total_bk, (p.proyek.mos.length>0)?p.proyek.mos[0].nominal_mos:0))}
                                             </h5>
                                             <h5>Pendapatan Usaha : {toCurrency(p.total_pu)}</h5>
-                                            <h5>BK / PU Awal : {p.proyek.bk_pu_awal}</h5>
+                                            <h5>BK / PU Awal : {formatPercent(p.proyek.bk_pu_awal)}</h5>
                                             <h5>Persentase BK/PU : {formatPercent(calcPercentage(p.total_bk, p.total_pu))}</h5>
                                         </Card.Body>
                                     </Card>
