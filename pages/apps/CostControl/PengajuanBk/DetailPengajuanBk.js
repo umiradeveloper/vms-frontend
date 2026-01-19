@@ -8,7 +8,6 @@ import apiConfig from "@/utils/AxiosConfig";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import CreatePengajuanBk from "./modals/CreatePengajuanBk";
-import DetailPengajuanBk from "./modals/DetailPengajuanBk";
 
 
 
@@ -85,10 +84,10 @@ const DetailProyekBk = () => {
             Header: "Total Biaya Konstruksi",
             accessor: "total_bk_rapa",
         },
-        {
-            Header: "Aksi",
-            accessor: "aksi",
-        },
+        // {
+        //     Header: "Aksi",
+        //     accessor: "aksi",
+        // },
     ];
 
     const toCurrency = (value) => {
@@ -228,7 +227,6 @@ const DetailProyekBk = () => {
             <PageHeaderVms title='Pengajuan Biaya Kontruksi' item='Daftar Proyek Biaya Konstruksi' active_item='Detail Pengajuan Biaya Konstruksi' />
             <LoadersSimUmira open={loader} />
             <CreatePengajuanBk openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
-            <DetailPengajuanBk  openModal={openModalEdit} setOpenModal={setOpenModalEdit}/>
             {/* <UploadDataRapa openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
             <EditDataRapa openModal={openModalEdit} setOpenModal={setOpenModalEdit}/> */}
              <Row>
@@ -237,7 +235,7 @@ const DetailProyekBk = () => {
                         <Card.Header className="d-flex align-items-center justify-content-between">
                              <button
                                 type="button" className="btn btn-warning label-btn rounded-pill"
-                                onClick={() => navigate.push("/apps/CostControl/BiayaKontruksi/DaftarProyekBk")}
+                                onClick={() => navigate.push("/apps/CostControl/PengajuanBk/DaftarPengajuanBk")}
                             >
                                 <i className="ri-arrow-left-line label-btn-icon me-2 rounded-pill"/>
                                 kembali
@@ -249,7 +247,7 @@ const DetailProyekBk = () => {
                                 // onClick={() => navigate.push("/apps/CostControl/Rapa/DaftarRapa")}
                             >
                                 <i className="ri-add-circle-line label-btn-icon me-2 rounded-pill"/>
-                                Input Biaya Konstruksi
+                                Ajukan Biaya Konstruksi
                             </button>
                            
                         </Card.Header>
@@ -269,7 +267,7 @@ const DetailProyekBk = () => {
                     </Card>
                 </Col>
             </Row>
-            <Row>
+            {/* <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
                         <Card.Header>
@@ -285,7 +283,7 @@ const DetailProyekBk = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-            </Row>
+            </Row> */}
         </Fragment>
     )
 

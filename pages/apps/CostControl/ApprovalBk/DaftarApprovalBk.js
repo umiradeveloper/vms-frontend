@@ -202,7 +202,7 @@ const DaftarApprovalBk = () => {
             getRapa();
             getBkByProyek();
         }
-    },[params.get("id"),openModalUpload, openModalEdit])
+    },[params.get("id")])
 
     return(
         <Fragment>

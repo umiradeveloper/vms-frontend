@@ -1,4 +1,4 @@
-
+import Swal from "sweetalert2"; 
 import Seo from "@/shared/layout-components/seo/seo";
 import { Fragment, useEffect, useState } from "react";
 import PageHeaderVms from "../../Component/PageHeaderVms";
@@ -9,15 +9,11 @@ import apiConfig from "@/utils/AxiosConfig";
 import { useRouter } from "next/router";
 
 
-const DaftarProyekBk = () => {
+const MonitoringPengajuan = () => {
     const [loader, setLoader] = useState(false);
+    const [reload, setReload] = useState(false);
     const [datatable, setDataTable] = useState([]);
-    const navigate = useRouter();
     const COLUMNS = [
-       {
-            Header: "Week",
-            accessor: "week",
-        },
         {
             Header: "Nama Vendor",
             accessor: "nama_vendor",
@@ -44,56 +40,115 @@ const DaftarProyekBk = () => {
         },
     ];
 
-    const getDaftarProyek = async() => {
+    const getApprovePengajuanBk = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek", {
-				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
-				}
-			});
-            if(result.status == 200){
-                const daftarArr = [];
-                for await (const data of result.data.data) {
-                    daftarArr.push({
-                        kode_proyek: data.kode_proyek,
-                        nama_proyek: data.nama_proyek,
-                        deskripsi_proyek: data.deskripsi_proyek,
-                        tanggal_kontrak: data.tanggal_akhir_kontrak,
-                        rap: toCurrency(data.biaya_rap),
-                        rab: toCurrency(data.biaya_rab),
-                        aksi:   <div className="d-flex flex-row gap-2">
-                                     {/* <Button type="button" size="sm" className="btn btn-info" onClick={() => navigate.push(
-                                        {
-                                            pathname: "/apps/CostControl/Rapa/DetailRapa",
-                                            query: { id: data.id_proyek }
-                                        }
-                                     )}>Detail Rapa</Button> */}
-                                   <button
-                                        type="button" className="btn btn-sm btn-info label-btn label-end rounded-pill"
-                                        onClick={() => navigate.push(
-                                        {
-                                            pathname: "/apps/CostControl/BiayaKontruksi/DetailProyekBk",
-                                            query: { id: data.id_proyek }
-                                        }
-                                     )}
-                                    >
-                                        <i className="ri-arrow-right-line label-btn-icon me-2 rounded-pill"/>
-                                        Biaya Kontruksi
-                                    </button>
-                                </div>
-                    })
+            const result = await apiConfig.get(
+                apiUrl + "/CostControl/pengajuan/get-approve-pengajuan_bk",
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
                 }
-                setDataTable(daftarArr);
-                setLoader(false)
-            }
-            // console.log(result);
-        } catch (error) {
-            console.log("e = "+error);
+            );
+            console.log(result.data.data);
+            if (result.status === 200) {
+                const arr = [];
+                for (const data of result.data.data) {
+                    arr.push({
+                        nama_vendor: data.nama_vendor,
+                        volume_bk: data.volume_bk,
+                        harga_total: toCurrency(data.harga_total),
+                        nama_penerima: data.nama_penerima,
+                        tanggal_penerima: data.tanggal_penerima,
+                        aksi: (
+                            <div className="d-flex flex-row gap-2">
+                                <button type="button"
+                                    className="btn btn-sm btn-success label-btn label-end rounded-pill"
+                                    onClick={() => handleApprove(data.id_pengajuan_bk)} >
+                                    <i className="ri-check-line label-btn-icon me-2 rounded-pill" /> Approve
+                                </button>
+                                <button type="button"
+                                    className="btn btn-sm btn-danger label-btn label-end rounded-pill"
+                                    onClick={() => handleReject(data.id_pengajuan_bk)} >
+                                    <i className="ri-close-line label-btn-icon me-2 rounded-pill" /> Reject
+                                </button>
+                            </div>)
+                    });
+                } setDataTable(arr);
+            } setLoader(false);
+        } catch (error) { 
+            console.error("Error getApprovePengajuanBk:", error); 
+            setLoader(false); }
+    };
+
+
+    const handleApprove = async (id_pengajuan_bk) => {
+        const confirm = await Swal.fire({
+            title: "Approve Pengajuan",
+            text: "Apakah Anda yakin ingin menyetujui pengajuan ini?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Approve",
+            cancelButtonText: "Batal"
+        });
+
+        if (!confirm.isConfirmed) return;
+
+        try {
+            await apiConfig.post(
+                process.env.NEXT_PUBLIC_API_URL +
+                "/CostControl/pengajuan/approve-pengajuan-bk",
+                { id_pengajuan_bk },
+                {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("token")
+                    }
+                }
+            );
+
+            Swal.fire("Berhasil", "Pengajuan berhasil di-approve", "success");
+            setReload(prev => !prev); // refresh table
+
+        } catch (e) {
+            Swal.fire("Gagal", e.response?.data?.message || "Gagal approve", "error");
         }
-    }
+    };
+
+    const handleReject = async (id_pengajuan_bk) => {
+        const confirm = await Swal.fire({
+            title: "Reject Pengajuan",
+            text: "Apakah Anda yakin ingin menolak pengajuan ini?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Reject",
+            cancelButtonText: "Batal"
+        });
+
+        if (!confirm.isConfirmed) return;
+
+        try {
+            await apiConfig.post(
+                process.env.NEXT_PUBLIC_API_URL +
+                "/CostControl/pengajuan/reject",
+                { id_pengajuan_bk },
+                {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("token")
+                    }
+                }
+            );
+
+            Swal.fire("Berhasil", "Pengajuan berhasil ditolak", "success");
+            setReload(prev => !prev);
+
+        } catch (e) {
+            Swal.fire("Gagal", e.response?.data?.message || "Gagal reject", "error");
+        }
+    };
+
     const toCurrency = (value) => {
         if (!value) return "Rp0";
 
@@ -105,20 +160,20 @@ const DaftarProyekBk = () => {
     };
 
     useEffect(() => {
-        getDaftarProyek();
-    },[])
+        getApprovePengajuanBk();
+    }, [reload]);
 
-    return(
+    return (
         <Fragment>
             <Seo title={"Monitoring Pengajuan Biaya Kontruksi"} />
-            <PageHeaderVms title='Monitoring Pengajuan Biaya Kontruksi' item='Monitoring' active_item='Daftar Proyek' />
+            <PageHeaderVms title='Monitoring Pengajuan Biaya Kontruksi' item='Monitoring' active_item='Daftar Pengajuan Biaya Konstruksi' />
             <LoadersSimUmira open={loader} />
             <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
                         <Card.Header>
                             <div className="card-title">
-                                Data Proyek
+                                Daftar Pengajuan Biaya Konstruksi
                             </div>
                         </Card.Header>
                         <Card.Body>
@@ -134,5 +189,5 @@ const DaftarProyekBk = () => {
 
 }
 
-DaftarProyekBk.layout = "ContentlayoutVms";
-export default DaftarProyekBk;
+MonitoringPengajuan.layout = "ContentlayoutVms";
+export default MonitoringPengajuan;

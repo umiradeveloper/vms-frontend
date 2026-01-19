@@ -81,7 +81,7 @@ const DaftarPengajuanBk = () => {
                                      )}
                                     >
                                         <i className="ri-arrow-right-line label-btn-icon me-2 rounded-pill"/>
-                                        Biaya Kontruksi
+                                        Pengajuan Biaya Kontruksi
                                     </button>
                                 </div>
                     })
@@ -89,7 +89,7 @@ const DaftarPengajuanBk = () => {
                 setDataTable(daftarArr);
                 setLoader(false)
             }
-            // console.log(result);
+            // console.log(result); 
         } catch (error) {
             console.log("e = "+error);
         }
