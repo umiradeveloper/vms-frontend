@@ -69,7 +69,7 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
             if (res.status === 200) {
                 const userArr = res.data.data.map(u => ({
                     value: u.id_user,
-                    label: u.nama
+                    label: u.username
                 }));
                 setUserApprover(userArr);
             }
