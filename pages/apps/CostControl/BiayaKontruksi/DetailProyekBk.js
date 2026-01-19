@@ -221,7 +221,7 @@ const DetailProyekBk = () => {
             getRapa();
             getBkByProyek();
         }
-    },[params.get("id"),openModalUpload])
+    },[params.get("id"),openModalUpload, openModalEdit])
 
     return(
         <Fragment>

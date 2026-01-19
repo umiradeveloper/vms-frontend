@@ -77,9 +77,9 @@ const DashboardProyek = () => {
     return (
         <>
             <Fragment>
-                <Seo title={"Detail Material On-Site Proyek"} />
+                <Seo title={"Dashboard Proyek"} />
 
-                <PageHeaderVms title='Material On-Site' item='Daftar Material On-Site' active_item='Detail Material On-Site' />
+                <PageHeaderVms title='Dashboard Proyek' item='Daftar Proyek' active_item='Daftar Proyek' />
                 <LoadersSimUmira open={loader} />
                 <Container>
                     <Row>
@@ -143,12 +143,13 @@ const DashboardProyek = () => {
                                                 {toCurrency(
                                                     calcRabAkhir(
                                                         p.proyek.biaya_rab,
-                                                        p.kerja_kurang_total,
-                                                        p.kerja_tambah_total
+                                                        p.kerja_kurang,
+                                                        p.kerja_tambah
                                                     )
                                                 )}
                                             </h5>
                                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(p.proyek.biaya_rap)}</h5>
+                                            <hr />
                                             <h5>Material On Site : {(p.proyek.mos.length > 0)?
                                                 <Accordion>
                                                         <TextScurve eventKey={2+p.proyek.id_proyek}> week {p.proyek.mos[0].week} - {toCurrency(p.proyek.mos[0].nominal_mos)}</TextScurve>
@@ -166,13 +167,14 @@ const DashboardProyek = () => {
                                                 </Accordion>
                                             
                                             :""}</h5>
+                                            <hr />
                                             <h5>
                                                 Posisi Biaya Konstruksi :{" "}
                                                 {toCurrency(calcBkAfterMos(p.total_bk, (p.proyek.mos.length>0)?p.proyek.mos[0].nominal_mos:0))}
                                             </h5>
                                             <h5>Pendapatan Usaha : {toCurrency(p.total_pu)}</h5>
                                             <h5>BK / PU Awal : {formatPercent(p.proyek.bk_pu_awal)}</h5>
-                                            <h5>Persentase BK/PU : {formatPercent(calcPercentage(p.total_bk, p.total_pu))}</h5>
+                                            <div className={`badge ${(calcPercentage(p.total_bk, p.total_pu) <= p.proyek.bk_pu_awal) ?"bg-success": "bg-danger" }`}><h5>Persentase BK/PU : {formatPercent(calcPercentage(p.total_bk, p.total_pu))}</h5></div>
                                         </Card.Body>
                                     </Card>
                                 </Col>

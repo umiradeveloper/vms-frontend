@@ -130,6 +130,7 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
             
             // console.log(result) 
         }catch(error){
+            setLoader(false);
             console.log("e = "+error);
         }
     }

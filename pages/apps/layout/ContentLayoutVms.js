@@ -12,15 +12,25 @@ import FooterVms from "../Component/FooterVms";
 import "rodal/lib/rodal.css";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 const ContentlayoutVms = ({ children }) => {
 	const [lateLoad, setlateLoad] = useState(false);
 	const router = useRouter();
+	const pathName = usePathname();
+	const menus = JSON.parse(localStorage.getItem("menu"));
 	useEffect(() => {
 		setlateLoad(true);
+		checkAccessMenu();
+		// console.log(localStorage)
 		if(!localStorage.getItem("token")){
 			router.push("/apps/LoginRegister");
 		}
 	});
+	const checkAccessMenu = () => {
+		const allowedMenus = menus.filter(menus => menus.menu.path_menu?.includes(pathName));
+		console.log(allowedMenus);
+		
+	}
 	const Add = () => {
 		document.querySelector("body")?.classList.remove("error-1");
 		document.querySelector("body")?.classList.remove("landing-body");

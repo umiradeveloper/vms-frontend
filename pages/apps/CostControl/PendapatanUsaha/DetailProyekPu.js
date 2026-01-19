@@ -144,7 +144,7 @@ const DetailProyekPu = () => {
                 }
             });
             
-            console.log("data="+result);
+            console.log("data="+result.data);
             if (result.status) {
                 setDataProyek({
                     total_bk: result.data.data.total_bk,
@@ -156,7 +156,7 @@ const DetailProyekPu = () => {
                     tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
-                    biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
+                    biaya_rab: (result.data.data.proyek.biaya_rab) ? parseInt(result.data.data.proyek.biaya_rab) + parseInt(result.data.data.kerja_tambah) : "",
                     bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
                 });
 

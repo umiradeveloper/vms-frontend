@@ -219,7 +219,10 @@ const DaftarKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) =>
         });
     }
     useEffect(() => {
-        getAdendumByProyek();
+        if(openModal.open_modal){
+            getAdendumByProyek();
+        }
+        
     },[openModal.open_modal, reload])
 
     return(
