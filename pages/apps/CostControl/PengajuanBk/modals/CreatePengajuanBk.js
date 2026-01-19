@@ -80,10 +80,14 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
 
     const submitDataPengajuanBk = async () => {
         setLoader(true);
-        // console.log(openModal)
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const id_users = [];
+        const urutan = [];
+        dataPengajuanBk.id_user.forEach(element => {
+            id_users.push(element.id_user);
+            urutan.push(element.urutan);
+        });
         const dataSubmit = {
-            id_pengajuan_bk: dataPengajuanBk.id_pengajuan_bk,
             id_proyek: openModal.id_proyek,
             id_rapa: dataPengajuanBk.id_rapa,
             nama_vendor: dataPengajuanBk.nama_vendor,
@@ -91,8 +95,10 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
             harga_total: cleanCurrency(dataPengajuanBk.harga_total),
             nama_penerima: dataPengajuanBk.nama_penerima,
             tanggal_penerima: dataPengajuanBk.tanggal_penerima,
-            id_user: dataPengajuanBk.id_user
+            id_user: id_users,
+            urutan: urutan
         }
+
 
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/pengajuan/create-pengajuan-bk", dataSubmit, {
@@ -195,7 +201,7 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
                                             : [];
                                         setdataPengajuanBk({
                                             ...dataPengajuanBk,
-                                            approver: approverArr
+                                            id_user: approverArr
                                         });
                                     }}
                                 />
