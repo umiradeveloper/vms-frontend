@@ -15,8 +15,8 @@ const DaftarApproval = () => {
     const [datatable, setDataTable] = useState([]);
     const COLUMNS = [
         {
-            Header: "Nama Vendor",
-            accessor: "nama_vendor",
+            Header: "Item Pekerjaan",
+            accessor: "item_pekerjaan"
         },
         {
             Header: "Volume Biaya Konstruksi",
@@ -27,11 +27,15 @@ const DaftarApproval = () => {
             accessor: "harga_total",
         },
         {
+            Header: "Nama Vendor",
+            accessor: "nama_vendor",
+        },
+        {
             Header: "Nama Penerima",
             accessor: "nama_penerima",
         },
         {
-            Header: "Tanggal Penerima",
+            Header: "Tanggal Penerimaan",
             accessor: "tanggal_penerima",
         },
         {
@@ -59,6 +63,7 @@ const DaftarApproval = () => {
                 for (const data of result.data.data) {
                     arr.push({
                         nama_vendor: data.nama_vendor,
+                        item_pekerjaan: data.rapa?.item_pekerjaan || "-",
                         volume_bk: data.volume_bk,
                         harga_total: toCurrency(data.harga_total),
                         nama_penerima: data.nama_penerima,
@@ -70,11 +75,11 @@ const DaftarApproval = () => {
                                     onClick={() => handleApprove(data.id_pengajuan_bk)} >
                                     <i className="ri-check-line label-btn-icon me-2 rounded-pill" /> Approve
                                 </button>
-                                {/* <button type="button"
+                                <button type="button"
                                     className="btn btn-sm btn-danger label-btn label-end rounded-pill"
                                     onClick={() => handleReject(data.id_pengajuan_bk)} >
                                     <i className="ri-close-line label-btn-icon me-2 rounded-pill" /> Reject
-                                </button> */}
+                                </button>
                             </div>)
                     });
                 } setDataTable(arr);
@@ -103,7 +108,7 @@ const DaftarApproval = () => {
 
             await apiConfig.post(
                 apiUrl +
-                `/CostControl/pengajuan/approve-pengajuan-bk`,{},
+                `/CostControl/pengajuan/approve-pengajuan-bk`, {},
                 {
                     params: {
                         id_pengajuan_bk: id_pengajuan_bk,
@@ -130,38 +135,58 @@ const DaftarApproval = () => {
         }
     };
 
+    const handleReject = async (id_pengajuan_bk) => {
+        const { value: catatan } = await Swal.fire({
+            title: "Reject Pengajuan",
+            input: "textarea",
+            inputLabel: "Alasan Penolakan",
+            inputPlaceholder: "Masukkan alasan reject...",
+            inputAttributes: {
+                "aria-label": "Alasan reject"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Reject",
+            cancelButtonText: "Batal",
+            inputValidator: (value) => {
+                if (!value) {
+                    return "Alasan reject wajib diisi!";
+                }
+            }
+        });
 
-    // const handleReject = async (id_pengajuan_bk) => {
-    //     const confirm = await Swal.fire({
-    //         title: "Reject Pengajuan",
-    //         text: "Apakah Anda yakin ingin menolak pengajuan ini?",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonText: "Ya, Reject",
-    //         cancelButtonText: "Batal"
-    //     });
+        if (!catatan) return;
 
-    //     if (!confirm.isConfirmed) return;
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-    //     try {
-    //         await apiConfig.post(
-    //             process.env.NEXT_PUBLIC_API_URL +
-    //             "/CostControl/pengajuan/reject",
-    //             { id_pengajuan_bk },
-    //             {
-    //                 headers: {
-    //                     Authorization: "Bearer " + localStorage.getItem("token")
-    //                 }
-    //             }
-    //         );
+            await apiConfig.post(
+                apiUrl + `/CostControl/pengajuan/approve-pengajuan-bk`,
+                {},
+                {
+                    params: {
+                        id_pengajuan_bk: id_pengajuan_bk,
+                        status_approver: "Reject",
+                        catatan: catatan
+                    },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                }
+            );
 
-    //         Swal.fire("Berhasil", "Pengajuan berhasil ditolak", "success");
-    //         setReload(prev => !prev);
+            Swal.fire("Berhasil", "Pengajuan berhasil direject", "success");
+            setReload(prev => !prev);
 
-    //     } catch (e) {
-    //         Swal.fire("Gagal", e.response?.data?.message || "Gagal reject", "error");
-    //     }
-    // };
+        } catch (e) {
+            console.error(e);
+            Swal.fire(
+                "Gagal",
+                e.response?.data?.message || "Gagal reject",
+                "error"
+            );
+        }
+    };
 
     const toCurrency = (value) => {
         if (!value) return "Rp0";
