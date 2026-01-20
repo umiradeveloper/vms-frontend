@@ -261,4 +261,4 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
 
 }
 
-export default CreatePengajuanBk;
+export default dynamic(() => Promise.resolve(CreatePengajuanBk), { ssr: false });

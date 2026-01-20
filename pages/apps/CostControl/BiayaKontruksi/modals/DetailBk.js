@@ -5,6 +5,7 @@ import { Divider } from "@mui/material";
 import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
+import dynamic from "next/dynamic";
 
 
 
@@ -270,4 +271,4 @@ const DetailBk = ({openModal, setOpenModal}) => {
     )
 }
 
-export default DetailBk;
+export default dynamic(() => Promise.resolve(DetailBk), { ssr: false });

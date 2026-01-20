@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Col, Modal, Row } from "react-bootstrap";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
+import dynamic from "next/dynamic";
 
 
 const EditDataRapa = ({ openModal, setOpenModal }) => {
@@ -195,4 +196,4 @@ const EditDataRapa = ({ openModal, setOpenModal }) => {
         </Modal>
     )
 }
-export default EditDataRapa;
+export default dynamic(() => Promise.resolve(EditDataRapa), { ssr: false });

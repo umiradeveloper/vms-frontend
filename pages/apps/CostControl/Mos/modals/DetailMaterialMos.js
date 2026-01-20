@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import LoadersSimUmira from "@/pages/apps/Component/LoaderSimUmira";
 import { Modal } from "react-bootstrap";
 import apiConfig from "@/utils/AxiosConfig";
+import dynamic from "next/dynamic";
 // import {LoadersSimUmira} from "@";
 
 
@@ -112,4 +113,4 @@ const DetailMaterialPu = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 }
 
-export default DetailMaterialPu;
+export default dynamic(() => Promise.resolve(DetailMaterialPu), { ssr: false });

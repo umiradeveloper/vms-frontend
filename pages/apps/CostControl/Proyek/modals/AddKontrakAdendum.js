@@ -6,6 +6,7 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
+import dynamic from "next/dynamic";
 
 
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
@@ -134,4 +135,4 @@ const AddKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) => {
     )
 }
 
-export default AddKontrakAdendum;
+export default dynamic(() => Promise.resolve(AddKontrakAdendum), { ssr: false });

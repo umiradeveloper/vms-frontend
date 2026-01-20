@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
 import DokumenAdendum from "./DokumenAdendum";
+import dynamic from "next/dynamic";
 
 
 const DaftarKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) => {
@@ -254,4 +255,4 @@ const DaftarKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) =>
 
 }
 
-export default DaftarKontrakAdendum;
+export default dynamic(() => Promise.resolve(DaftarKontrakAdendum), { ssr: false });

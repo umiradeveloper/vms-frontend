@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
+import dynamic from "next/dynamic";
 
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
@@ -185,4 +186,4 @@ const EditMos = ({ openModal, setOpenModal, loader, setLoader, setReload, reload
     );
 };
 
-export default EditMos;
+export default dynamic(() => Promise.resolve(EditMos), { ssr: false });

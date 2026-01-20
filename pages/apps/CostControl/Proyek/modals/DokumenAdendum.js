@@ -1,5 +1,5 @@
 import { Button, Modal } from "react-bootstrap";
-
+import dynamic from "next/dynamic";
 
 const DokumenAdendum = ({openModal, setOpenModal}) => {
     return (
@@ -38,4 +38,4 @@ const DokumenAdendum = ({openModal, setOpenModal}) => {
     );
 }
 
-export default DokumenAdendum;
+export default dynamic(() => Promise.resolve(DokumenAdendum), { ssr: false });

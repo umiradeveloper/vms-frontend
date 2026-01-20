@@ -6,6 +6,7 @@ import { Divider } from "@mui/material";
 import * as XLSX from "xlsx";
 import LoadersSimUmira from "@/pages/apps/Component/LoaderSimUmira";
 import Swal from "sweetalert2";
+import dynamic from "next/dynamic";
 
 
 
@@ -263,5 +264,5 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
     )
 }
 
-export default UploadDataRapa;
+export default dynamic(() => Promise.resolve(UploadDataRapa), { ssr: false });
 

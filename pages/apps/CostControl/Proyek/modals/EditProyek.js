@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
 import LoadersSimUmira from "@/pages/apps/Component/LoaderSimUmira";
+import dynamic from "next/dynamic";
 
 
 const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
@@ -231,4 +232,4 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
 
 }
 
-export default EditProyek;
+export default dynamic(() => Promise.resolve(EditProyek), { ssr: false });

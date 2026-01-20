@@ -6,6 +6,7 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import apiConfig from "@/utils/AxiosConfig";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import dynamic from "next/dynamic";
 
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
@@ -170,4 +171,4 @@ const CreateActionPlan = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 
 }
-export default CreateActionPlan;
+export default dynamic(() => Promise.resolve(CreateActionPlan), { ssr: false });

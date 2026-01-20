@@ -6,6 +6,7 @@ import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
+import dynamic from "next/dynamic";
 
 const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload }) => {
     const [formData, setFormData] = useState({
@@ -198,4 +199,4 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
     );
 };
 
-export default EditPu;
+export default dynamic(() => Promise.resolve(EditPu), { ssr: false });

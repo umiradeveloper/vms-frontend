@@ -1,4 +1,5 @@
 import { Button, Modal } from "react-bootstrap";
+import dynamic from "next/dynamic";
 
 
 const DetailDokumenScurvePlan = ({openModal, setOpenModal}) => {
@@ -37,4 +38,4 @@ const DetailDokumenScurvePlan = ({openModal, setOpenModal}) => {
         </Modal>
     );
 }
-export default DetailDokumenScurvePlan;
+export default dynamic(() => Promise.resolve(DetailDokumenScurvePlan), { ssr: false });

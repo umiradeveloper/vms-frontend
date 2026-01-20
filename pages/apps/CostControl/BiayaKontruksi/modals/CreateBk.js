@@ -200,4 +200,4 @@ const CreateBk = ({openModal, setOpenModal}) => {
 
 }
 
-export default CreateBk;
+export default dynamic(() => Promise.resolve(CreateBk), { ssr: false });
