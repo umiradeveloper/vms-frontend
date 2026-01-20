@@ -97,7 +97,10 @@ const CreateScurvePlan = ({openModal, setOpenModal, loader, setLoader}) => {
         // setValueRab(val);
     };
     useEffect(() => {
-        getDaftarWeek()
+        if(openModal.open_modal){
+            getDaftarWeek()
+        }
+        
     },[openModal.open_modal])
     return(
         <Modal size="md" show={openModal.open_modal} onHide={() => setOpenModal({ ...openModal, open_modal: false })} className="fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">

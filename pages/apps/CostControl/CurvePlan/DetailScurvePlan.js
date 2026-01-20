@@ -155,7 +155,7 @@ const DetailScurvePlan = () => {
     const getDataScurve = async() => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
+        console.log(params.get("id"));
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Scurve/get-scurve-by-proyek?id_proyek=" + params.get("id"), {
                 headers: {
