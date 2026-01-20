@@ -19,6 +19,10 @@ const MonitoringPengajuan = () => {
             accessor: "nama_vendor",
         },
         {
+            Header: "Nama Material",
+            accessor: "id_rapa"
+        },
+        {
             Header: "Volume Biaya Konstruksi",
             accessor: "volume_bk",
         },
@@ -35,17 +39,17 @@ const MonitoringPengajuan = () => {
             accessor: "tanggal_penerima",
         },
         {
-            Header: "Aksi",
-            accessor: "aksi",
+            Header: "Status",
+            accessor: "status_approver",
         },
     ];
 
-    const getApprovePengajuanBk = async () => {
+    const getMonitoringPengajuanBk = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
             const result = await apiConfig.get(
-                apiUrl + "/CostControl/pengajuan/get-approve-pengajuan_bk",
+                apiUrl + "/CostControl/pengajuan/get-monitoring-pengajuan-bk",
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -59,96 +63,21 @@ const MonitoringPengajuan = () => {
                 for (const data of result.data.data) {
                     arr.push({
                         nama_vendor: data.nama_vendor,
+                        id_rapa: data.id_rapa,
                         volume_bk: data.volume_bk,
                         harga_total: toCurrency(data.harga_total),
                         nama_penerima: data.nama_penerima,
                         tanggal_penerima: data.tanggal_penerima,
-                        aksi: (
-                            <div className="d-flex flex-row gap-2">
-                                <button type="button"
-                                    className="btn btn-sm btn-success label-btn label-end rounded-pill"
-                                    onClick={() => handleApprove(data.id_pengajuan_bk)} >
-                                    <i className="ri-check-line label-btn-icon me-2 rounded-pill" /> Approve
-                                </button>
-                                <button type="button"
-                                    className="btn btn-sm btn-danger label-btn label-end rounded-pill"
-                                    onClick={() => handleReject(data.id_pengajuan_bk)} >
-                                    <i className="ri-close-line label-btn-icon me-2 rounded-pill" /> Reject
-                                </button>
-                            </div>)
+                        status_approver: data.status_approver
                     });
                 } setDataTable(arr);
             } setLoader(false);
         } catch (error) { 
-            console.error("Error getApprovePengajuanBk:", error); 
+            console.error("Error getMonitoringPengajuanBk:", error); 
             setLoader(false); }
     };
 
-
-    const handleApprove = async (id_pengajuan_bk) => {
-        const confirm = await Swal.fire({
-            title: "Approve Pengajuan",
-            text: "Apakah Anda yakin ingin menyetujui pengajuan ini?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Ya, Approve",
-            cancelButtonText: "Batal"
-        });
-
-        if (!confirm.isConfirmed) return;
-
-        try {
-            await apiConfig.post(
-                process.env.NEXT_PUBLIC_API_URL +
-                "/CostControl/pengajuan/approve-pengajuan-bk",
-                { id_pengajuan_bk },
-                {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token")
-                    }
-                }
-            );
-
-            Swal.fire("Berhasil", "Pengajuan berhasil di-approve", "success");
-            setReload(prev => !prev); // refresh table
-
-        } catch (e) {
-            Swal.fire("Gagal", e.response?.data?.message || "Gagal approve", "error");
-        }
-    };
-
-    const handleReject = async (id_pengajuan_bk) => {
-        const confirm = await Swal.fire({
-            title: "Reject Pengajuan",
-            text: "Apakah Anda yakin ingin menolak pengajuan ini?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Ya, Reject",
-            cancelButtonText: "Batal"
-        });
-
-        if (!confirm.isConfirmed) return;
-
-        try {
-            await apiConfig.post(
-                process.env.NEXT_PUBLIC_API_URL +
-                "/CostControl/pengajuan/reject",
-                { id_pengajuan_bk },
-                {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token")
-                    }
-                }
-            );
-
-            Swal.fire("Berhasil", "Pengajuan berhasil ditolak", "success");
-            setReload(prev => !prev);
-
-        } catch (e) {
-            Swal.fire("Gagal", e.response?.data?.message || "Gagal reject", "error");
-        }
-    };
-
+    
     const toCurrency = (value) => {
         if (!value) return "Rp0";
 
@@ -160,7 +89,7 @@ const MonitoringPengajuan = () => {
     };
 
     useEffect(() => {
-        getApprovePengajuanBk();
+        getMonitoringPengajuanBk();
     }, [reload]);
 
     return (
