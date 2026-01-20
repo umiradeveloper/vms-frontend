@@ -27,22 +27,22 @@ const DetailActionPlan = () => {
         file_url: ""
     });
     const navigate = useRouter();
-     const params = useSearchParams();
+    const params = useSearchParams();
     const [dataProyek, setDataProyek] = useState({
         total_bk: "",
         total_pu: "",
         kode_proyek: "",
         nama_proyek: "",
         deskripsi_proyek: "",
-        tanggal_kontrak: "",
+        tanggal_akhir_kontrak: "",
         tanggal_awal_kontrak: "",
-        nominal_mos:"",
+        nominal_mos: "",
         biaya_rap: "",
         biaya_rab: "",
         bk_pu_awal: ""
     });
     const COLUMNS = [
-         {
+        {
             Header: "Week",
             accessor: "week",
         },
@@ -62,7 +62,16 @@ const DetailActionPlan = () => {
             Header: "Aksi",
             accessor: "aksi",
         },
-    ]
+    ];
+
+    const formatdate = (tanggal) =>
+        new Date(tanggal).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }
+    );
+    
     const toCurrency = (value) => {
         if (!value) return "Rp0";
 
@@ -99,7 +108,7 @@ const DetailActionPlan = () => {
                     kode_proyek: result.data.data.proyek.kode_proyek,
                     nominal_mos: result.data.data.current_mos,
                     deskripsi_proyek: result.data.data.proyek.deskripsi_proyek,
-                    tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
+                    tanggal_akhir_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
                     biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
@@ -114,46 +123,46 @@ const DetailActionPlan = () => {
             console.log("e = " + error);
         }
     }
-    const getFile = async(id) => {
+    const getFile = async (id) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         // console.log(id);
-            setLoader(true);
-            try {
-                const response = await apiConfig.get(apiUrl+"/CostControl/ActionPlan/dokumen-file", {
-                    responseType: "blob",
-                    headers:{
-                        "Content-Type":"application/json",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
-                    },
-                    params:{
-                        id: id
-                    }
-                });
-                // const typeData = {};
-                // typeData.type = "application/pdf";
-                const data = response.data;
-                
-                if(data){
-                    // console.log(data);
-                    const fileURL = window.URL.createObjectURL(
-                        new Blob([data], {type: "application/pdf"})
-                    );
-                    //setFrameSrc(fileURL);
-                    setOpenDetailDokumen({
-                        file_url: fileURL, open: true
-                    });
-                    // setSelectedOptions(kualifikasiArr);
-                    // setTableData(userArr);
-                    setLoader(false);
+        setLoader(true);
+        try {
+            const response = await apiConfig.get(apiUrl + "/CostControl/ActionPlan/dokumen-file", {
+                responseType: "blob",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                params: {
+                    id: id
                 }
-                
-            } catch (error) {
-                console.log(error);
-                // setError(error.message);
+            });
+            // const typeData = {};
+            // typeData.type = "application/pdf";
+            const data = response.data;
+
+            if (data) {
+                // console.log(data);
+                const fileURL = window.URL.createObjectURL(
+                    new Blob([data], { type: "application/pdf" })
+                );
+                //setFrameSrc(fileURL);
+                setOpenDetailDokumen({
+                    file_url: fileURL, open: true
+                });
+                // setSelectedOptions(kualifikasiArr);
+                // setTableData(userArr);
                 setLoader(false);
             }
-       }
-    const getDataScurve = async() => {
+
+        } catch (error) {
+            console.log(error);
+            // setError(error.message);
+            setLoader(false);
+        }
+    }
+    const getDataScurve = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -164,9 +173,9 @@ const DetailActionPlan = () => {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            if(result.status == 200){
+            if (result.status == 200) {
                 const arrScurve = [];
-                 for (const a of result.data.data) {
+                for (const a of result.data.data) {
                     arrScurve.push({
                         id_scurve: a.id_scurve,
                         week: a.week,
@@ -176,8 +185,8 @@ const DetailActionPlan = () => {
                             <div className="d-flex gap-2">
                                 <button
                                     className="btn btn-sm btn-info"
-                                    onClick={() =>
-                                        {getFile(
+                                    onClick={() => {
+                                        getFile(
                                             a.id_action_plan
                                         );
                                         //setOpenDetailDokumen({...openDetailDokumen, open:true});
@@ -197,67 +206,67 @@ const DetailActionPlan = () => {
                             </button>
                         </div>,
                     })
-                 }
-                 setDataTable(arrScurve);
-                 setLoader(false);
+                }
+                setDataTable(arrScurve);
+                setLoader(false);
             }
         } catch (error) {
             setLoader(false);
-            console.log("e = "+error);
+            console.log("e = " + error);
         }
 
     }
-    const deleteData = async(id) => {
+    const deleteData = async (id) => {
         const resultConfirm = await AlertConfirm("Apakah anda yakin ingin menghapus data ini ? ", "warning", "Hapus", false, "Data berhasil di hapus");
-        if(resultConfirm.status){
+        if (resultConfirm.status) {
             setLoader(true);
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             try {
-                const result = await apiConfig.delete(apiUrl + "/CostControl/ActionPlan/delete-action-plan-by-id?id="+id, {
+                const result = await apiConfig.delete(apiUrl + "/CostControl/ActionPlan/delete-action-plan-by-id?id=" + id, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
-                if(result.status == 200){
+                if (result.status == 200) {
                     setLoader(false);
-				    swalAlert(result.data.message, result.statusText, "success");
+                    swalAlert(result.data.message, result.statusText, "success");
                 }
-                
+
             } catch (error) {
                 // console.log(error);
                 setLoader(false);
-			    swalAlert(error.message, error.code, "error");
+                swalAlert(error.message, error.code, "error");
             }
-            
+
 
         }
         // console.log(id)
     }
     const swalAlert = (message, title, icon) => {
-            let timerInterval;
-    
-            Swal.fire({
-                title: title,
-                html: message,
-                icon: icon,
-                timer: 5000,
-                timerProgressBar: true,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                willClose: () => {
-                     setReload(prev => !prev);
-                    clearInterval(timerInterval);
-                },
-            }).then((result) => {
-                /* Read more about handling dismissals below */
-                if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log("I was closed by the timer");
-                }
-            });
-        }
-    const AlertConfirm = async(message, icon, confirmButtonName, textarea = false, messageDeleted = "Your file has been deleted.") => {
+        let timerInterval;
+
+        Swal.fire({
+            title: title,
+            html: message,
+            icon: icon,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            willClose: () => {
+                setReload(prev => !prev);
+                clearInterval(timerInterval);
+            },
+        }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log("I was closed by the timer");
+            }
+        });
+    }
+    const AlertConfirm = async (message, icon, confirmButtonName, textarea = false, messageDeleted = "Your file has been deleted.") => {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: "btn btn-success",
@@ -273,30 +282,30 @@ const DetailActionPlan = () => {
             confirmButtonText: confirmButtonName,
             cancelButtonText: "Kembali",
             reverseButtons: true,
-           
+
         };
-        
-        if(textarea){
+
+        if (textarea) {
             objSwall.input = 'textarea';
             objSwall.inputLabel = 'Catatan';
             objSwall.inputPlaceholder = 'Catatan....';
-        
+
         }
         const result = await swalWithBootstrapButtons.fire(objSwall);
         if (result.isConfirmed) {
-                setReload(prev => !prev);
-                return {
-                    status: true,
-                    value: result.value
-                }; 
-                    // ✅ user confirmed
+            setReload(prev => !prev);
+            return {
+                status: true,
+                value: result.value
+            };
+            // ✅ user confirmed
         } else if (result.dismiss === Swal.DismissReason.cancel) {
             // await swalWithBootstrapButtons.fire(
             //     "Cancelled",
             //     // "Your imaginary file is safe :)",
             //     "error"
             // );
-             setReload(prev => !prev);
+            setReload(prev => !prev);
             return {
                 status: false,
                 // value: result.value
@@ -312,9 +321,9 @@ const DetailActionPlan = () => {
             // getPuByProyek();
 
         }
-    },[params.get("id"), reload, openModalCreate]);
+    }, [params.get("id"), reload, openModalCreate]);
 
-    return(
+    return (
         <Fragment>
             <Seo title={"Detail Action Plan"} />
 
@@ -336,7 +345,7 @@ const DetailActionPlan = () => {
                             <button
                                 type="button" className="btn btn-primary label-btn rounded-pill"
                                 // onClick={() => setOpenModalUpload({ id_proyek: params.get("id"), open_modal: true })}
-                                onClick={() => setOpenModalCreate({id_proyek: params.get("id"),open_modal: true})}
+                                onClick={() => setOpenModalCreate({ id_proyek: params.get("id"), open_modal: true })}
                             // onClick={() => console.log("test")}
                             // onClick={() => navigate.push("/apps/CostControl/Rapa/DaftarRapa")}
                             >
@@ -348,8 +357,8 @@ const DetailActionPlan = () => {
                         <Card.Body>
                             <h5>Kode Proyek : {dataProyek.kode_proyek}</h5>
                             <h5>Nama Proyek : {dataProyek.nama_proyek}</h5>
-                            <h5>Tanggal Awal Kontrak : {dataProyek.tanggal_awal_kontrak}</h5>
-                            <h5>Tanggal Berakhir Kontrak : {dataProyek.tanggal_kontrak}</h5>
+                            <h5>Tanggal Awal Kontrak :  {formatdate(dataProyek.tanggal_awal_kontrak)}</h5>
+                            <h5>Tanggal Berakhir Kontrak : {formatdate(dataProyek.tanggal_akhir_kontrak)}</h5>
                             <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(dataProyek.biaya_rab)}</h5>
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
                             <h5>Pendapatan Usaha : {toCurrency(dataProyek.total_pu)}</h5>

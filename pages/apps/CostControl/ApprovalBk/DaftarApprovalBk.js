@@ -71,14 +71,14 @@ const DaftarApproval = () => {
                         aksi: (
                             <div className="d-flex flex-row gap-2">
                                 <button type="button"
-                                    className="btn btn-sm btn-success label-btn label-end rounded-pill"
+                                    className="btn btn-success"
                                     onClick={() => handleApprove(data.id_pengajuan_bk)} >
-                                    <i className="ri-check-line label-btn-icon me-2 rounded-pill" /> Approve
+                                    <i className="ri-check-line label-btn-icon me-2" /> Approve
                                 </button>
                                 <button type="button"
-                                    className="btn btn-sm btn-danger label-btn label-end rounded-pill"
+                                    className="btn btn-danger"
                                     onClick={() => handleReject(data.id_pengajuan_bk)} >
-                                    <i className="ri-close-line label-btn-icon me-2 rounded-pill" /> Reject
+                                    <i className="ri-close-line label-btn-icon me-2" /> Reject
                                 </button>
                             </div>)
                     });

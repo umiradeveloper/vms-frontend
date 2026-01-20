@@ -30,7 +30,7 @@ const DetailProyekMos = () => {
         kode_proyek: "",
         nama_proyek: "",
         deskripsi_proyek: "",
-        tanggal_kontrak: "",
+        tanggal_akhir_kontrak: "",
         tanggal_awal_kontrak: "",
         nominal_mos: "",
         biaya_rap: "",
@@ -132,7 +132,16 @@ const DetailProyekMos = () => {
             minimumFractionDigits: 0
         }).format(Number(value));
     };
+    const formatdate = (tanggal) =>
+        new Date(tanggal).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }
+    );
+
     const formatPercent = (value, digits = 2) => `${Number(value).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`;
+    
     const calcPercentage = (part, total) => {
         const t = Number(total) || 0;
         if (t === 0) return 0;
@@ -159,7 +168,7 @@ const DetailProyekMos = () => {
                     kode_proyek: result.data.data.proyek.kode_proyek,
                     nominal_mos: result.data.data.current_mos,
                     deskripsi_proyek: result.data.data.proyek.deskripsi_proyek,
-                    tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
+                    tanggal_akhir_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
                     biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
@@ -340,8 +349,8 @@ const DetailProyekMos = () => {
                         <Card.Body>
                             <h5>Kode Proyek : {dataProyek.kode_proyek}</h5>
                             <h5>Nama Proyek : {dataProyek.nama_proyek}</h5>
-                            <h5>Tanggal Awal Kontrak : {dataProyek.tanggal_awal_kontrak}</h5>
-                            <h5>Tanggal Berakhir Kontrak : {dataProyek.tanggal_kontrak}</h5>
+                            <h5>Tanggal Awal Kontrak :  {formatdate(dataProyek.tanggal_awal_kontrak)}</h5>
+                            <h5>Tanggal Berakhir Kontrak : {formatdate(dataProyek.tanggal_akhir_kontrak)}</h5>
                             <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(dataProyek.biaya_rab)}</h5>
                             <h5 className="fw-bold">
                                 RAB Terkini :{" "}

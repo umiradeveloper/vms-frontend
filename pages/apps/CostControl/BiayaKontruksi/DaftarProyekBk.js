@@ -27,8 +27,8 @@ const DaftarProyekBk = () => {
             accessor: "deskripsi_proyek",
         },
         {
-            Header: "Tanggal Kontrak",
-            accessor: "tanggal_kontrak",
+            Header: "Tanggal Akhir Kontrak",
+            accessor: "tanggal_akhir_kontrak",
         },
        
         {
@@ -62,7 +62,7 @@ const DaftarProyekBk = () => {
                         kode_proyek: data.kode_proyek,
                         nama_proyek: data.nama_proyek,
                         deskripsi_proyek: data.deskripsi_proyek,
-                        tanggal_kontrak: data.tanggal_akhir_kontrak,
+                        tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
                         rap: toCurrency(data.biaya_rap),
                         rab: toCurrency(data.biaya_rab),
                         aksi:   <div className="d-flex flex-row gap-2">
@@ -95,6 +95,15 @@ const DaftarProyekBk = () => {
             console.log("e = "+error);
         }
     }
+
+    const formatdate = (tanggal) =>
+        new Date(tanggal).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }
+    );
+    
     const toCurrency = (value) => {
         if (!value) return "Rp0";
 
