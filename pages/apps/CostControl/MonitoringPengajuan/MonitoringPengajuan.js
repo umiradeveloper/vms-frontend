@@ -15,12 +15,8 @@ const MonitoringPengajuan = () => {
     const [datatable, setDataTable] = useState([]);
     const COLUMNS = [
         {
-            Header: "Nama Vendor",
-            accessor: "nama_vendor",
-        },
-        {
-            Header: "Nama Material",
-            accessor: "id_rapa"
+            Header: "Item Pekerjaan",
+            accessor: "item_pekerjaan"
         },
         {
             Header: "Volume Biaya Konstruksi",
@@ -31,15 +27,19 @@ const MonitoringPengajuan = () => {
             accessor: "harga_total",
         },
         {
+            Header: "Nama Vendor",
+            accessor: "nama_vendor",
+        },
+        {
             Header: "Nama Penerima",
             accessor: "nama_penerima",
         },
         {
-            Header: "Tanggal Penerima",
+            Header: "Tanggal Penerimaan",
             accessor: "tanggal_penerima",
         },
         {
-            Header: "Status",
+            Header: "Status Pengajuan",
             accessor: "status_approver",
         },
     ];
@@ -61,14 +61,17 @@ const MonitoringPengajuan = () => {
             if (result.status === 200) {
                 const arr = [];
                 for (const data of result.data.data) {
+                    const jumlah_persetujuan = data.pengajuan_persetujuan_bk.length;
+                    const last_index = (jumlah_persetujuan > 0)?jumlah_persetujuan-1:0;
+                    //console.log(data.pengajuan_persetujuan_bk[0]);
                     arr.push({
                         nama_vendor: data.nama_vendor,
-                        id_rapa: data.id_rapa,
+                        item_pekerjaan: data.rapa?.item_pekerjaan || "-",
                         volume_bk: data.volume_bk,
                         harga_total: toCurrency(data.harga_total),
                         nama_penerima: data.nama_penerima,
                         tanggal_penerima: data.tanggal_penerima,
-                        status_approver: data.status_approver
+                        status_approver: (jumlah_persetujuan > 0)?data.pengajuan_persetujuan_bk[last_index].status_approver:"-"
                     });
                 } setDataTable(arr);
             } setLoader(false);
