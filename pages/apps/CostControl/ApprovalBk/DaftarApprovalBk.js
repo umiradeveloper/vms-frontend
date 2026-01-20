@@ -103,13 +103,13 @@ const DaftarApproval = () => {
 
             await apiConfig.post(
                 apiUrl +
-                `/CostControl/pengajuan/approve-pengajuan-bk?id_pengajuan_bk=${id_pengajuan_bk}&status_approver=Approve&catatan=`, 
+                `/CostControl/pengajuan/approve-pengajuan-bk`,{},
                 {
-                    // params: {
-                    //     id_pengajuan_bk: id_pengajuan_bk,
-                    //     status_approver: "Approve",
-                    //     catatan: ""
-                    // },
+                    params: {
+                        id_pengajuan_bk: id_pengajuan_bk,
+                        status_approver: "Approve",
+                        catatan: ""
+                    },
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": "Bearer " + localStorage.getItem("token")
