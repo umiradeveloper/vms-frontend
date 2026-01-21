@@ -51,11 +51,11 @@ const DaftarProyek = () => {
         },
        
         {
-            Header: "RAP (Rincian Anggaran Proyek)",
+            Header: "RAP",
             accessor: "rap",
         },
         {
-            Header: "RAB (Rincian Anggaran Biaya)",
+            Header: "RAB",
             accessor: "rab",
         },
         {
@@ -63,7 +63,7 @@ const DaftarProyek = () => {
             accessor: "bk_pu_awal",
         },
         {
-            Header: "Add Kontrak Adendum",
+            Header: "Tambah Kontrak Adendum",
             accessor: "add_adendum",
         },
         {
@@ -92,8 +92,8 @@ const DaftarProyek = () => {
                         kode_proyek: data.kode_proyek,
                         nama_proyek: data.nama_proyek,
                         // deskripsi_proyek: data.deskripsi_proyek,
-                        tanggal_awal_kontrak: data.tanggal_awal_kontrak,
-                        tanggal_akhir_kontrak: data.tanggal_akhir_kontrak,
+                        tanggal_awal_kontrak: formatdate(data.tanggal_awal_kontrak),
+                        tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
                         rap: toCurrency(data.biaya_rap),
                         rab: toCurrency(data.biaya_rab),
                         bk_pu_awal: (data.bk_pu_awal)?data.bk_pu_awal+" %":"",
@@ -117,6 +117,14 @@ const DaftarProyek = () => {
             console.log("e = "+error);
         }
     }
+    const formatdate = (tanggal) =>
+        new Date(tanggal).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }
+    );
+    
     const toCurrency = (value) => {
         if (!value) return "Rp0";
 

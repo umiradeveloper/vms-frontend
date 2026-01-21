@@ -188,14 +188,14 @@ const CreateProyek = () => {
 										<label htmlFor="nama-proyek" className="form-label ">Total RAP (Rincian Anggaran Proyek) <span style={{ color: "red" }}>*</span> :</label>
 										<input type="text" className={`form-control`} id="rap" placeholder="Rincian Anggaran Proyek" onChange={handleChangeRap} value={valueRap ? `${valueRap}` : ""} />
 									</Col>
-									<Col xl={12}>
+									{/* <Col xl={12}>
 										<label htmlFor="nama-proyek" className="form-label ">Kerja Tambah :</label>
 										<input type="text" className={`form-control`} id="rab" placeholder="Rincian Anggaran Biaya" onChange={handleChangeKerjaTambah} value={data.kerja_tambah ? `${data.kerja_tambah}` : ""} />
 									</Col>
 									<Col xl={12}>
 										<label htmlFor="nama-proyek" className="form-label ">Kerja Kurang :</label>
 										<input type="text" className={`form-control`} id="rab" placeholder="Rincian Anggaran Biaya" onChange={handleChangeKerjaKurang} value={data.kerja_kurang ? `${data.kerja_kurang}` : ""} />
-									</Col>
+									</Col> */}
 
 								</div>
 								<div className="text-center mt-4">

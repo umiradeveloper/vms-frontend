@@ -22,9 +22,13 @@ const DaftarProyekBk = () => {
             Header: "Nama Proyek",
             accessor: "nama_proyek",
         },
+        // {
+        //     Header: "Deskripsi Proyek",
+        //     accessor: "deskripsi_proyek",
+        // },
         {
-            Header: "Deskripsi Proyek",
-            accessor: "deskripsi_proyek",
+            Header: "Tanggal Awal Kontrak",
+            accessor: "tanggal_awal_kontrak",
         },
         {
             Header: "Tanggal Akhir Kontrak",
@@ -32,11 +36,11 @@ const DaftarProyekBk = () => {
         },
        
         {
-            Header: "RAP (Rincian Anggaran Proyek)",
+            Header: "RAP",
             accessor: "rap",
         },
         {
-            Header: "RAB (Rincian Anggaran Biaya)",
+            Header: "RAB",
             accessor: "rab",
         },
         {
@@ -62,6 +66,7 @@ const DaftarProyekBk = () => {
                         kode_proyek: data.kode_proyek,
                         nama_proyek: data.nama_proyek,
                         deskripsi_proyek: data.deskripsi_proyek,
+                        tanggal_awal_kontrak: formatdate(data.tanggal_akhir_kontrak),
                         tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
                         rap: toCurrency(data.biaya_rap),
                         rab: toCurrency(data.biaya_rab),
