@@ -94,7 +94,11 @@ const DashboardProyek = () => {
                                             <hr />
                                             <h5>Plan (S Curve) : {(p.proyek.scurve.length > 0)? 
                                             <Accordion>
-                                                <TextScurve eventKey={0+p.proyek.id_proyek}> {toCurrency(p.proyek.total_scurve)}</TextScurve>
+                                                <TextScurve eventKey={0+p.proyek.id_proyek}> {toCurrency(p.total_scurve)} ( {formatPercent(calcPercentage(p.total_scurve,  calcRabAkhir(
+                                                        p.proyek.biaya_rab,
+                                                        p.kerja_kurang,
+                                                        p.kerja_tambah
+                                                    )))} )</TextScurve>
                                                 <Accordion.Collapse eventKey={0+p.proyek.id_proyek}>
                                                     <Card.Body>
                                                         <ListGroup>
@@ -145,7 +149,11 @@ const DashboardProyek = () => {
                                             <hr />
                                             <h5>Deviation (Action Plan) : {(p.proyek.action_plan.length > 0)?toCurrency(p.proyek.action_plan[0].nominal_action_plan - p.total_pu):"Rp. 0"}</h5>
                                             <hr />
-                                            <h5>Deviation (S Curve) : {(p.proyek.scurve.length > 0)?toCurrency(p.proyek.scurve[0].nominal_scurve - p.total_pu):"Rp. 0"} </h5>
+                                            <h5>Deviation (S Curve) : {(p.proyek.scurve.length > 0)?toCurrency(p.total_scurve - p.total_pu):"Rp. 0"} ( {formatPercent(calcPercentage(p.total_scurve - p.total_pu,  calcRabAkhir(
+                                                        p.proyek.biaya_rab,
+                                                        p.kerja_kurang,
+                                                        p.kerja_tambah
+                                                    )))} )</h5>
                                             <hr />
                                             <h5>Nilai Kontrak Awal : {toCurrency(p.proyek.biaya_rab)}</h5>
                                             <h5 className="fw-bold">
