@@ -49,7 +49,7 @@ const DetailProyekBk = () => {
     
     const COLUMNS = [
         {
-            Header: "Kode RAP",
+            Header: "Cost Code",
             accessor: "kode_rap",
         },
         {
@@ -86,7 +86,7 @@ const DetailProyekBk = () => {
             accessor: "harga_total",
         },
         {
-            Header: "Total Biaya Konstruksi",
+            Header: "Realisasi Biaya Konstruksi",
             accessor: "total_bk_rapa",
         },
         {

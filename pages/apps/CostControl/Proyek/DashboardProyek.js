@@ -92,7 +92,7 @@ const DashboardProyek = () => {
                                         <Card.Body>
                                             <h2>{p.proyek.nama_proyek}</h2>
                                             <hr />
-                                            <h5>Plan (S Curve) : {(p.proyek.scurve.length > 0)?
+                                            <h5>Plan (S Curve) : {(p.proyek.scurve.length > 0)? 
                                             <Accordion>
                                                 <TextScurve eventKey={0+p.proyek.id_proyek}> week {p.proyek.scurve[0].week} - {toCurrency(p.proyek.scurve[0].nominal_scurve)}</TextScurve>
                                                 <Accordion.Collapse eventKey={0+p.proyek.id_proyek}>
@@ -107,7 +107,7 @@ const DashboardProyek = () => {
                                                     </Card.Body>
                                                 </Accordion.Collapse>
                                             </Accordion>
-                                            :""}</h5>
+                                            :""} </h5>
                                             {/* <h5>Plan (S Curve) : {(p.scurve.length > 0) ?
                                                 <Accordion>
                                                     week {p.scurve[0].week} - {toCurrency(p.scurve[0].nominal_scurve)}
@@ -137,9 +137,19 @@ const DashboardProyek = () => {
                                                 </Accordion>
                                                 : ""}</h5>
                                             <hr />
-                                            <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(p.proyek.biaya_rab)}</h5>
+                                            <h5>Progress : {toCurrency(p.total_pu)}  ( {formatPercent(calcPercentage(p.total_pu,  calcRabAkhir(
+                                                        p.proyek.biaya_rab,
+                                                        p.kerja_kurang,
+                                                        p.kerja_tambah
+                                                    )))} )</h5> 
+                                            <hr />
+                                            <h5>Deviation (Action Plan) : {(p.proyek.action_plan.length > 0)?toCurrency(p.proyek.action_plan[0].nominal_action_plan - p.total_pu):"Rp. 0"}</h5>
+                                            <hr />
+                                            <h5>Deviation (S Curve) : {(p.proyek.scurve.length > 0)?toCurrency(p.proyek.scurve[0].nominal_scurve - p.total_pu):"Rp. 0"} </h5>
+                                            <hr />
+                                            <h5>Nilai Kontrak Awal : {toCurrency(p.proyek.biaya_rab)}</h5>
                                             <h5 className="fw-bold">
-                                                RAB Terkini :{" "}
+                                                Nilai Kontrak Terkini :{" "}
                                                 {toCurrency(
                                                     calcRabAkhir(
                                                         p.proyek.biaya_rab,
@@ -148,7 +158,7 @@ const DashboardProyek = () => {
                                                     )
                                                 )}
                                             </h5>
-                                            <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(p.proyek.biaya_rap)}</h5>
+                                            <h5>RAP : {toCurrency(p.proyek.biaya_rap)}</h5>
                                             <hr />
                                             <h5>Material On Site : {(p.proyek.mos.length > 0)?
                                                 <Accordion>

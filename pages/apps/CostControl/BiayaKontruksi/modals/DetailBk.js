@@ -31,11 +31,11 @@ const DetailBk = ({openModal, setOpenModal}) => {
             accessor: "nama_vendor",
         },
         {
-            Header: "Volume",
+            Header: "Realisasi Volume",
             accessor: "volume_bk",
         },
         {
-            Header: "Harga Total",
+            Header: "Realisasi Harga",
             accessor: "harga_total",
         },
         {
@@ -43,7 +43,7 @@ const DetailBk = ({openModal, setOpenModal}) => {
             accessor: "nama_penerima",
         },
         {
-            Header: "Tanggal Penerima",
+            Header: "Tanggal Penerimaan",
             accessor: "tanggal_penerima",
         },
         {
