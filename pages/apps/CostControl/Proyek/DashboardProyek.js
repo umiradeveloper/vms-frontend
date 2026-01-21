@@ -94,7 +94,7 @@ const DashboardProyek = () => {
                                             <hr />
                                             <h5>Plan (S Curve) : {(p.proyek.scurve.length > 0)? 
                                             <Accordion>
-                                                <TextScurve eventKey={0+p.proyek.id_proyek}> week {p.proyek.scurve[0].week} - {toCurrency(p.proyek.scurve[0].nominal_scurve)}</TextScurve>
+                                                <TextScurve eventKey={0+p.proyek.id_proyek}> {toCurrency(p.proyek.total_scurve)}</TextScurve>
                                                 <Accordion.Collapse eventKey={0+p.proyek.id_proyek}>
                                                     <Card.Body>
                                                         <ListGroup>
