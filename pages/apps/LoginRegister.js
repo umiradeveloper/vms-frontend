@@ -119,11 +119,13 @@ const LoginRegister = () => {
 					}
 				});
 				
+			}else{
+				localStorage.setItem("token", token);
+				localStorage.setItem("user", JSON.stringify(dataSession));
+				localStorage.setItem("menu", JSON.stringify(response.data.data.menu));
+				navigate.push("/apps/DashboardVms");
 			}
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(dataSession));
-            localStorage.setItem("menu", JSON.stringify(response.data.data.menu));
-            navigate.push("/apps/DashboardVms");
+            
         } catch (error) {
             console.log(error);
             setErrorRegister(error.response.data.message);
