@@ -97,6 +97,7 @@ const LoginRegister = () => {
 				role_id: response.data.data.user.role.id_role
 			}
 			if(response.data.data.user.role.kode_role == "01"){
+				let timerInterval;
 				Swal.fire({
 					title: "Forbidden",
 					html: "Aplikasi ini hanya bisa di akses oleh internal umira",
@@ -108,13 +109,13 @@ const LoginRegister = () => {
 					},
 					willClose: () => {
 						clearInterval(timerInterval);
-						redirect("https://vms.simumira.com");
+						 window.location.href = "https://vms.simumira.com";
 					},
 				}).then((result) => {
 					/* Read more about handling dismissals below */
 					if (result.dismiss === Swal.DismissReason.timer) {
 						console.log("I was closed by the timer");
-						redirect("https://vms.simumira.com");
+						 window.location.href = "https://vms.simumira.com";
 					}
 				});
 				
