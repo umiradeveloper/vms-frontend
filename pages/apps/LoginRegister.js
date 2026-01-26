@@ -9,6 +9,7 @@ import { basePath } from "@/next.config";
 import LoadersSimUmira from "./Component/LoaderSimUmira";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 const LoginRegister = () => {
@@ -94,6 +95,29 @@ const LoginRegister = () => {
 				user_id: response.data.data.user.id_user,
 				branch_id: response.data.data.user.branch.id_branch,
 				role_id: response.data.data.user.role.id_role
+			}
+			if(response.data.data.user.role.kode_role == "01"){
+				Swal.fire({
+					title: "Forbidden",
+					html: "Aplikasi ini hanya bisa di akses oleh internal umira",
+					icon: "error",
+					timer: 5000,
+					timerProgressBar: true,
+					didOpen: () => {
+						Swal.showLoading();
+					},
+					willClose: () => {
+						clearInterval(timerInterval);
+						redirect("https://vms.simumira.com");
+					},
+				}).then((result) => {
+					/* Read more about handling dismissals below */
+					if (result.dismiss === Swal.DismissReason.timer) {
+						console.log("I was closed by the timer");
+						redirect("https://vms.simumira.com");
+					}
+				});
+				
 			}
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(dataSession));
