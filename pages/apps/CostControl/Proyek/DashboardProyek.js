@@ -149,7 +149,7 @@ const DashboardProyek = () => {
                                             <hr />
                                             <h5>Deviation (Action Plan) : {(p.proyek.action_plan.length > 0)?toCurrency(p.proyek.action_plan[0].nominal_action_plan - p.total_pu):"Rp. 0"}</h5>
                                             <hr />
-                                            <h5>Deviation (S Curve) : {(p.proyek.scurve.length > 0)?toCurrency(p.total_scurve - p.total_pu):"Rp. 0"} ( {formatPercent(calcPercentage(p.total_scurve - p.total_pu,  calcRabAkhir(
+                                            <h5>Deviation (S Curve) : {(p.proyek.scurve.length > 0)?toCurrency(p.total_pu - p.total_scurve):"Rp. 0"} ( {formatPercent(calcPercentage(p.total_pu - p.total_scurve,  calcRabAkhir(
                                                         p.proyek.biaya_rab,
                                                         p.kerja_kurang,
                                                         p.kerja_tambah
