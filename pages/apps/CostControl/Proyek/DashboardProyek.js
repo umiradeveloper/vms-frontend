@@ -147,7 +147,7 @@ const DashboardProyek = () => {
                                                         p.kerja_tambah
                                                     )))} )</h5> 
                                             <hr />
-                                            <h5>Deviation (Action Plan) : {(p.proyek.action_plan.length > 0)?toCurrency(p.proyek.action_plan[0].nominal_action_plan - p.total_pu):"Rp. 0"}</h5>
+                                            <h5>Deviation (Action Plan) : {(p.proyek.action_plan.length > 0)?toCurrency(p.total_pu - p.proyek.action_plan[0].nominal_action_plan):"Rp. 0"}</h5>
                                             <hr />
                                             <h5>Deviation (S Curve) : {(p.proyek.scurve.length > 0)?toCurrency(p.total_pu - p.total_scurve):"Rp. 0"} ( {formatPercent(calcPercentage(p.total_pu - p.total_scurve,  calcRabAkhir(
                                                         p.proyek.biaya_rab,
@@ -192,7 +192,7 @@ const DashboardProyek = () => {
                                             </h5>
                                             <h5>Pendapatan Usaha : {toCurrency(p.total_pu)}</h5>
                                             <h5>BK / PU Awal : {formatPercent(p.proyek.bk_pu_awal)}</h5>
-                                            <div className={`badge ${(calcPercentage((calcBkAfterMos(p.total_bk, p.nominal_mos)), p.total_pu) <= p.proyek.bk_pu_awal) ?"bg-success": "bg-danger" }`}><h5>Persentase BK/PU : {formatPercent(calcPercentage((calcBkAfterMos(p.total_bk, p.nominal_mos)), p.total_pu))}</h5></div>
+                                            <div className={`badge ${(calcPercentage(((calcBkAfterMos(dataProyek.total_bk, dataProyek.nominal_mos)), dataProyek.total_pu)) <= p.proyek.bk_pu_awal) ?"bg-success": "bg-danger" }`}><h5>Persentase BK/PU : {formatPercent(calcPercentage((calcBkAfterMos(dataProyek.total_bk, dataProyek.nominal_mos)), dataProyek.total_pu))}</h5></div>
                                         </Card.Body>
                                     </Card>
                                 </Col>

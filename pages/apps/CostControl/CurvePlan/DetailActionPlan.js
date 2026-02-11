@@ -89,6 +89,13 @@ const DetailActionPlan = () => {
         const p = (Number(part) / t) * 100;
         return p;
     }
+
+    const calcBkAfterMos = (bk, mos) => {
+        const totalBk = Number(bk) || 0;
+        const totalMos = Number(mos) || 0;
+        return totalBk - totalMos;
+    };
+
     const getDataById = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -365,7 +372,7 @@ const DetailActionPlan = () => {
                             <h5>Posisi Biaya Konstruksi : {toCurrency(dataProyek.total_bk)}</h5>
                             <h5>Material On Site: {toCurrency(dataProyek.nominal_mos)}</h5>
                             <h5>BK / PU Awal : {dataProyek.bk_pu_awal}</h5>
-                            <h5>Persentase BK/PU : {formatPercent(calcPercentage(dataProyek.total_bk, dataProyek.total_pu))}</h5>
+                            <h5>Persentase BK/PU : {formatPercent(calcPercentage((calcBkAfterMos(dataProyek.total_bk, dataProyek.nominal_mos)), dataProyek.total_pu))}</h5>
                         </Card.Body>
                     </Card>
                 </Col>
