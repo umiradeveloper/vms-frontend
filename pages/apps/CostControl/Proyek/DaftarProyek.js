@@ -96,7 +96,7 @@ const DaftarProyek = () => {
                         tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
                         rap: toCurrency(data.biaya_rap),
                         rab: toCurrency(data.biaya_rab),
-                        bk_pu_awal: (data.bk_pu_awal)?data.bk_pu_awal+" %":"",
+                        bk_pu_awal: formatPercent(calcbkpuawal(data.biaya_rab, data.biaya_rap)),
                         add_adendum: <div className="d-flex flex-row gap-2">
                             <button className="btn btn-info" onClick={() => setOpenModalKontrak({ id_proyek: data.id_proyek, open_modal: true })}>Add Adendum</button>
                         </div>,
@@ -134,6 +134,12 @@ const DaftarProyek = () => {
             minimumFractionDigits: 0
         }).format(Number(value));
     };
+
+    const calcbkpuawal = (rab,rap) =>{
+        return (Number(rab) || 0) / (Number(rap) || 0) * 100;
+    };
+
+    const formatPercent = (value, digits = 2) => `${Number(value).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`;
 
     const deleteData = async (id) => {
         const resultConfirm = await AlertConfirm("Apakah anda yakin ingin menghapus data ini ? ", "warning", "Hapus", false, "Data berhasil di hapus");

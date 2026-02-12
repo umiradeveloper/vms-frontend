@@ -27,6 +27,9 @@ const DashboardProyek = () => {
         const totalMos = Number(mos) || 0;
         return totalBk - totalMos;
     };
+    const calcbkpuawal = (rab,rap) =>{
+        return (Number(rab) || 0) / (Number(rap) || 0) * 100;
+    };
 
     const formatPercent = (value, digits = 2) => `${Number(value).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`;
 
@@ -191,8 +194,8 @@ const DashboardProyek = () => {
                                                 {toCurrency(calcBkAfterMos(p.total_bk, (p.proyek.mos.length>0)?p.proyek.mos[0].nominal_mos:0))}
                                             </h5>
                                             <h5>Pendapatan Usaha : {toCurrency(p.total_pu)}</h5>
-                                            <h5>BK / PU Awal : {formatPercent(p.proyek.bk_pu_awal)}</h5>
-                                            <div className={`badge ${(calcPercentage(calcBkAfterMos(p.total_bk, p.nominal_mos), p.total_pu) <= p.proyek.bk_pu_awal) ?"bg-success": "bg-danger" }`}><h5>Persentase BK/PU : {formatPercent(calcPercentage(calcBkAfterMos(p.total_bk, (p.proyek.mos.length>0)?p.proyek.mos[0].nominal_mos:0), p.total_pu))}</h5></div>
+                                            <h5>BK / PU Awal : {formatPercent(calcbkpuawal(p.proyek.biaya_rab, p.proyek.biaya_rap))}</h5>
+                                            <div className={`badge ${(calcPercentage(calcBkAfterMos(p.total_bk, p.nominal_mos), p.total_pu) <= calcbkpuawal(p.proyek.biaya_rab, p.proyek.biaya_rap)) ?"bg-success": "bg-danger" }`}><h5>Persentase BK/PU : {formatPercent(calcPercentage(calcBkAfterMos(p.total_bk, (p.proyek.mos.length>0)?p.proyek.mos[0].nominal_mos:0), p.total_pu))}</h5></div>
                                         </Card.Body>
                                         
                                     </Card>
