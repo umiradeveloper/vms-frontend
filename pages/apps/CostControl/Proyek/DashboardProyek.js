@@ -194,6 +194,7 @@ const DashboardProyek = () => {
                                             <h5>BK / PU Awal : {formatPercent(p.proyek.bk_pu_awal)}</h5>
                                             <div className={`badge ${(calcPercentage(((calcBkAfterMos(p.total_bk, p.nominal_mos)), p.total_pu)) <= p.proyek.bk_pu_awal) ?"bg-success": "bg-danger" }`}><h5>Persentase BK/PU : {formatPercent(calcPercentage((calcBkAfterMos(p.total_bk, p.nominal_mos)), p.total_pu))}</h5></div>
                                         </Card.Body>
+                                        
                                     </Card>
                                 </Col>
                             )))}
