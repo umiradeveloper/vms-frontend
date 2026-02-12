@@ -236,7 +236,7 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
                             </Col>
                             <Col xl={12}>
                                 <label htmlFor="nama-proyek" className="form-label ">Volume<span style={{ color: "red" }}>*</span> :</label>
-                                <input type="text" className={`form-control`} id="volume" placeholder="Nama Penerima" value={dataPengajuanBk.volume_bk} onChange={(e) => setdataPengajuanBk({ ...dataPengajuanBk, volume_bk: e.target.value })} />
+                                <input type="text" className={`form-control`} id="volume" placeholder="Volume Item" value={dataPengajuanBk.volume_bk} onChange={(e) => setdataPengajuanBk({ ...dataPengajuanBk, volume_bk: e.target.value })} />
                             </Col>
                             <Col xl={12}>
                                 <label htmlFor="nama-proyek" className="form-label ">Harga Total<span style={{ color: "red" }}>*</span> :</label>

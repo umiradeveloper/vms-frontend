@@ -293,7 +293,7 @@ const DetailRapa = () => {
                                 className="btn btn-success label-btn rounded-pill"
                             >
                                 <i className="ri-download-2-line label-btn-icon me-2 rounded-pill" />
-                                Download Template
+                                Download Template RAPA
                             </a>
                             <button
                                 type="button" className="btn btn-primary label-btn rounded-pill"

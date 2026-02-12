@@ -351,7 +351,7 @@ const DetailScurvePlan = () => {
                             // onClick={() => navigate.push("/apps/CostControl/Rapa/DaftarRapa")}
                             >
                                 <i className="ri-add-circle-line label-btn-icon me-2 rounded-pill" />
-                                Input S curve
+                                Input S Curve
                             </button>
 
                         </Card.Header>
