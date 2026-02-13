@@ -211,13 +211,13 @@ const LoginRegister = () => {
 									<Card className="mb-0">
 										<Row className="row-sm">
 
-											<Col lg={6} xl={5} className="d-none d-lg-block text-center bg-primary details">
+											<Col lg={6} xl={5} className="d-none d-lg-block text-center bg-primary details border-end" style={{ borderRight: "1px solid rgba(255,255,255,0.3)" }}>
 												<div className="mt-5 pt-4 p-2 position-absolute">
 													<Link href={"/apps/DashboardVms"}><img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira.png`} className="header-brand-img mb-4" alt="logo" /></Link>
 													<div className="clearfix"></div>
 													{/* <img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/svgs/user.svg`} className="ht-100 mb-0" alt="user" /> */}
-													<h5 className="mt-4">Information Management System</h5>
-													<span className="text-white-6 fs-13 mb-5 mt-xl-0">Login account, discover and connect with information management system umira</span>
+													<h5 className="mt-4" style={{ color: "#000" }}>Information Management System</h5>
+													<span className="fs-13 mb-5 mt-xl-0" style={{ color: "#000" }}>Login account, discover and connect with information management system umira</span>
 												</div>
 											</Col>
 											<Col lg={6} xl={7} xs={12} sm={12} className="login_form ">
@@ -228,7 +228,7 @@ const LoginRegister = () => {
 															<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira.png`} className="d-lg-none header-brand-img text-start float-start mb-4 error-logo" alt="logo" />
 															<div className="clearfix"></div>
 															<form>
-																<h5 className="text-start mb-2">Signin to Your Account</h5>
+																<h5 className="text-start mb-2">Sign In to Your Account</h5>
 																<p className="mb-4 text-muted fs-13 ms-0 text-start"></p>
 																{err && <Alert variant="danger">{err}</Alert>}
 																<Form.Group className="text-start form-group">
@@ -280,8 +280,8 @@ const LoginRegister = () => {
 													<Link href={"/apps/DashboardVms"}><img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira.png`} className="header-brand-img mb-4" alt="logo" /></Link>
 													<div className="clearfix"></div>
 													{/* <img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/svgs/user.svg`} className="ht-100 mb-0" alt="user" /> */}
-													<h5 className="mt-4">Register Your Account</h5>
-													<span className="text-white-6 fs-13 mb-5 mt-xl-0">Signup to create, discover and connect with the system information umira</span>
+													<h5 className="mt-4" style={{ color: "#000" }}>Register Your Account</h5>
+													<span className="fs-13 mb-5 mt-xl-0" style={{ color: "#000" }}>Signup to create, discover and connect with the system information umira</span>
 												</div>
 											</Col>
 											<Col lg={6} xl={7} xs={12} sm={12} className="login_form ">

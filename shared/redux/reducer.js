@@ -10,10 +10,10 @@ const UPDATE_CART_QUANTITY = "UPDATE_CART_QUANTITY";
 const initialState = {
     lang: "en",
     dir: "ltr",
-    dataMenuStyles: "dark",
+    dataMenuStyles: "light",
     dataThemeMode: "light",
     dataNavLayout: "vertical",
-    dataNavStyle: "",
+    dataNavStyle: "menu-click",
     toggled: "",
     dataIconOverlay: "",
     horStyle: "",
@@ -23,7 +23,7 @@ const initialState = {
     dataHeaderPosition: "fixed",
     dataHeaderStyles: "light",
     colorPrimaryRgb: "",
-    dataVerticalStyle: "overlay",
+    dataVerticalStyle: "default",
     Light: "",
 
     bodyBg: "", bodyBg1: "", darkBg: "", bgImg: "", bgImg1: "", lightRgb: "", formControl: "", inputBorder: "", sidemenuActiveBgcolor: "",
