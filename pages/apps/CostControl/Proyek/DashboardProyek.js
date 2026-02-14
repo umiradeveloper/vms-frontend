@@ -194,7 +194,7 @@ const DashboardProyek = () => {
                                                 {toCurrency(calcBkAfterMos(p.total_bk, (p.proyek.mos.length>0)?p.proyek.mos[0].nominal_mos:0))}
                                             </h5>
                                             <h5>Pendapatan Usaha : {toCurrency(p.total_pu)}</h5>
-                                            <h5>BK / PU Awal : {formatPercent(calcbkpuawal(p.proyek.biaya_rap, p.proyek.biaya_rab))}</h5>
+                                            <h5>BK / PU Awal : {formatPercent(calcbkpuawal(p.proyek.biaya_rap ,calcRabAkhir(p.proyek.biaya_rab, p.kerja_kurang, p.kerja_tambah)))}</h5>
                                             <div className={`badge ${(calcPercentage(calcBkAfterMos(p.total_bk, p.nominal_mos), p.total_pu) <= calcbkpuawal(p.proyek.biaya_rab, p.proyek.biaya_rap)) ?"bg-success": "bg-danger" }`}><h5>Persentase BK/PU : {formatPercent(calcPercentage(calcBkAfterMos(p.total_bk, (p.proyek.mos.length>0)?p.proyek.mos[0].nominal_mos:0), p.total_pu))}</h5></div>
                                         </Card.Body>
                                         

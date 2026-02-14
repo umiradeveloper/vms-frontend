@@ -140,7 +140,9 @@ const CreateProyek = () => {
 									</Col>
 									<Col xl={12}>
 										<label htmlFor="nama-proyek" className="form-label ">Nama Proyek <span style={{ color: "red" }}>*</span> :</label>
-										<input type="text" className={`form-control`} id="nama_proyek" placeholder="Nama Proyek" onChange={(val) => setData({ ...data, nama_proyek: val.target.value })} />
+										{/* <input type="text" className={`form-control`} id="nama_proyek" placeholder="Nama Proyek" onChange={(val) => setData({ ...data, nama_proyek: val.target.value })} /> */}
+										<input type="text" className="form-control" id="nama_proyek" placeholder="Nama Proyek" value={data.nama_proyek} onChange={(val) => setData({...data, nama_proyek: val.target.value.toUpperCase() })}/>
+
 									</Col>
 
 									<Col xl={12}>

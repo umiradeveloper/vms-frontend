@@ -155,7 +155,7 @@ const DetailProyekBk = () => {
 
             }
             setLoader(false)
-            console.log(result)
+            //console.log(result)
         } catch (error) {
             setLoader(false)
             console.log("e = " + error);
@@ -196,13 +196,17 @@ const DetailProyekBk = () => {
 
             }
             setLoader(false)
-            console.log(result)
+            //console.log(result)
         } catch (error) {
             setLoader(false)
             console.log("e = " + error);
         }
     }
     
+    const calcRabAkhir = (rab, kurang, tambah) => {
+        return (Number(rab) || 0) - (Number(kurang) || 0) + (Number(tambah) || 0);
+    };
+
     const getBkByProyek = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;

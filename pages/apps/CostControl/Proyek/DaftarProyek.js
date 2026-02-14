@@ -79,7 +79,7 @@ const DaftarProyek = () => {
         setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek", {
+            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-dashboard", {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -89,23 +89,23 @@ const DaftarProyek = () => {
                 const daftarArr = [];
                 for await (const data of result.data.data) {
                     daftarArr.push({
-                        kode_proyek: data.kode_proyek,
-                        nama_proyek: data.nama_proyek,
+                        kode_proyek: data.proyek.kode_proyek,
+                        nama_proyek: data.proyek.nama_proyek,
                         // deskripsi_proyek: data.deskripsi_proyek,
-                        tanggal_awal_kontrak: formatdate(data.tanggal_awal_kontrak),
-                        tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
-                        rap: toCurrency(data.biaya_rap),
-                        rab: toCurrency(data.biaya_rab),
-                        bk_pu_awal: formatPercent(calcbkpuawal(data.biaya_rap, data.biaya_rab)),
+                        tanggal_awal_kontrak: formatdate(data.proyek.tanggal_awal_kontrak),
+                        tanggal_akhir_kontrak: formatdate(data.proyek.tanggal_akhir_kontrak),
+                        rap: toCurrency(data.proyek.biaya_rap),
+                        rab: toCurrency(calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah)),
+                        bk_pu_awal: formatPercent(calcbkpuawal(data.proyek.biaya_rap, calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah))),
                         add_adendum: <div className="d-flex flex-row gap-2">
-                            <button className="btn btn-info" onClick={() => setOpenModalKontrak({ id_proyek: data.id_proyek, open_modal: true })}>Add Adendum</button>
+                            <button className="btn btn-info" onClick={() => setOpenModalKontrak({ id_proyek: data.proyek.id_proyek, open_modal: true })}>Add Adendum</button>
                         </div>,
                         daftar_adendum: <div className="d-flex flex-row gap-2">
-                            <button className="btn btn-warning" onClick={() => setOpenModalDaftarKontrak({ id_proyek: data.id_proyek, open_modal: true })}>Daftar Adendum</button>
+                            <button className="btn btn-warning" onClick={() => setOpenModalDaftarKontrak({ id_proyek: data.proyek.id_proyek, open_modal: true })}>Daftar Adendum</button>
                         </div>,
                         aksi: <div className="d-flex flex-row gap-2">
-                            <button className="btn btn-success" onClick={() => setOpenModalEdit({ id_proyek: data.id_proyek, open_modal: true })}>Edit</button>
-                            <button className="btn btn-danger" onClick={() => deleteData(data.id_proyek)}>Delete</button>
+                            <button className="btn btn-success" onClick={() => setOpenModalEdit({ id_proyek: data.proyek.id_proyek, open_modal: true })}>Edit</button>
+                            <button className="btn btn-danger" onClick={() => deleteData(data.proyek.id_proyek)}>Delete</button>
                         </div>
                     })
                 }
@@ -133,6 +133,10 @@ const DaftarProyek = () => {
             currency: "IDR",
             minimumFractionDigits: 0
         }).format(Number(value));
+    };
+
+    const calcRabAkhir = (rab, kurang, tambah) => {
+        return (Number(rab) || 0) - (Number(kurang) || 0) + (Number(tambah) || 0);
     };
 
     const calcbkpuawal = (rab,rap) =>{
