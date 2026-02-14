@@ -63,7 +63,7 @@ const DaftarScurvePlan = () => {
                         deskripsi_proyek: data.proyek.deskripsi_proyek,
                         tanggal_akhir_kontrak: formatdate(data.proyek.tanggal_akhir_kontrak),
                         rap: toCurrency(data.proyek.biaya_rap),
-                         rab: toCurrency(calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah)),
+                        rab: toCurrency(calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah)),
                         aksi: <div className="d-flex flex-row gap-2">
                             {/* <Button type="button" size="sm" className="btn btn-info" onClick={() => navigate.push(
                                         {
