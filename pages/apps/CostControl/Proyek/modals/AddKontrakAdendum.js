@@ -96,12 +96,12 @@ const AddKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) => {
 
                                     <Col xl={12}>
                                         <label htmlFor="pendapatan-usaha" className="form-label ">Kerja Tambah<span style={{ color: "red" }}>*</span> :</label>
-                                        <input type="text" className={`form-control`} id="kerja_tambah" placeholder="Kerja Tambah" onChange={(e) => setDataAdendum({...dataAdendum, kerja_tambah: e.target.value})} />
+                                        <input type="text" className={`form-control`} id="kerja_tambah" placeholder="Nominal Kerja Tambah" onChange={(e) => setDataAdendum({...dataAdendum, kerja_tambah: e.target.value})} />
                                     </Col>
 
                                     <Col xl={12}>
                                         <label htmlFor="pendapatan-usaha" className="form-label ">Kerja Kurang<span style={{ color: "red" }}>*</span> :</label>
-                                        <input type="text" className={`form-control`} id="kerja_kurang" placeholder="Kerja kurang" onChange={(e) => setDataAdendum({...dataAdendum, kerja_kurang: e.target.value})} />
+                                        <input type="text" className={`form-control`} id="kerja_kurang" placeholder="Nominal Kerja kurang" onChange={(e) => setDataAdendum({...dataAdendum, kerja_kurang: e.target.value})} />
                                     </Col>
 
                                     <Col xl={12}>

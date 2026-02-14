@@ -96,7 +96,7 @@ const DaftarProyek = () => {
                         tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
                         rap: toCurrency(data.biaya_rap),
                         rab: toCurrency(data.biaya_rab),
-                        bk_pu_awal: formatPercent(calcbkpuawal(data.biaya_rab, data.biaya_rap)),
+                        bk_pu_awal: formatPercent(calcbkpuawal(data.biaya_rap, data.biaya_rab)),
                         add_adendum: <div className="d-flex flex-row gap-2">
                             <button className="btn btn-info" onClick={() => setOpenModalKontrak({ id_proyek: data.id_proyek, open_modal: true })}>Add Adendum</button>
                         </div>,

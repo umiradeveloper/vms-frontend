@@ -286,7 +286,7 @@ const CreatePu = ({ openModal, setOpenModal }) => {
                                     </Col>
                                     <Col xl={12}>
                                         <label htmlFor="pendapatan-usaha" className="form-label ">Nominal Pendapatan Usaha <span style={{ color: "red" }}>*</span> :</label>
-                                        <input type="text" className={`form-control`} id="nominal_pu" placeholder="Pendapatan Usaha" onChange={handleChangePu} value={data.nominal_pu ? `${data.nominal_pu}` : ""} />
+                                        <input type="text" className={`form-control`} id="nominal_pu" placeholder="Nominal Pendapatan Usaha" onChange={handleChangePu} value={data.nominal_pu ? `${data.nominal_pu}` : ""} />
                                     </Col>
                                     <Col xl={12}>
                                         <label className="form-label mt-3">

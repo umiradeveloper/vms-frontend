@@ -280,8 +280,8 @@ const CreateMos = ({ openModal, setOpenModal }) => {
                                         </select>
                                     </Col>
                                     <Col xl={12}>
-                                        <label htmlFor="nominal_mos" className="form-label ">Jumlah Material On-Site <span style={{ color: "red" }}>*</span> :</label>
-                                        <input type="text" className={`form-control`} id="nominal_mos" placeholder="Material On-Site" onChange={(e) => setData({ ...data, nominal_mos: e.target.value })} value={data.nominal_mos ? `${data.nominal_mos}` : ""} />
+                                        <label htmlFor="nominal_mos" className="form-label ">Nominal Material On-Site <span style={{ color: "red" }}>*</span> :</label>
+                                        <input type="text" className={`form-control`} id="nominal_mos" placeholder="Nominal Material On-Site" onChange={(e) => setData({ ...data, nominal_mos: e.target.value })} value={data.nominal_mos ? `${data.nominal_mos}` : ""} />
                                     </Col>
                                     <Col xl={12}>
                                         <label className="form-label mt-3">
