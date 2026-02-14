@@ -48,7 +48,7 @@ const DaftarProyekPu = () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek", {
+            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-dashboard", {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -58,12 +58,12 @@ const DaftarProyekPu = () => {
                 const daftarArr = [];
                 for await (const data of result.data.data) {
                     daftarArr.push({
-                        kode_proyek: data.kode_proyek,
-                        nama_proyek: data.nama_proyek,
-                        deskripsi_proyek: data.deskripsi_proyek,
-                        tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
-                        rap: toCurrency(data.biaya_rap),
-                        rab: toCurrency(data.biaya_rab),
+                        kode_proyek: data.proyek.kode_proyek,
+                        nama_proyek: data.proyek.nama_proyek,
+                        deskripsi_proyek: data.proyek.deskripsi_proyek,
+                        tanggal_akhir_kontrak: formatdate(data.proyek.tanggal_akhir_kontrak),
+                        rap: toCurrency(data.proyek.biaya_rap),
+                        rab: toCurrency(calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah)),
                         aksi:   <div className="d-flex flex-row gap-2">
                                      {/* <Button type="button" size="sm" className="btn btn-info" onClick={() => navigate.push(
                                         {
@@ -76,7 +76,7 @@ const DaftarProyekPu = () => {
                                         onClick={() => navigate.push(
                                         {
                                             pathname: "/apps/CostControl/Mos/DetailProyekMos",
-                                            query: { id: data.id_proyek }
+                                            query: { id: data.proyek.id_proyek }
                                         }
                                      )}
                                     >
@@ -102,6 +102,10 @@ const DaftarProyekPu = () => {
             year: "numeric",
         }
     );
+
+    const calcRabAkhir = (rab, kurang, tambah) => {
+        return (Number(rab) || 0) - (Number(kurang) || 0) + (Number(tambah) || 0);
+    };
 
     const toCurrency = (value) => {
         if (!value) return "Rp0";

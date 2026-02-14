@@ -138,10 +138,10 @@ const DetailProyekMos = () => {
             month: "long",
             year: "numeric",
         }
-    );
+        );
 
     const formatPercent = (value, digits = 2) => `${Number(value).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`;
-    
+
     const calcPercentage = (part, total) => {
         const t = Number(total) || 0;
         if (t === 0) return 0;
@@ -159,7 +159,7 @@ const DetailProyekMos = () => {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            console.log(result);    
+            console.log(result);
             if (result.status) {
                 setDataProyek({
                     total_bk: result.data.data.total_bk,
@@ -171,8 +171,10 @@ const DetailProyekMos = () => {
                     tanggal_akhir_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
-                    biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
-                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : "",
+                    // biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
+                    biaya_rab: calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah),
+                    // bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
+                    bk_pu_awal: formatPercent(calcPercentage(result.data.data.proyek.biaya_rap, calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah))),
                     kerja_kurang: (result.data.data.proyek.kerja_kurang) ? result.data.data.proyek.kerja_kurang_total : "",
                     kerja_tambah: (result.data.data.proyek.kerja_tambah) ? result.data.data.proyek.kerja_tambah_total : ""
                 });
@@ -352,7 +354,7 @@ const DetailProyekMos = () => {
                             <h5>Tanggal Awal Kontrak :  {formatdate(dataProyek.tanggal_awal_kontrak)}</h5>
                             <h5>Tanggal Berakhir Kontrak : {formatdate(dataProyek.tanggal_akhir_kontrak)}</h5>
                             <h5>RAB (Rincian Anggaran Biaya) : {toCurrency(dataProyek.biaya_rab)}</h5>
-                            <h5 className="fw-bold">
+                            {/* <h5 className="fw-bold">
                                 RAB Terkini :{" "}
                                 {toCurrency(
                                     calcRabAkhir(
@@ -361,7 +363,7 @@ const DetailProyekMos = () => {
                                         dataProyek.kerja_tambah_total
                                     )
                                 )}
-                            </h5>
+                            </h5> */}
                             <h5>RAP (Rincian Anggaran Proyek) : {toCurrency(dataProyek.biaya_rap)}</h5>
                             <h5>Pendapatan Usaha : {toCurrency(dataProyek.total_pu)}</h5>
                             <h5>Material On Site : {toCurrency(dataProyek.nominal_mos)}</h5>

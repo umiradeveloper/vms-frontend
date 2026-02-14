@@ -105,6 +105,10 @@ const DetailProyekPu = () => {
         return p;
     }
 
+    const calcRabAkhir = (rab, kurang, tambah) => {
+        return (Number(rab) || 0) - (Number(kurang) || 0) + (Number(tambah) || 0);
+    };
+
     const getFile = async(id) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             setLoader(true);
@@ -166,8 +170,10 @@ const DetailProyekPu = () => {
                     tanggal_akhir_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
-                    biaya_rab: (result.data.data.proyek.biaya_rab) ? parseInt(result.data.data.proyek.biaya_rab) + parseInt(result.data.data.kerja_tambah) : "",
-                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
+                     // biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
+                    biaya_rab: calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah),
+                    // bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
+                    bk_pu_awal: formatPercent(calcPercentage(result.data.data.proyek.biaya_rap, calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah))),
                 });
 
             }

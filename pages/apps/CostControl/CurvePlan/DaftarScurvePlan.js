@@ -12,9 +12,9 @@ import { useRouter } from "next/router";
 const DaftarScurvePlan = () => {
     const [datatable, setDatatable] = useState([]);
     const [loader, setLoader] = useState();
-        const navigate = useRouter();
+    const navigate = useRouter();
     const COLUMNS = [
-       {
+        {
             Header: "Kode Proyek",
             accessor: "kode_proyek",
         },
@@ -30,7 +30,7 @@ const DaftarScurvePlan = () => {
             Header: "Tanggal Akhir Kontrak",
             accessor: "tanggal_akhir_kontrak",
         },
-       
+
         {
             Header: "RAP (Rincian Anggaran Proyek)",
             accessor: "rap",
@@ -44,59 +44,59 @@ const DaftarScurvePlan = () => {
             accessor: "aksi",
         },
     ]
-    const getDaftarProyek = async() => {
+    const getDaftarProyek = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek", {
+            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-dashboard", {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            if(result.status == 200){
+            if (result.status == 200) {
                 const daftarArr = [];
                 for await (const data of result.data.data) {
                     daftarArr.push({
-                        kode_proyek: data.kode_proyek,
-                        nama_proyek: data.nama_proyek,
-                        deskripsi_proyek: data.deskripsi_proyek,
-                        tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
-                        rap: toCurrency(data.biaya_rap),
-                        rab: toCurrency(data.biaya_rab),
-                        aksi:   <div className="d-flex flex-row gap-2">
-                                     {/* <Button type="button" size="sm" className="btn btn-info" onClick={() => navigate.push(
+                        kode_proyek: data.proyek.kode_proyek,
+                        nama_proyek: data.proyek.nama_proyek,
+                        deskripsi_proyek: data.proyek.deskripsi_proyek,
+                        tanggal_akhir_kontrak: formatdate(data.proyek.tanggal_akhir_kontrak),
+                        rap: toCurrency(data.proyek.biaya_rap),
+                         rab: toCurrency(calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah)),
+                        aksi: <div className="d-flex flex-row gap-2">
+                            {/* <Button type="button" size="sm" className="btn btn-info" onClick={() => navigate.push(
                                         {
                                             pathname: "/apps/CostControl/Rapa/DetailRapa",
                                             query: { id: data.id_proyek }
                                         }
                                      )}>Detail Rapa</Button> */}
-                                   <button
-                                        type="button" className="btn btn-sm btn-info label-btn label-end rounded-pill"
-                                        onClick={() => navigate.push(
-                                        {
-                                            pathname: "/apps/CostControl/CurvePlan/DetailScurvePlan",
-                                            query: { id: data.id_proyek }
-                                        }
-                                     )}
-                                    >
-                                        <i className="ri-arrow-right-line label-btn-icon me-2 rounded-pill"/>
-                                        S Curve
-                                    </button>
-                                    <button
-                                        type="button" className="btn btn-sm btn-info label-btn label-end rounded-pill"
-                                        onClick={() => navigate.push(
-                                        {
-                                            pathname: "/apps/CostControl/CurvePlan/DetailActionPlan",
-                                            query: { id: data.id_proyek }
-                                        }
-                                     )}
-                                    >
-                                        <i className="ri-arrow-right-line label-btn-icon me-2 rounded-pill"/>
-                                        Action Plan
-                                    </button>
-                                    
-                                </div>
+                            <button
+                                type="button" className="btn btn-sm btn-info label-btn label-end rounded-pill"
+                                onClick={() => navigate.push(
+                                    {
+                                        pathname: "/apps/CostControl/CurvePlan/DetailScurvePlan",
+                                        query: { id: data.proyek.id_proyek }
+                                    }
+                                )}
+                            >
+                                <i className="ri-arrow-right-line label-btn-icon me-2 rounded-pill" />
+                                S Curve
+                            </button>
+                            <button
+                                type="button" className="btn btn-sm btn-info label-btn label-end rounded-pill"
+                                onClick={() => navigate.push(
+                                    {
+                                        pathname: "/apps/CostControl/CurvePlan/DetailActionPlan",
+                                        query: { id: data.proyek.id_proyek }
+                                    }
+                                )}
+                            >
+                                <i className="ri-arrow-right-line label-btn-icon me-2 rounded-pill" />
+                                Action Plan
+                            </button>
+
+                        </div>
                     })
                 }
                 setDatatable(daftarArr);
@@ -104,9 +104,13 @@ const DaftarScurvePlan = () => {
             }
             // console.log(result);
         } catch (error) {
-            console.log("e = "+error);
+            console.log("e = " + error);
         }
     }
+
+    const calcRabAkhir = (rab, kurang, tambah) => {
+        return (Number(rab) || 0) - (Number(kurang) || 0) + (Number(tambah) || 0);
+    };
 
     const formatdate = (tanggal) =>
         new Date(tanggal).toLocaleDateString("id-ID", {
@@ -114,7 +118,7 @@ const DaftarScurvePlan = () => {
             month: "long",
             year: "numeric",
         }
-    );
+        );
 
     const toCurrency = (value) => {
         if (!value) return "Rp0";
@@ -127,9 +131,9 @@ const DaftarScurvePlan = () => {
     };
     useEffect(() => {
         getDaftarProyek();
-    },[])
-    return(
-         <Fragment>
+    }, [])
+    return (
+        <Fragment>
             <Seo title={"Daftar Proyek S Curve & Action Plan"} />
             <PageHeaderVms title='Daftar Proyek S Curve & Action Plan' item='S Curve' active_item='S Curve dan Action Plan' />
             <LoadersSimUmira open={loader} />

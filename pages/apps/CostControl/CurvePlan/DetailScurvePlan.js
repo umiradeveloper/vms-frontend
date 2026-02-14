@@ -79,6 +79,13 @@ const DetailScurvePlan = () => {
         }
     );
 
+    const calcRabAkhir = (rab, kerjaKurang, kerjaTambah) => {
+        const r = Number(rab) || 0;
+        const kk = Number(kerjaKurang) || 0;
+        const kt = Number(kerjaTambah) || 0;
+        return r - kk + kt;
+    };
+    
     const calcBkAfterMos = (bk, mos) => {
         const totalBk = Number(bk) || 0;
         const totalMos = Number(mos) || 0;
@@ -114,8 +121,10 @@ const DetailScurvePlan = () => {
                     tanggal_akhir_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
-                    biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
-                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
+                    // biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
+                    biaya_rab: calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah),
+                    // bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
+                    bk_pu_awal: formatPercent(calcPercentage(result.data.data.proyek.biaya_rap, calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah))),
                 });
 
             }

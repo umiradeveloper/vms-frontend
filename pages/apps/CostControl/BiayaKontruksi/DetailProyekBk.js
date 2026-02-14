@@ -30,23 +30,23 @@ const DetailProyekBk = () => {
         total_pu: "",
         bk_pu_awal: ""
     })
-    
+
     const [BiayaBk, setBiayaBk] = useState({
         posisi_bk: 0,
         persentase_rap: ""
     });
-    
+
     const [openModalEdit, setOpenModalEdit] = useState({
         id_rapa: "",
         kode_proyek: "",
         open: false
     })
-    
+
     const [openModalUpload, setOpenModalUpload] = useState({
         id_proyek: "",
         open_modal: false
     })
-    
+
     const COLUMNS = [
         {
             Header: "Cost Code",
@@ -101,7 +101,7 @@ const DetailProyekBk = () => {
             month: "long",
             year: "numeric",
         }
-    );
+        );
 
     const toCurrency = (value) => {
         if (!value) return "Rp0";
@@ -114,7 +114,7 @@ const DetailProyekBk = () => {
     };
 
     const formatPercent = (value, digits = 2) => `${Number(value).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`;
-    
+
     const calcPercentage = (part, total) => {
         const t = Number(total) || 0;
         if (t === 0) return 0;
@@ -149,8 +149,10 @@ const DetailProyekBk = () => {
                     tanggal_akhir_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
                     tanggal_awal_kontrak: (result.data.data.proyek.tanggal_awal_kontrak) ? result.data.data.proyek.tanggal_awal_kontrak : "",
                     biaya_rap: (result.data.data.proyek.biaya_rap) ? result.data.data.proyek.biaya_rap : "",
-                    biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
-                    bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
+                    // biaya_rab: (result.data.data.proyek.biaya_rab) ? result.data.data.proyek.biaya_rab : "",
+                    biaya_rab: calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah),
+                    // bk_pu_awal: (result.data.data.proyek.bk_pu_awal) ? result.data.data.proyek.bk_pu_awal + " %" : ""
+                    bk_pu_awal: formatPercent(calcPercentage(result.data.data.proyek.biaya_rap, calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah))),
                 });
 
             }
@@ -161,7 +163,7 @@ const DetailProyekBk = () => {
             console.log("e = " + error);
         }
     }
-    
+
     const getRapa = async () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -202,7 +204,7 @@ const DetailProyekBk = () => {
             console.log("e = " + error);
         }
     }
-    
+
     const calcRabAkhir = (rab, kurang, tambah) => {
         return (Number(rab) || 0) - (Number(kurang) || 0) + (Number(tambah) || 0);
     };
