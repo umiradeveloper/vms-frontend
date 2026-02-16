@@ -51,12 +51,12 @@ const DaftarProyek = () => {
         },
 
         {
-            Header: "RAP",
-            accessor: "rap",
-        },
-        {
             Header: "RAB",
             accessor: "rab",
+        },
+        {
+            Header: "RAP",
+            accessor: "rap",
         },
         {
             Header: "BK / PU awal",
@@ -94,8 +94,8 @@ const DaftarProyek = () => {
                         // deskripsi_proyek: data.deskripsi_proyek,
                         tanggal_awal_kontrak: formatdate(data.proyek.tanggal_awal_kontrak),
                         tanggal_akhir_kontrak: formatdate(data.proyek.tanggal_akhir_kontrak),
-                        rap: toCurrency(data.proyek.biaya_rap),
                         rab: toCurrency(calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah)),
+                        rap: toCurrency(data.proyek.biaya_rap),
                         bk_pu_awal: formatPercent(calcbkpuawal(data.proyek.biaya_rap, calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah))),
                         add_adendum: <div className="d-flex flex-row gap-2">
                             <button className="btn btn-info" onClick={() => setOpenModalKontrak({ id_proyek: data.proyek.id_proyek, open_modal: true })}>Add Adendum</button>

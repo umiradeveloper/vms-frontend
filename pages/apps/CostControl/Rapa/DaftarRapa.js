@@ -34,12 +34,12 @@ const DaftarRapa = () => {
             accessor: "tanggal_akhir_kontrak",
         },
         {
-            Header: "RAP",
-            accessor: "rap",
-        },
-        {
             Header: "RAB",
             accessor: "rab",
+        },
+        {
+            Header: "RAP",
+            accessor: "rap",
         },
         {
             Header: "Aksi",
@@ -51,7 +51,7 @@ const DaftarRapa = () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek", {
+            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-dashboard", {
 				headers: {
 					"Content-Type": "application/json",
 					"Authorization": "Bearer " + localStorage.getItem("token")
@@ -61,18 +61,18 @@ const DaftarRapa = () => {
                 const daftarArr = [];
                 for await (const data of result.data.data) {
                     daftarArr.push({
-                        kode_proyek: data.kode_proyek,
-                        nama_proyek: data.nama_proyek,
-                        deskripsi_proyek: data.deskripsi_proyek,
-                        tanggal_awal_kontrak: formatdate(data.tanggal_awal_kontrak),
-                        tanggal_akhir_kontrak: formatdate(data.tanggal_akhir_kontrak),
-                        rap: toCurrency(data.biaya_rap),
-                        rab: toCurrency(data.biaya_rab),
+                        kode_proyek: data.proyek.kode_proyek,
+                        nama_proyek: data.proyek.nama_proyek,
+                        deskripsi_proyek: data.proyek.deskripsi_proyek,
+                        tanggal_awal_kontrak: formatdate(data.proyek.tanggal_awal_kontrak),
+                        tanggal_akhir_kontrak: formatdate(data.proyek.tanggal_akhir_kontrak),
+                        rap: toCurrency(data.proyek.biaya_rap),
+                        rab: toCurrency(calcRabAkhir(data.proyek.biaya_rab, data.kerja_kurang, data.kerja_tambah)),
                         aksi:   <div className="d-flex flex-row gap-2">
                                      <Button type="button" size="sm" className="btn btn-info" onClick={() => navigate.push(
                                         {
                                             pathname: "/apps/CostControl/Rapa/DetailRapa",
-                                            query: { id: data.id_proyek }
+                                            query: { id: data.proyek.id_proyek }
                                         }
                                      )}>Detail Rapa</Button>
                                     {/* <button className="btn btn-success" onClick={() => setOpenModalEdit({id_proyek:data.id_proyek, open_modal: true})}>Edit</button>
@@ -97,6 +97,13 @@ const DaftarRapa = () => {
         }
     );
     
+    const calcRabAkhir = (rab, kerjaKurang, kerjaTambah) => {
+        const r = Number(rab) || 0;
+        const kk = Number(kerjaKurang) || 0;
+        const kt = Number(kerjaTambah) || 0;
+        return r - kk + kt;
+    };
+
     const toCurrency = (value) => {
         if (!value) return "Rp0";
 

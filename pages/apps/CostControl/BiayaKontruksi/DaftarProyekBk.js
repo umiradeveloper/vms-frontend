@@ -34,14 +34,13 @@ const DaftarProyekBk = () => {
             Header: "Tanggal Akhir Kontrak",
             accessor: "tanggal_akhir_kontrak",
         },
-       
-        {
-            Header: "RAP",
-            accessor: "rap",
-        },
         {
             Header: "RAB",
             accessor: "rab",
+        },
+        {
+            Header: "RAP",
+            accessor: "rap",
         },
         {
             Header: "Aksi",

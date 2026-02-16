@@ -85,7 +85,7 @@ const DetailRapa = () => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id?id=" + params.get("id"), {
+            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id=" + params.get("id"), {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -93,12 +93,15 @@ const DetailRapa = () => {
             });
             if (result.status) {
                 setDataProyek({
-                    nama_proyek: result.data.data.nama_proyek,
-                    kode_proyek: result.data.data.kode_proyek,
-                    deskripsi_proyek: result.data.data.deskripsi_proyek,
-                    tanggal_kontrak: (result.data.data.tanggal_akhir_kontrak) ? result.data.data.tanggal_akhir_kontrak : "",
-                    biaya_rap: (result.data.data.biaya_rap) ? toCurrency(result.data.data.biaya_rap) : "",
-                    biaya_rab: (result.data.data.biaya_rab) ? toCurrency(result.data.data.biaya_rab) : ""
+                    nama_proyek: result.data.data.proyek.nama_proyek,
+                    kode_proyek: result.data.data.proyek.kode_proyek,
+                    deskripsi_proyek: result.data.data.proyek.deskripsi_proyek,
+                    tanggal_kontrak: (result.data.data.proyek.tanggal_akhir_kontrak) ? result.data.data.proyek.tanggal_akhir_kontrak : "",
+                    biaya_rap: (result.data.data.proyek.biaya_rap) ? toCurrency(result.data.data.proyek.biaya_rap) : "",
+                    //biaya_rab: (result.data.data.biaya_rab) ? toCurrency(result.data.data.biaya_rab) : "",
+                    biaya_rab: toCurrency(calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah)),
+                    //bk_pu_awal: (result.data.data.bk_pu_awal) ? formatPercent(result.data.data.bk_pu_awal) : "",
+                    bk_pu_awal: formatPercent(calcPercentage(result.data.data.proyek.biaya_rap, calcRabAkhir(result.data.data.proyek.biaya_rab, result.data.data.kerja_kurang, result.data.data.kerja_tambah))),
                 });
 
             }
@@ -109,6 +112,22 @@ const DetailRapa = () => {
             console.log("e = " + error);
         }
     }
+
+    const formatPercent = (value, digits = 2) => `${Number(value).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`;
+
+    const calcPercentage = (part, total) => {
+        const t = Number(total) || 0;
+        if (t === 0) return 0;
+        const p = (Number(part) / t) * 100;
+        return p;
+    };
+
+    const calcRabAkhir = (rab, kerjaKurang, kerjaTambah) => {
+        const r = Number(rab) || 0;
+        const kk = Number(kerjaKurang) || 0;
+        const kt = Number(kerjaTambah) || 0;
+        return r - kk + kt;
+    };
 
     const getRapa = async () => {
         setLoader(true);
@@ -311,6 +330,7 @@ const DetailRapa = () => {
                             <h5>Tanggal Berakhir Kontrak : {dataProyek.tanggal_kontrak}</h5>
                             <h5>RAB (Rincian Anggaran Biaya) : {dataProyek.biaya_rab}</h5>
                             <h5>RAP (Rincian Anggaran Proyek) : {dataProyek.biaya_rap}</h5>
+                            <h5>BK/PU Awal: {dataProyek.bk_pu_awal}</h5>
                         </Card.Body>
                     </Card>
                 </Col>

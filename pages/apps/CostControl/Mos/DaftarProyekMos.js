@@ -29,14 +29,13 @@ const DaftarProyekPu = () => {
             Header: "Tanggal Akhir Kontrak",
             accessor: "tanggal_akhir_kontrak",
         },
-       
         {
-            Header: "RAP (Rincian Anggaran Proyek)",
-            accessor: "rap",
+            Header: "RAB",
+            accessor: "rab",
         },
         {
-            Header: "RAB (Rincian Anggaran Biaya)",
-            accessor: "rab",
+            Header: "RAP",
+            accessor: "rap",
         },
         {
             Header: "Aksi",
