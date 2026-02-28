@@ -8,6 +8,7 @@ import Select from "react-select";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
 
+
 const Announcement = () => {
     const [loader, setLoader] = useState(false);
     const [datatable, setDataTable] = useState([]);
@@ -62,14 +63,22 @@ const Announcement = () => {
                                 getFile(item.id_announcement)
                             }
                         >
-                            Dokumen
+                            Lihat Dokumen
                         </button>
 
                         <button
                             className="btn btn-sm btn-danger"
                             onClick={() => handleDelete(item)}
                         >
-                            Delete
+                            Hapus
+                        </button>
+
+                        <button
+                            className="btn btn-sm btn-info"
+                            onClick={() => publish(item.id_announcement)    
+                            }
+                        >
+                            Publish Announcement
                         </button>
                     </div>
                 );
@@ -117,6 +126,54 @@ const Announcement = () => {
                 icon: "error",
             });
         }
+    };
+
+    const publish = async (id) => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        const confirmed = await Swal.fire({
+            title: "Publish Announcement?",
+            text: "Notifikasi akan dikirim ke semua user sesuai role.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Publish!",
+            cancelButtonText: "Batal",
+        }).then((r) => r.isConfirmed);
+
+        if (!confirmed) return;
+
+        setLoader(true);
+
+        try {
+            const response = await apiConfig.get(
+                apiUrl + "/Announcement/publish-announcement",
+                {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
+                    params: { id },
+                }
+            );
+
+            Swal.fire({
+                title: "Berhasil!",
+                text: "Announcement berhasil dipublish & notifikasi terkirim",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+
+            getAnnouncement(); 
+
+        } catch (error) {
+            Swal.fire({
+                title: "Gagal!",
+                text: error.response?.data || error.message,
+                icon: "error",
+            });
+        }
+
+        setLoader(false);
     };
 
     const getRole = async () => {
@@ -254,9 +311,9 @@ const Announcement = () => {
             }
 
             if (form.foto_pengumuman) {
-                formData.append("foto_pengumuman", form.foto_pengumuman); 
+                formData.append("foto_pengumuman", form.foto_pengumuman);
             }
-            
+
             const result = await apiConfig.post(
                 apiUrl + "/Announcement/create-announcement",
                 formData,
