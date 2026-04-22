@@ -16,32 +16,32 @@ const Select = dynamic(() => import("react-select"), { ssr: false });
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
 const jenisOptions = [
-    { value: "BBM",            label: "Reimbursement BBM" },
+    { value: "BBM", label: "Reimbursement BBM" },
     { value: "INVOICE_KOSONG", label: "Invoice Kosong" },
 ];
 
 const jenisLabel = {
-    BBM:            "Reimbursement BBM",
+    BBM: "Reimbursement BBM",
     INVOICE_KOSONG: "Invoice Kosong",
 };
 
 const ReimbursementPage = () => {
-    const [activeTab, setActiveTab]   = useState("pengajuan");
-    const [loader, setLoader]         = useState(false);
-    const [reload, setReload]         = useState(false);
+    const [activeTab, setActiveTab] = useState("pengajuan");
+    const [loader, setLoader] = useState(false);
+    const [reload, setReload] = useState(false);
     const [daftarUser, setDaftarUser] = useState([]);
 
     const [dokumenFiles, setDokumenFiles] = useState([]);
     const [formData, setFormData] = useState({
-        jenis_reimbursement:   "",
+        jenis_reimbursement: "",
         tanggal_reimbursement: "",
-        jumlah:                "",
-        keterangan:            "",
-        id_approver:           "",
+        jumlah: "",
+        keterangan: "",
+        id_approver: "",
     });
 
     const [datatableMonitoring, setDatatableMonitoring] = useState([]);
-    const [showDetail, setShowDetail]   = useState(false);
+    const [showDetail, setShowDetail] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
 
     const [datatableApproval, setDatatableApproval] = useState([]);
@@ -53,17 +53,17 @@ const ReimbursementPage = () => {
             accessor: "jenis_reimbursement",
             Cell: ({ value }) => jenisLabel[value] || value,
         },
-        { Header: "Tanggal",  accessor: "tanggal_reimbursement" },
-        { Header: "Jumlah",   accessor: "jumlah" },
+        { Header: "Tanggal", accessor: "tanggal_reimbursement" },
+        { Header: "Jumlah", accessor: "jumlah" },
         { Header: "Keterangan", accessor: "keterangan" },
         {
             Header: "Status",
             Cell: ({ row }) => {
                 const status = row.original.status_reimbursement;
                 const color =
-                    status === "APPROVED"  ? "success"   :
-                    status === "REJECTED"  ? "danger"    :
-                    status === "CANCELLED" ? "secondary" : "warning";
+                    status === "APPROVED" ? "success" :
+                        status === "REJECTED" ? "danger" :
+                            status === "CANCELLED" ? "secondary" : "warning";
                 return <span className={`badge bg-${color}`}>{status}</span>;
             }
         },
@@ -87,8 +87,8 @@ const ReimbursementPage = () => {
             accessor: "jenis_reimbursement",
             Cell: ({ value }) => jenisLabel[value] || value,
         },
-        { Header: "Tanggal",    accessor: "tanggal_reimbursement" },
-        { Header: "Jumlah",     accessor: "jumlah" },
+        { Header: "Tanggal", accessor: "tanggal_reimbursement" },
+        { Header: "Jumlah", accessor: "jumlah" },
         { Header: "Keterangan", accessor: "keterangan" },
         {
             Header: "Dokumen",
@@ -135,6 +135,23 @@ const ReimbursementPage = () => {
         return [];
     };
 
+    const getEmployee = async () => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            const result = await apiConfig.get(apiUrl + "/HR-Employee/get-employee", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                },
+            });
+            if (result.status === 200) {
+                console.log(result.data.data);
+            }
+        } catch (error) {
+            console.log("Error get employee:", error.response?.data);
+        }
+    };
+
     const getMonitoringReimbursement = async (userList = []) => {
         setLoader(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -147,17 +164,19 @@ const ReimbursementPage = () => {
             });
             if (result.status === 200) {
                 const arr = result.data.data.map((data) => ({
-                    rawData:               data,
-                    nama_user:             userList.find((u) => u.id_user === data.created_by)?.username || "-",
-                    jenis_reimbursement:   data.jenis_reimbursement   || "-",
+                    rawData: data,
+                    nama_user: data.employee_pengajuan?.nama || "-",
+                    // nama_user: userList.find((u) => u.id_user === data.created_by)?.username || "-",
+                    jenis_reimbursement: data.jenis_reimbursement || "-",
                     tanggal_reimbursement: data.tanggal_reimbursement || "-",
-                    jumlah:                toCurrency(data.jumlah),
-                    keterangan:            data.keterangan            || "-",
-                    status_reimbursement:  data.status_reimbursement  || "PENDING",
+                    jumlah: toCurrency(data.jumlah),
+                    keterangan: data.keterangan || "-",
+                    status_reimbursement: data.status_reimbursement || "PENDING",
                 }));
                 setDatatableMonitoring(arr);
             }
             setLoader(false);
+            console.log(result);
         } catch (error) {
             console.error(error);
             setLoader(false);
@@ -179,12 +198,13 @@ const ReimbursementPage = () => {
                 for (const data of result.data.data) {
                     if (data.status_reimbursement !== "PENDING") continue;
                     arr.push({
-                        rawData:               data,
-                        nama_user:             userList.find((u) => u.id_user === data.created_by)?.username || "-",
-                        jenis_reimbursement:   data.jenis_reimbursement   || "-",
+                        rawData: data,
+                        nama_user: data.employee_pengajuan?.nama || "-",
+                        // nama_user: userList.find((u) => u.id_user === data.created_by)?.username || "-",
+                        jenis_reimbursement: data.jenis_reimbursement || "-",
                         tanggal_reimbursement: data.tanggal_reimbursement || "-",
-                        jumlah:                toCurrency(data.jumlah),
-                        keterangan:            data.keterangan            || "-",
+                        jumlah: toCurrency(data.jumlah),
+                        keterangan: data.keterangan || "-",
                         aksi: (
                             <div className="d-flex flex-row gap-2">
                                 <button type="button" className="btn btn-success btn-sm"
@@ -229,7 +249,7 @@ const ReimbursementPage = () => {
     };
 
     const validateForm = () => {
-        if (!formData.jenis_reimbursement)   { Swal.fire("Validasi", "Jenis reimbursement wajib dipilih", "warning"); return false; }
+        if (!formData.jenis_reimbursement) { Swal.fire("Validasi", "Jenis reimbursement wajib dipilih", "warning"); return false; }
         if (!formData.tanggal_reimbursement) { Swal.fire("Validasi", "Tanggal wajib diisi", "warning"); return false; }
         if (!formData.jumlah || formData.jumlah === "0") { Swal.fire("Validasi", "Jumlah wajib diisi", "warning"); return false; }
         if (!formData.keterangan || formData.keterangan.trim().length < 5) { Swal.fire("Validasi", "Keterangan wajib diisi (minimal 5 karakter)", "warning"); return false; }
@@ -242,11 +262,11 @@ const ReimbursementPage = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         const fd = new FormData();
-        fd.append("jenis_reimbursement",   formData.jenis_reimbursement);
+        fd.append("jenis_reimbursement", formData.jenis_reimbursement);
         fd.append("tanggal_reimbursement", formData.tanggal_reimbursement);
-        fd.append("jumlah",                cleanCurrency(formData.jumlah));
-        fd.append("keterangan",            formData.keterangan);
-        fd.append("id_approver",           formData.id_approver);
+        fd.append("jumlah", cleanCurrency(formData.jumlah));
+        fd.append("keterangan", formData.keterangan);
+        fd.append("id_approver", formData.id_approver);
         if (dokumenFiles.length > 0) fd.append("dokumen_reimbursement", dokumenFiles[0].file);
 
         try {
@@ -330,6 +350,7 @@ const ReimbursementPage = () => {
             const userList = await getDaftarUser();
             await getMonitoringReimbursement(userList);
             await getApprovalReimbursement(userList);
+            await getEmployee();
         };
         init();
     }, [reload]);
@@ -380,7 +401,6 @@ const ReimbursementPage = () => {
 
                                 <Tab.Content>
 
-                                    {/* ── Tab 1: Pengajuan ── */}
                                     <Tab.Pane eventKey="pengajuan" className="border p-3 rounded">
                                         <Row className="gy-3">
                                             <Col xl={12}>
@@ -484,11 +504,10 @@ const ReimbursementPage = () => {
                             <p><b>Keterangan:</b> {selectedData.keterangan || "-"}</p>
                             <hr />
                             <p><b>Status:</b>{" "}
-                                <span className={`badge bg-${
-                                    selectedData.status_reimbursement === "APPROVED"  ? "success"   :
-                                    selectedData.status_reimbursement === "REJECTED"  ? "danger"    :
-                                    selectedData.status_reimbursement === "CANCELLED" ? "secondary" : "warning"
-                                }`}>{selectedData.status_reimbursement || "PENDING"}</span>
+                                <span className={`badge bg-${selectedData.status_reimbursement === "APPROVED" ? "success" :
+                                        selectedData.status_reimbursement === "REJECTED" ? "danger" :
+                                            selectedData.status_reimbursement === "CANCELLED" ? "secondary" : "warning"
+                                    }`}>{selectedData.status_reimbursement || "PENDING"}</span>
                             </p>
                             {selectedData.alasan_penolakan && (
                                 <p><b>Alasan Penolakan:</b> {selectedData.alasan_penolakan}</p>

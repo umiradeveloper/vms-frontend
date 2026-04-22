@@ -144,6 +144,23 @@ const CutiPage = () => {
         return [];
     };
 
+    const getEmployee = async () => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            const result = await apiConfig.get(apiUrl + "/HR-Employee/get-employee", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer" + localStorage.getItem("token"),
+                },
+            });
+            if (result.status === 200) {
+                console.log(result.data.data);
+            }
+        } catch (error) {
+            console.log("Error get emmployee", error.response?.data);
+        }
+    };
+
     const getCutiBalance = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
@@ -178,6 +195,7 @@ const CutiPage = () => {
                 setDatatableMonitoring(arr);
             }
             setLoader(false);
+            console.log(result);
         } catch (error) {
             console.error(error);
             setLoader(false);
