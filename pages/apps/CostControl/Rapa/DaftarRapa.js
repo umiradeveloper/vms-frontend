@@ -56,9 +56,12 @@ const DaftarRapa = () => {
 					"Content-Type": "application/json",
 					"Authorization": "Bearer " + localStorage.getItem("token")
 				}
+
 			});
+            console.log(result)
             if(result.status == 200){
                 const daftarArr = [];
+                
                 for await (const data of result.data.data) {
                     daftarArr.push({
                         kode_proyek: data.proyek.kode_proyek,

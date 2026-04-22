@@ -23,20 +23,17 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
     })
     const COLUMNS = [
         {
-            Header: "Kode RAP",
-            accessor: "kode_rap",
+            Header: "Cost Code",
+            accessor: "cost_code",
         },
         {
             Header: "Kategori",
             accessor: "kategori",
         },
+       
         {
-            Header: "Group",
-            accessor: "group",
-        },
-        {
-            Header: "Item Pekerjaan",
-            accessor: "item_pekerjaan",
+            Header: "Nama",
+            accessor: "nama",
         },
        
         {
@@ -92,26 +89,28 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
         setLoader(true);
         let dataSubmit = {
             kode_proyek: dataProyek.kode_proyek,
-            kategori:[],
-            kode_rap:[],
-            group:[],
-            item_pekerjaan:[],
-            spesifikasi:[],
-            satuan:[],
+            // kategori:[],
+            // kode_rap:[],
+            // group:[],
+            // item_pekerjaan:[],
+            // spesifikasi:[],
+            // satuan:[],
+            cost_code: [],
             volume:[],
             harga_satuan:[],
             harga_total:[]
         }
         for(const data of dataTable){
-            dataSubmit.kategori.push((data.kategori)?data.kategori:"-");
-            dataSubmit.kode_rap.push((data.kode_rap)?data.kode_rap:"-");
-            dataSubmit.group.push((data.group)?data.group:"-");
-            dataSubmit.item_pekerjaan.push((data.item_pekerjaan)?data.item_pekerjaan:"-");
-            dataSubmit.spesifikasi.push((data.spesifikasi)?data.spesifikasi:"-");
-            dataSubmit.satuan.push((data.satuan)?data.satuan:"-");
+            // dataSubmit.kategori.push((data.kategori)?data.kategori:"-");
+            // dataSubmit.kode_rap.push((data.kode_rap)?data.kode_rap:"-");
+            // dataSubmit.group.push((data.group)?data.group:"-");
+            // dataSubmit.item_pekerjaan.push((data.item_pekerjaan)?data.item_pekerjaan:"-");
+            // dataSubmit.spesifikasi.push((data.spesifikasi)?data.spesifikasi:"-");
+            // dataSubmit.satuan.push((data.satuan)?data.satuan:"-");
+            dataSubmit.cost_code.push((data.cost_code)?data.cost_code:"");
             dataSubmit.volume.push((data.volume)?data.volume:0);
-            dataSubmit.harga_satuan.push((data.harga_satuan_ori)?data.harga_satuan_ori:0);
-            dataSubmit.harga_total.push((data.harga_total_ori)?data.harga_total_ori:0);
+            dataSubmit.harga_satuan.push((data.harga_satuan)?clearCurrency(data.harga_satuan):0);
+            dataSubmit.harga_total.push((data.harga_total)?clearCurrency(data.harga_total):0);
         }
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
@@ -186,25 +185,77 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
                 });
                 return newRow;
             });
+            const costCodeUpload = [];
+            const mergeArrayUpload = [];
+            
            for(const data of normalized){
-            // console.log(data["ITEM PEKERJAAN"])
-            if(data["ITEM PEKERJAAN"]){
-                arrUpload.push({
-                    kode_rap: (data["KODE RAP"])?data["KODE RAP"]:"",
-                    kategori: (data["KATEGORI"])?data["KATEGORI"]:"",
-                    item_pekerjaan: (data["ITEM PEKERJAAN"])?data["ITEM PEKERJAAN"]:"",
-                    spesifikasi: (data["SPESIFIKASI"])?data["SPESIFIKASI"]:"",
-                    satuan: (data["SAT"])?data["SAT"]:"",
+            if(data["Cost Code"]){
+                
+                costCodeUpload.push((data["Cost Code"])?data["Cost Code"]:"")
+                mergeArrayUpload.push({
+                    cost_code: (data["Cost Code"])?data["Cost Code"]:"",
                     volume: (data["VOLUME"])?data["VOLUME"]:"",
-                    harga_satuan: (data["HARGA SATUAN"])?toCurrency(data["HARGA SATUAN"]):"",
-                    harga_total: (data["TOTAL HARGA"])?toCurrency(data["TOTAL HARGA"]):"",
-                    harga_satuan_ori: (data["HARGA SATUAN"])?data["HARGA SATUAN"]:"",
-                    harga_total_ori: (data["TOTAL HARGA"])?data["TOTAL HARGA"]:"",
-                });
+                    harga_satuan: (data["HARGA SATUAN"])?data["HARGA SATUAN"]:"",
+                    total_harga: (data["TOTAL HARGA"])?data["TOTAL HARGA"]:""
+                })
             }
+            // console.log(data)
+            // console.log(data["ITEM PEKERJAAN"])
+            // if(data["ITEM PEKERJAAN"]){
+            //     arrUpload.push({
+            //         kode_rap: (data["KODE RAP"])?data["KODE RAP"]:"",
+            //         kategori: (data["KATEGORI"])?data["KATEGORI"]:"",
+            //         item_pekerjaan: (data["ITEM PEKERJAAN"])?data["ITEM PEKERJAAN"]:"",
+            //         spesifikasi: (data["SPESIFIKASI"])?data["SPESIFIKASI"]:"",
+            //         satuan: (data["SAT"])?data["SAT"]:"",
+            //         volume: (data["VOLUME"])?data["VOLUME"]:"",
+            //         harga_satuan: (data["HARGA SATUAN"])?toCurrency(data["HARGA SATUAN"]):"",
+            //         harga_total: (data["TOTAL HARGA"])?toCurrency(data["TOTAL HARGA"]):"",
+            //         harga_satuan_ori: (data["HARGA SATUAN"])?data["HARGA SATUAN"]:"",
+            //         harga_total_ori: (data["TOTAL HARGA"])?data["TOTAL HARGA"]:"",
+            //     });
+            // }
              
            }
-        //    console.log(normalized)
+        //    console.log(costCodeUpload)
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                try {
+                    const result = await apiConfig.post(apiUrl + "/CostControl/Rapa/get-cost-code-rapa", {CostCode: costCodeUpload},{
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    });
+                    
+                    if(result.data.data.length > 0){
+                        const merged = mergeArrayUpload.map(a => {
+                            const match = result.data.data.find(b => String(b.cost_code).trim() === String(a.cost_code).trim());
+                            return {
+                                ...a,
+                                ...match // merge if found
+                            };
+                        });
+                        // console.log(merged);
+                        merged.forEach(element => {
+                            arrUpload.push({
+                                cost_code: element.cost_code,
+                                kategori: element.kategori?.nama_kategori,
+                                nama: element.nama,
+                                spesifikasi: element.spesifikasi,
+                                satuan: element.satuan,
+                                volume: element.volume,
+                                harga_satuan: toCurrency(element.harga_satuan),
+                                harga_total: toCurrency(element.total_harga)
+                            })
+                        });
+                    }
+                    
+                    
+                    console.log(result) 
+                }catch(error){
+                    setLoader(false);
+                    console.log("e = "+error);
+                }
            setDataTable(arrUpload);
            setLoader(false);
         };
@@ -221,6 +272,16 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
             currency: "IDR",
             minimumFractionDigits: 0
         }).format(Number(value));
+    };
+
+    const clearCurrency = (value) => {
+        if (!value) return 0;
+
+        return Number(
+            value
+                .replace(/[^0-9,-]+/g, "") // hapus Rp, spasi, dll
+                .replace(",", ".")         // handle decimal kalau ada
+        );
     };
     useEffect(() => {
         if(openModal.open){

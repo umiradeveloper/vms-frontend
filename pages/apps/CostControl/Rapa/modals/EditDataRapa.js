@@ -57,15 +57,15 @@ const EditDataRapa = ({ openModal, setOpenModal }) => {
         try {
             const dataSubmit = {
                 id_rapa: openModal.id_rapa,
-                kode_rap: dataRapa.kode_rap,
-                kategori: dataRapa.kategori,
-                group: dataRapa.group,
-                item_pekerjaan: dataRapa.item_pekerjaan,
-                spesifikasi: dataRapa.spesifikasi,
-                satuan: dataRapa.satuan,
+                // kode_rap: dataRapa.kode_rap,
+                // kategori: dataRapa.kategori,
+                // group: dataRapa.group,
+                // item_pekerjaan: dataRapa.item_pekerjaan,
+                // spesifikasi: dataRapa.spesifikasi,
+                // satuan: dataRapa.satuan,
                 volume: dataRapa.volume,
-                harga_satuan: dataRapa.harga_satuan,
-                harga_total: dataRapa.harga_total
+                harga_satuan: (dataRapa.harga_satuan)?cleanCurrency(dataRapa.harga_satuan):0,
+                harga_total: (dataRapa.harga_total)?cleanCurrency(dataRapa.harga_total):0
             }
             const result = await apiConfig.patch(apiUrl + "/CostControl/Rapa/update-rapa", dataSubmit, {
                 headers: {
@@ -117,11 +117,14 @@ const EditDataRapa = ({ openModal, setOpenModal }) => {
         // setValueRap(val);
     };
     const cleanCurrency = (value) => {
-        if (!value) return 0;
+        if (value == null) return 0;
+
+        const str = String(value); // ✅ paksa jadi string
 
         return Number(
-            value
-                .replace(/[^0-9]/g, "") // hapus semua selain angka
+            str
+                .replace(/[^0-9,-]+/g, "")
+                .replace(",", ".")
         );
     };
 
@@ -143,28 +146,28 @@ const EditDataRapa = ({ openModal, setOpenModal }) => {
                     <Col xl={12} className="rounded-3">
                         <div className="row gy-2 pb-3">
                             <Col xl={12}>
-                                <label htmlFor="kode-proyek" className="form-label ">Kode RAP <span style={{ color: "red" }}>*</span> :</label>
-                                <input type="text" className={`form-control`} id="kode_rap" placeholder="Kode RAP" value={dataRapa.kode_rap} onChange={(e) => setDataRapa({ ...dataRapa, kode_rap: e.target.value })} />
+                                <label htmlFor="kode-proyek" className="form-label ">Cost Code <span style={{ color: "red" }}>*</span> :</label>
+                                <input type="text" className={`form-control`} id="kode_rap" placeholder="Kode RAP" value={dataRapa.kode_rap} onChange={(e) => setDataRapa({ ...dataRapa, kode_rap: e.target.value })} disabled/>
                             </Col>
                             <Col xl={12}>
                                 <label htmlFor="nama-proyek" className="form-label ">Kategori <span style={{ color: "red" }}>*</span> :</label>
-                                <input type="text" className={`form-control`} id="kategori" placeholder="Kategori" value={dataRapa.kategori} onChange={(e) => setDataRapa({ ...dataRapa, kategori: e.target.value })} />
+                                <input type="text" className={`form-control`} id="kategori" placeholder="Kategori" value={dataRapa.kategori} onChange={(e) => setDataRapa({ ...dataRapa, kategori: e.target.value })} disabled/>
                             </Col>
-                            <Col xl={12}>
+                            {/* <Col xl={12}>
                                 <label htmlFor="nama-proyek" className="form-label ">Group<span style={{ color: "red" }}>*</span> :</label>
                                 <input type="text" className={`form-control`} id="group" placeholder="Group" value={dataRapa.group} onChange={(e) => setDataRapa({ ...dataRapa, group: e.target.value })} />
-                            </Col>
+                            </Col> */}
                             <Col xl={12}>
                                 <label htmlFor="nama-proyek" className="form-label ">Item Pekerjaan<span style={{ color: "red" }}>*</span> :</label>
-                                <input type="text" className={`form-control`} id="item_pekerjaan" placeholder="Item Pekerjaan" value={dataRapa.item_pekerjaan} onChange={(e) => setDataRapa({ ...dataRapa, item_pekerjaan: e.target.value })} />
+                                <input type="text" className={`form-control`} id="item_pekerjaan" placeholder="Item Pekerjaan" value={dataRapa.item_pekerjaan} onChange={(e) => setDataRapa({ ...dataRapa, item_pekerjaan: e.target.value })} disabled/>
                             </Col>
                             <Col xl={12}>
                                 <label htmlFor="nama-proyek" className="form-label ">Spesifikasi<span style={{ color: "red" }}>*</span> :</label>
-                                <textarea rows={4} className={`form-control`} id="spesifikasi" placeholder="Spesifikasi" value={dataRapa.spesifikasi} onChange={(e) => setDataRapa({ ...dataRapa, spesifikasi: e.target.value })} />
+                                <textarea rows={4} className={`form-control`} id="spesifikasi" placeholder="Spesifikasi" value={dataRapa.spesifikasi} onChange={(e) => setDataRapa({ ...dataRapa, spesifikasi: e.target.value })} disabled/>
                             </Col>
                             <Col xl={12}>
                                 <label htmlFor="nama-proyek" className="form-label ">Satuan<span style={{ color: "red" }}>*</span> :</label>
-                                <input type="text" className={`form-control`} id="satuan" placeholder="Satuan" value={dataRapa.satuan} onChange={(e) => setDataRapa({ ...dataRapa, satuan: e.target.value })} />
+                                <input type="text" className={`form-control`} id="satuan" placeholder="Satuan" value={dataRapa.satuan} onChange={(e) => setDataRapa({ ...dataRapa, satuan: e.target.value })} disabled/>
                             </Col>
 
                             <Col xl={12}>

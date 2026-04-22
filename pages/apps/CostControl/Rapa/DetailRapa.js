@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import apiConfig from "../../../../utils/AxiosConfig";
 import UploadDataRapa from "./modals/UploadDataRapa";
 import EditDataRapa from "./modals/EditDataRapa";
+import AddDataRapa from "./modals/AddDataRapa";
 import Swal from "sweetalert2";
 
 const DetailRapa = () => {
@@ -36,6 +37,16 @@ const DetailRapa = () => {
         kode_proyek: "",
         open_modal: false
     })
+    const [openModalAdd, setOpenModalAdd] = useState({
+        kode_proyek: "",
+        nama_proyek: "",
+        deskripsi_proyek: "",
+        tanggal_kontrak: "",
+        biaya_rap: "",
+        biaya_rab: "",
+        bk_pu_awal:"",
+        open: false
+    })
     const navigate = useRouter();
     const [datatable, setDataTable] = useState([]);
     const COLUMNS = [
@@ -47,10 +58,10 @@ const DetailRapa = () => {
             Header: "Kategori",
             accessor: "kategori",
         },
-        {
-            Header: "Group",
-            accessor: "group",
-        },
+        // {
+        //     Header: "Group",
+        //     accessor: "group",
+        // },
         {
             Header: "Item",
             accessor: "item_pekerjaan",
@@ -287,7 +298,7 @@ const DetailRapa = () => {
             getRapa();
         }
 
-    }, [params.get("id"), openModalEdit.open_modal, reload])
+    }, [params.get("id"), openModalEdit.open_modal, reload, openModalAdd.open])
     return (
         <Fragment>
             <Seo title={"Detail Rapa"} />
@@ -295,6 +306,7 @@ const DetailRapa = () => {
             <LoadersSimUmira open={loader} />
             <UploadDataRapa openModal={openModalUpload} setOpenModal={setOpenModalUpload} reload={reload} setReload={setReload} />
             <EditDataRapa openModal={openModalEdit} setOpenModal={setOpenModalEdit} />
+            <AddDataRapa openModal={openModalAdd} setOpenModal={setOpenModalAdd} loader={loader} setLoader={setLoader} />
             <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
@@ -321,6 +333,14 @@ const DetailRapa = () => {
                             >
                                 <i className="ri-add-circle-line label-btn-icon me-2 rounded-pill" />
                                 Upload
+                            </button>
+                            <button
+                                type="button" className="btn btn-secondary label-btn rounded-pill"
+                                onClick={() => setOpenModalAdd({ kode_proyek: dataProyek.kode_proyek, nama_proyek: dataProyek.nama_proyek, tanggal_kontrak: dataProyek.tanggal_kontrak, biaya_rab: dataProyek.biaya_rab, biaya_rap: dataProyek.biaya_rap, bk_pu_awal: dataProyek.bk_pu_awal, open: true })}
+                            // onClick={() => navigate.push("/apps/CostControl/Rapa/DaftarRapa")}
+                            >
+                                <i className="ri-add-circle-line label-btn-icon me-2 rounded-pill" />
+                                Tambah Rapa
                             </button>
 
                         </Card.Header>
