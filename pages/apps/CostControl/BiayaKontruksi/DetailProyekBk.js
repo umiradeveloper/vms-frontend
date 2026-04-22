@@ -56,10 +56,10 @@ const DetailProyekBk = () => {
             Header: "Kategori",
             accessor: "kategori",
         },
-        {
-            Header: "Group",
-            accessor: "group",
-        },
+        // {
+        //     Header: "Group",
+        //     accessor: "group",
+        // },
         {
             Header: "Item Pekerjaan",
             accessor: "item_pekerjaan",
@@ -176,10 +176,11 @@ const DetailProyekBk = () => {
             });
             if (result.status) {
                 const arrRapa = [];
+                // console.log(result)
                 for (const data of result.data.data) {
                     arrRapa.push({
                         kode_rap: (data.kode_rap) ? data.kode_rap : "",
-                        kategori: (data.kategori) ? data.kategori : "",
+                        kategori: (data.Kategori) ? data.Kategori : "",
                         group: (data.group) ? data.group : "",
                         item_pekerjaan: (data.item_pekerjaan) ? data.item_pekerjaan : "",
                         spesifikasi: (data.spesifikasi) ? data.spesifikasi : "",
