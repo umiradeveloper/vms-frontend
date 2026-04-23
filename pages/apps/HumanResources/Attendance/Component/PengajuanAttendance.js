@@ -6,7 +6,8 @@ import apiConfig from "@/utils/AxiosConfig";
 
 
 
-const PengajuanAttendance = ({ loader, setLoader }) => {
+
+const PengajuanAttendance = ({ loader, setLoader, detailAbsensi, setDetailAbsensi }) => {
 	const COLUMNS = [
 		{
 			Header: "NIP",
@@ -65,7 +66,7 @@ const PengajuanAttendance = ({ loader, setLoader }) => {
 							keterangan: datas.keterangan,
 
 							aksi: <div className="d-flex flex-row gap-2">
-								<button className="btn btn-info" onClick={() =>  {}} >Detail</button>
+								<button className="btn btn-info" onClick={() =>  setDetailAbsensi({open: true, data: datas})} >Detail</button>
 							</div>
 						})
 					}
@@ -85,7 +86,7 @@ const PengajuanAttendance = ({ loader, setLoader }) => {
 	},[])
 	return (
 		<Row>
-
+			
 			<Col xl={12}>
 				<Card className="custom-card">
 					<Card.Header>

@@ -6,6 +6,7 @@ import CreateAbsensi from "../Attendance/Component/modals/CreateAbsensi";
 import PengajuanAttendance from "../Attendance/Component/PengajuanAttendance";
 import CreatePengajuanAbsensi from "@/pages/apps/HumanResources/Attendance/Component/modals/CreatePengajuanAbsensi";
 import ApprovalAttendance from "@/pages/apps/HumanResources/Attendance/Component/ApprovalAttendance";
+import DetailAbsensi from "@/pages/apps/HumanResources/Attendance/Component/modals/DetailAbsensi";
 
 const Attendance = ({ loader, setLoader }) => {
     const COLUMNS = [
@@ -52,10 +53,16 @@ const Attendance = ({ loader, setLoader }) => {
         open: false
     })
 
+    const [detailAbsensi, setDetailAbsensi] = useState({
+        open: false,
+        data:{}
+    })
+
     return (
         <Row>
             <CreateAbsensi openModal={openModalAdd} setOpenModal={setOpenModalAdd} loader={loader} setLoader={setLoader} />
             <CreatePengajuanAbsensi openModal={openModalAddPengajuan} setOpenModal={setOpenModalAddPengajuan} loader={loader} setLoader={setLoader} />
+            <DetailAbsensi openModal={detailAbsensi} setOpenModal={setDetailAbsensi} loader={loader} setLoader={setLoader}/>
             <Col xl={12}>
                 <Card className="custom-card">
 
@@ -72,7 +79,7 @@ const Attendance = ({ loader, setLoader }) => {
                                             <Button variant="contained" color="success" onClick={() => setOpenModalAddPengajuan({open: true})}>Tambah Pengajuan Absensi</Button>
                                         </Col>
                                         <Col xl={12}>
-                                            <PengajuanAttendance loader={loader} setLoader={setLoader} />
+                                            <PengajuanAttendance loader={loader} setLoader={setLoader} detailAbsensi={detailAbsensi} setDetailAbsensi={setDetailAbsensi}/>
                                         </Col>
                                         
                                 </Tab.Pane>
