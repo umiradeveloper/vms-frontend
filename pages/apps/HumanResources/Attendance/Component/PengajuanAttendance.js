@@ -50,7 +50,7 @@ const PengajuanAttendance = ({ loader, setLoader, detailAbsensi, setDetailAbsens
 					"Authorization": "Bearer " + localStorage.getItem("token")
 				}
 			});
-			console.log(result);
+			// console.log(result);
 			if (result.status == 200) {
 				const attendanceArr = [];
 				if (result.data.data?.length > 0) {
