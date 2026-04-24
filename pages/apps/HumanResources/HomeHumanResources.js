@@ -45,11 +45,7 @@ const HomeHumanResources = () => {
                                         <Attendance loader={loader} setLoader={setLoader} />
                                     </Tab.Pane>
                                     <Tab.Pane id="declined" role="tabpanel" eventKey="third">
-                                        <div className="text-muted">There are many variations of passages of Lorem
-                                            Ipsum available, but the majority have suffered alteration in some form,
-                                            <b>by injected humour</b>, or randomised words which don't look even
-                                            slightly believable
-                                        </div>
+                                        <Overtime loader={loader} setLoader={setLoader} />
                                     </Tab.Pane>
                                     <Tab.Pane id="cuti" role="tabpanel" eventKey="fourth">
                                         <Cuti loader={loader} setLoader={setLoader} />
