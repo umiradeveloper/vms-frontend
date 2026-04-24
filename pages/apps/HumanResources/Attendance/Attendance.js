@@ -64,7 +64,7 @@ const Attendance = ({ loader, setLoader }) => {
                             <Nav className="nav-tabs mb-3 nav-justified nav-style-1 d-sm-flex d-block" role="tablist" defaultActiveKey="first">
                                 <Nav.Item> <Nav.Link href="#dashboard" eventKey="first" >Pengajuan Absensi</Nav.Link> </Nav.Item>
                                 <Nav.Item> <Nav.Link href="#absensi" eventKey="second" >Absensi</Nav.Link> </Nav.Item>
-                                <Nav.Item> <Nav.Link href="#about1-justified" eventKey="third">Approval</Nav.Link> </Nav.Item>
+                                <Nav.Item> <Nav.Link href="#approval" eventKey="third">Approval</Nav.Link> </Nav.Item>
                             </Nav>
                             <Tab.Content id="myTabContent">
                                 <Tab.Pane role="tabpanel" className="tab-pane text-muted" id="dashboard" eventKey="first">
@@ -87,7 +87,7 @@ const Attendance = ({ loader, setLoader }) => {
                                     </Row>
                                    
                                 </Tab.Pane>
-                                <Tab.Pane role="tabpanel" className="tab-pane text-muted" id="about1-justified" eventKey="third">
+                                <Tab.Pane role="tabpanel" className="tab-pane text-muted" id="approval" eventKey="third">
                                     <Col xl={12}>
                                         <ApprovalAttendance loader={loader} setLoader={setLoader}/>
                                     </Col>
