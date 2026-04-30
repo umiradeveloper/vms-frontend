@@ -7,6 +7,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { useRouter } from "next/router";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import logo from "@/public/assets/images/brand-logos/logo-umira.png";
 
 
 const DetailSuratPayment = ({ data }) => {
@@ -75,6 +76,10 @@ const DetailSuratPayment = ({ data }) => {
                     {data?.nama_perusahaan ?? `Seluruh Vendor / Supplier / Mandor`} <br />
                     Di – tempat
                 </Typography> */}
+                <Typography variant="subtitle1" paragraph align="justify">
+                    Kode Transaksi : {data?.kode_transaksi ?? "kode Transaksi"}
+                </Typography>
+                <Divider sx={{ my: 2 }} />
                 <Typography variant="subtitle1" paragraph align="justify">
                     Nama Pemohon : {data?.user_pengajuan?.nama ?? `Nama`}
                 </Typography>
@@ -164,6 +169,14 @@ const DetailSuratPayment = ({ data }) => {
                                         fgColor="#4c4c4c"
                                         level="H"
                                         includeMargin={true}
+                                        imageSettings={{
+                                            src: "/assets/images/brand-logos/logo-umira.png",
+                                            x: undefined,
+                                            y: undefined,
+                                            height: 15,
+                                            width: 30,
+                                            excavate: true
+                                        }}
                                     />
 
                                     <Divider sx={{ width: '100%', my: 1 }} />
