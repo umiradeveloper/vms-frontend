@@ -10,6 +10,7 @@ import apiConfig from "@/utils/AxiosConfig";
 const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
     const [idTransaksi, setIdTransaksi] = useState("");
     const [fileTransaksi, setFileTransaksi] = useState([]);
+    const [nilaiTransaksi, setNilaiTransaksi] = useState([]);
     const [reload, setReload] = useState(false);
     const [modalUploadTransaksi, setModalUploadTransaksi] = useState({
         open: false,
@@ -37,6 +38,11 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
         const updated = [...fileTransaksi];
         updated[index] = file; // simpan file
         setFileTransaksi(updated);
+    };
+    const handleInputChange = (index, value) => {
+        const updated = [...nilaiTransaksi];
+        updated[index] = value; // simpan file
+        setNilaiTransaksi(updated);
     };
 
 
@@ -213,20 +219,22 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
     }
     const updateDokumenDetailTransaksi = async (index, item) => {
         const selectedFile = fileTransaksi[index];
+        const inputNilai = nilaiTransaksi[index];
         // console.log(selectedFile)
-        if (!selectedFile) {
-    
-            alert("Pilih file dulu");
+        if (!selectedFile || !inputNilai) {
+
+            alert("Pilih file dulu atau nilai tidak boleh kosong");
             return;
         }
 
         const formData = new FormData();
         formData.append("upload_dokumen_transaksi", selectedFile);
+        formData.append("nilai_transaksi", inputNilai);
         // formData.append("id_detail_transaksi", item.id_detail_transaksi);
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const result = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi-pengajuan?id="+item.id_detail_transaksi, formData, {
+            const result = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi-pengajuan?id=" + item.id_detail_transaksi, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -248,6 +256,15 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             setLoader(false);
         }
     }
+
+    const toCurrency = (amount) => {
+        const hasil = new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR"
+        }).format(amount);
+        return hasil
+    }
+
 
     const swalAlert = (message, title, icon) => {
         let timerInterval;
@@ -314,17 +331,20 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
                                     </div>
                                 </Col>
 
-                                {showData.detail_transaksi && showData.detail_transaksi.map((item, index) => (
+                                {/* {showData.detail_transaksi && showData.detail_transaksi.map((item, index) => (
                                     <>
                                         <Divider className="mt-3 mb-3" />
                                         <Col xl={12} key={index}>
                                             <div className="row gy-2 pb-3">
                                                 <Row>
-                                                    <Col xl={4}>
+                                                    <Col xl={3}>
                                                         <label htmlFor="nama-proyek" className="form-label ">{item.pertanyaan}<span style={{ color: "red" }}>*</span> :</label>
                                                     </Col>
-                                                    <Col xl={4}>
+                                                    <Col xl={3}>
                                                         <Button variant='contained' type="button" className="btn btn-primary" onClick={() => { getFileTransaksi(item.id_detail_transaksi, item.pertanyaan) }}>Lihat Dokumen</Button>
+                                                    </Col>
+                                                    <Col xl={2}>
+                                                        <h6><span>Nilai : {toCurrency(item.nilai)}</span></h6>
                                                     </Col>
                                                     {item.checklist ? (
                                                         <>
@@ -338,6 +358,12 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
                                                                         <Form.Label>Upload Ulang Dokumen {item.pertanyaan}</Form.Label>
                                                                         <Form.Control type="file" onChange={(e) => { handleFileChange(index, e.target.files[0]) }} />
                                                                     </Form.Group>
+                                                                    <Form.Control
+                                                                        type="number"
+                                                                        placeholder="Masukan Nilai"
+                                                                        onChange={(e) => handleInputChange(index, e.target.value)}
+                                                                        className="mb-2 mt-2"
+                                                                    />
                                                                     <Button variant='contained' type="button" className="btn btn-primary" onClick={() => {updateDokumenDetailTransaksi(index, item)}}>Submit</Button>
                                                                 </Col>
                                                             )}
@@ -366,7 +392,148 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
                                             </div>
                                         </Col>
                                     </>
-                                ))}
+                                ))} */}
+
+                                {showData.detail_transaksi &&
+                                    showData.detail_transaksi.map((item, index) => (
+                                        <Col xl={12} key={index} className="mb-4">
+                                            <div className="card border-0 shadow-sm rounded-4">
+                                                <div className="card-body p-4">
+
+                                                    {/* Header */}
+                                                    <Row className="align-items-center gy-3">
+
+                                                        <Col xl={4}>
+                                                            <h6 className="fw-bold text-dark mb-1">
+                                                                {item.pertanyaan}
+                                                            </h6>
+                                                            <small className="text-muted">
+                                                                Detail Dokumen Transaksi
+                                                            </small>
+                                                        </Col>
+
+                                                        <Col xl={3}>
+                                                            <Button
+                                                                variant="contained"
+                                                                className="btn btn-primary w-100"
+                                                                onClick={() =>
+                                                                    getFileTransaksi(
+                                                                        item.id_detail_transaksi,
+                                                                        item.pertanyaan
+                                                                    )
+                                                                }
+                                                            >
+                                                                <i className="ri-file-search-line me-2"></i>
+                                                                Lihat Dokumen
+                                                            </Button>
+                                                        </Col>
+
+                                                        <Col xl={2}>
+                                                            <div className="bg-light rounded-3 p-2 text-center">
+                                                                <small className="text-muted d-block">
+                                                                    Nilai
+                                                                </small>
+                                                                <h6 className="mb-0 fw-bold text-success">
+                                                                    {toCurrency(item.nilai)}
+                                                                </h6>
+                                                            </div>
+                                                        </Col>
+
+                                                        <Col xl={3}>
+                                                            {item.checklist ? (
+                                                                <div className="text-xl-end">
+                                                                    <span
+                                                                        className={`badge px-3 py-2 fs-6 ${item.checklist == 1
+                                                                                ? "bg-success"
+                                                                                : "bg-danger"
+                                                                            }`}
+                                                                    >
+                                                                        {item.checklist == 1
+                                                                            ? "Verified"
+                                                                            : "Not Verified"}
+                                                                    </span>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="text-xl-end">
+                                                                    <span className="badge bg-info px-3 py-2 fs-6">
+                                                                        On Review
+                                                                    </span>
+                                                                </div>
+                                                            )}
+                                                        </Col>
+                                                    </Row>
+
+                                                    {/* Upload ulang jika reject */}
+                                                    {item.checklist == 2 && (
+                                                        <div className="mt-4 border-top pt-4">
+
+                                                            <h6 className="fw-semibold text-danger mb-3">
+                                                                Upload Ulang Dokumen
+                                                            </h6>
+
+                                                            <Form.Group className="mb-3">
+                                                                <Form.Label>
+                                                                    Upload Dokumen {item.pertanyaan}
+                                                                </Form.Label>
+
+                                                                <Form.Control
+                                                                    type="file"
+                                                                    onChange={(e) =>
+                                                                        handleFileChange(
+                                                                            index,
+                                                                            e.target.files[0]
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </Form.Group>
+
+                                                            <Form.Control
+                                                                type="number"
+                                                                placeholder="Masukan Nilai"
+                                                                className="mb-3"
+                                                                onChange={(e) =>
+                                                                    handleInputChange(
+                                                                        index,
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                            />
+
+                                                            <Button
+                                                                variant="contained"
+                                                                className="btn btn-primary"
+                                                                onClick={() =>
+                                                                    updateDokumenDetailTransaksi(
+                                                                        index,
+                                                                        item
+                                                                    )
+                                                                }
+                                                            >
+                                                                <i className="ri-upload-cloud-line me-2"></i>
+                                                                Submit Revisi
+                                                            </Button>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Catatan */}
+                                                    {item.catatan && (
+                                                        <div className="mt-4 p-3 rounded-3 bg-danger-subtle border-start border-4 border-danger">
+                                                            <small className="text-danger fw-semibold d-block mb-1">
+                                                                Catatan Reviewer
+                                                            </small>
+
+                                                            <span
+                                                                className="text-danger fst-italic"
+                                                                style={{ overflowWrap: "break-word" }}
+                                                            >
+                                                                {item.catatan}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    ))}
                                 <Divider className="mt-3 mb-3" />
 
                                 {showData.status_approval == "Approved" || showData.status_approval == "Reject" ? (
@@ -420,8 +587,8 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
                                                 <Col xl={2}>
                                                     <label htmlFor="nama-proyek" className="form-label ">Layak Bayar<span style={{ color: "red" }}>*</span> :</label>
                                                 </Col>
-                                                <Col xl={8}>
-                                                    <h2><span className={`badge bg-info`}>On Review</span></h2>
+                                                <Col xl={10}>
+                                                    <h2><span className={`badge ${(showData.status_approval == "Reject") ? "bg-danger" : "bg-info"}`}>{(showData.status_approval == "Reject") ? "Tidak Layak Bayar" : "On Review"}</span></h2>
                                                 </Col>
                                             </Row>
                                         </div>
@@ -436,7 +603,7 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
                                                 <Col xl={2}>
                                                     <label htmlFor="nama-proyek" className="form-label ">Dokumen Bukti Bayar<span style={{ color: "red" }}>*</span> :</label>
                                                 </Col>
-                                                <Col xl={8}>
+                                                <Col xl={10}>
                                                     <Button variant='contained' type="button" className="btn btn-primary" onClick={() => { getFileDokumenBuktiBayar(idTransaksi, "Bukti Pembayaran") }}>Lihat Dokumen</Button>
                                                 </Col>
                                             </Row>
@@ -450,7 +617,7 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
                                                     <label htmlFor="nama-proyek" className="form-label ">Bukti Bayar<span style={{ color: "red" }}>*</span> :</label>
                                                 </Col>
                                                 <Col xl={8}>
-                                                    <h2><span className={`badge bg-info`}>On Review</span></h2>
+                                                    <h2><span className={`badge ${(showData.status_approval == "Reject") ? "bg-danger" : "bg-info"}`}>{(showData.status_approval == "Reject") ? "Reject" : "On Review"}</span></h2>
                                                 </Col>
                                             </Row>
                                         </div>

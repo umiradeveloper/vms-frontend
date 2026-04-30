@@ -5,7 +5,7 @@ import Seo from "@/shared/layout-components/seo/seo";
 import PageHeaderVms from "../Component/PageHeaderVms";
 import LoadersSimUmira from "../Component/LoaderSimUmira";
 import CreatePengajuan from "./modals/CreatePengajuan";
-import MonitoringChecklistPembayaran from "./MonitoringChecklistPembayaran";
+import MonitoringChecklistPembayaran from "./Component/MonitoringChecklistPembayaran";
 
 
 const PengajuanChecklistPembayaran = () => {

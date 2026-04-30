@@ -8,6 +8,7 @@ import Overtime from "./Overtime/Overtime";
 import LoadersSimUmira from "../Component/LoaderSimUmira";
 import Cuti from "./Cuti/Cuti";
 import Reimbursement from "./Reimbursement/Reimbursement";
+import Payroll from "./Payroll/Payroll";
 
 const HomeHumanResources = () => {
 
@@ -36,6 +37,7 @@ const HomeHumanResources = () => {
                                     <Nav.Item> <Nav.Link eventKey="third" href="#declined">Lembur</Nav.Link> </Nav.Item>
                                     <Nav.Item><Nav.Link eventKey="fourth" href="#cuti">Cuti</Nav.Link></Nav.Item>
                                     <Nav.Item><Nav.Link eventKey="fifth" href="#reimbursement">Reimbursement</Nav.Link></Nav.Item>
+                                    <Nav.Item><Nav.Link eventKey="five" href="#payroll">Payroll</Nav.Link></Nav.Item>
                                 </Nav>
                                 <Tab.Content>
                                     <Tab.Pane id="employee" role="tabpanel" eventKey="first">
@@ -52,6 +54,9 @@ const HomeHumanResources = () => {
                                     </Tab.Pane>
                                     <Tab.Pane id="reimbursement" role="tabpanel" eventKey="fifth">
                                         <Reimbursement loader={loader} setLoader={setLoader} />
+                                    </Tab.Pane>
+                                    <Tab.Pane id="payroll" role="tabpanel" eventKey="five">
+                                        <Payroll loader={loader} setLoader={setLoader} />
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>

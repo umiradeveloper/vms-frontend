@@ -8,10 +8,13 @@ import apiConfig from "@/utils/AxiosConfig";
 
 const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
     const [jenisTransaksi, setJenisTransaksi] = useState([]);
+    const [proyek, setProyek] = useState([]);
+    const [kodeTransaksi, setKodeTransaksi] = useState();
     const [dataSubmit, setDataSubmit] = useState({
         jenis_transaksi: "",
         catatan: "",
-        proyek:""
+        proyek:"",
+        tempo_pembayaran_after_verified:"",
     });
     const [formTransaksi, setFormTransaksi] = useState([]);
     const getJenisTransaksi = async () => {
@@ -62,6 +65,7 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             });
             // console.log(result);
             if (result.status == 200) {
+                setKodeTransaksi(result.data?.data[0].kode_jenis);
                 setFormTransaksi(result.data?.data);
             }
         } catch (error) {
@@ -80,18 +84,26 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
         updated[index].file = file; // simpan file
         setFormTransaksi(updated);
     };
+    const handleInputChange = (index, value) => {
+        const updated = [...formTransaksi];
+        updated[index].value = value; 
+        setFormTransaksi(updated);
+    };
 
     const createTransaksi = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         const fm = new FormData();
         fm.append("jenis_transaksi", dataSubmit.jenis_transaksi);
+        fm.append("kode_transaksi", kodeTransaksi);
         fm.append("catatan", dataSubmit.catatan);
         fm.append("proyek", dataSubmit.proyek);
+        fm.append("tempo_pembayaran_after_verified", dataSubmit.tempo_pembayaran_after_verified);
         formTransaksi.forEach((item, index) => {
             if (item.file) {
                 fm.append('files', item.file);
                 fm.append('nama_transaksi', item.nama_transaksi); // optional
+                fm.append('nilai',item.value)
             }
         });
         // console.log(formTransaksi)
@@ -137,8 +149,43 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             }
         });
     }
+    const getDaftarProyek = async() => {
+        setLoader(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-dashboard", {
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "Bearer " + localStorage.getItem("token")
+				}
+
+			});
+            // console.log(result)
+            if(result.status == 200){
+                const ArrProyek = [];
+                if(result.data.data.length > 0){
+                    for(const datas of result.data.data){
+                        ArrProyek.push({
+                            value: datas.proyek?.nama_proyek,
+                            label: datas.proyek?.nama_proyek+" ("+datas.proyek?.kode_proyek+") "
+                            
+                        })
+                        // setProyek([...proyek, {label: datas.proyek?.nama_proyek+" ("+datas.proyek?.kode_proyek+") ", value: datas.proyek?.nama_proyek}])
+                    }
+                }
+                setProyek(ArrProyek);
+                
+            }
+            // console.log(result);
+        } catch (error) {
+            console.log("e = "+error);
+        }finally{
+            setLoader(false)
+        }
+    }
     useEffect(() => {
         getJenisTransaksi();
+        getDaftarProyek();
     }, [openModal.open, formTransaksi])
     return (
         <Modal size="xl" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }}>
@@ -160,11 +207,27 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
                                 </div>
                             </Col>
                             <Col xl={12} >
-                                    <Form.Group controlId="formFile" className="mb-3">
-                                        <Form.Label>Proyek</Form.Label>
-                                        <Form.Control type="text" value={dataSubmit.proyek} onChange={(e) => setDataSubmit({ ...dataSubmit, proyek: e.target.value })}/>
-                                    </Form.Group>
-                                </Col>
+                                <Form.Group controlId="formFile" className="mb-3">
+                                    <Form.Label>Kode Jenis Transaksi</Form.Label>
+                                    <Form.Control type="text" placeholder="Kode Jenis Transaksi" value={kodeTransaksi} disabled/>  
+                                </Form.Group>
+                            </Col>
+                            <Col xl={12} >
+                                <Form.Group controlId="formFile" className="mb-3">
+                                    <Form.Label>Proyek</Form.Label>
+                                    {/* <Form.Control type="text" value={dataSubmit.proyek} onChange={(e) => setDataSubmit({ ...dataSubmit, proyek: e.target.value })}/> */}
+                                        <Select name="state" className="basic-multi-select " options={proyek} isSearchable
+                                    menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Proyek" onChange={(e) => setDataSubmit({ ...dataSubmit, proyek: e.value })}
+                                />
+                                </Form.Group>
+                            </Col>
+
+                            <Col xl={12} >
+                                <Form.Group controlId="formFile" className="mb-3">
+                                    <Form.Label>SLA Pembayaran (Tempo)</Form.Label>
+                                    <Form.Control type="text" placeholder="Hari" value={dataSubmit.tempo_pembayaran_after_verified} onChange={(e) => setDataSubmit({ ...dataSubmit, tempo_pembayaran_after_verified: e.target.value })}/>  
+                                </Form.Group>
+                            </Col>
                             <Divider className="mt-3 mb-3" />
                             {formTransaksi && formTransaksi.map((item, index) => (
                                 <Col xl={6} key={index}>
@@ -173,6 +236,12 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
                                         <Form.Control type="file" onChange={(e) =>
                                             handleFileChange(index, e.target.files[0])
                                         } />
+                                        <Form.Control
+                                            type="number"
+                                            placeholder="Masukan Nilai"
+                                            onChange={(e) => handleInputChange(index, e.target.value)}
+                                            className="mb-2 mt-2"
+                                        />
                                     </Form.Group>
                                 </Col>
                             ))}

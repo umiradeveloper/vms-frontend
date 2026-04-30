@@ -1,3 +1,4 @@
+
 import { Button, Divider } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -6,7 +7,9 @@ const Select = dynamic(() => import("react-select"), { ssr: false });
 import Swal from "sweetalert2";
 import apiConfig from "@/utils/AxiosConfig";
 
-const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
+
+
+const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) => {
     const [idTransaksi, setIdTransaksi] = useState("");
     const [reload, setReload] = useState(false);
     const [showData, setShowData] = useState({
@@ -47,7 +50,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             } finally { setLoader(false) }
         }
     }
-
     const getFileTransaksi = async (id, nama) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
@@ -61,7 +63,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             Swal.fire({ title: "Dokumen Transaksi " + nama, html: `<iframe src="${url}" width="100%" height="500px" style="border:none;"></iframe>`, width: "80%", showConfirmButton: false, showCloseButton: true });
         } catch (e) { Swal.fire("Error", "Gagal membuka dokumen", "error"); }
     };
-
     const getFileDokumenBuktiBayar = async (id, nama) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
@@ -75,7 +76,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             Swal.fire({ title: "Dokumen Transaksi " + nama, html: `<iframe src="${url}" width="100%" height="500px" style="border:none;"></iframe>`, width: "80%", showConfirmButton: false, showCloseButton: true });
         } catch (e) { Swal.fire("Error", "Gagal membuka dokumen", "error"); }
     };
-
     const HandleNotVerified = async (id) => {
         const resultConfirm = await AlertConfirm("Apakah anda yakin ingin tidak memverifikasi data ini ? ", "warning", "Not Verified", true, "Data berhasil Confirm");
 
@@ -131,69 +131,84 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             console.log(error);
         } finally { setLoader(false) }
     }
+    const HandlePayment = async () => {
+        const result = await Swal.fire({
+            title: 'Payment',
+            target: document.body,
+            html: `
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3 text-start">
+                            <label for="upload_bukti_bayar" class="form-label">
+                                Upload Bukti Bayar
+                            </label>
+                            <input 
+                                type="file" 
+                                id="upload_bukti_bayar"
+                                class="form-control"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3 text-start">
+                            <label for="upload_bukti_bayar" class="form-label">
+                                Catatan Payment
+                            </label>
+                            <textarea 
+                                row="3"
+                                id="catatan_payment"
+                                class="form-control"
+                                placeholder="Catatan Payment"
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Pay',
+            cancelButtonText: 'Close',
+            preConfirm: () => {
+                const upload = document.getElementById('upload_bukti_bayar').files[0];
+                const catatan = document.getElementById('catatan_payment').value;
 
-    const getStatusPengajuan = async () => {
-        setLoader(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        try {
-            const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-master-status-approval", {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                if (!upload) {
+                    Swal.showValidationMessage('Upload Bukti Bayar');
+                    return false;
                 }
-            });
-            // console.log(resultApi);
-            if (resultApi.status == 200) {
-                const dataMasterApproval = [];
-                if (resultApi.data.data?.length > 0) {
 
-                    for (const datas of resultApi.data.data) {
-                        dataMasterApproval.push({
-                            value: datas,
-                            label: datas
-                        })
-                    }
-
-                }
-                setDataApproval(dataMasterApproval);
-
+                return { upload, catatan };
             }
-        } catch (error) {
-            console.log(error);
-        } finally { setLoader(false) }
-    }
+        });
 
-    const getStatusLayakBayar = async () => {
-        setLoader(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        try {
-            const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-master-status-layak-bayar", {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-            // console.log(resultApi);
-            if (resultApi.status == 200) {
-                const dataMasterLayakBayar = [];
-                if (resultApi.data.data?.length > 0) {
-
-                    for (const datas of resultApi.data.data) {
-                        dataMasterLayakBayar.push({
-                            value: datas,
-                            label: datas
-                        })
+        if (result.isConfirmed) {
+            setLoader(true);
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const fm = new FormData();
+            fm.append("status_approval", "Payment");
+            fm.append("layak_bayar", "Layak Bayar");
+            fm.append("upload_bukti_bayar", result.value.upload);
+            try {
+                const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + idTransaksi + "&catatan_payment=" + result.value.catatan, fm, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
+                });
+                // console.log(resultApi);
+                if (resultApi.status == 200) {
+                    setReload(prev => !prev);
+                    swalAlert(resultApi.data.message, resultApi.statusText, "success");
+                    setOpenModal({ ...openModal, open: false });
 
                 }
-                setLayakBayar(dataMasterLayakBayar);
-
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoader(false)
             }
-        } catch (error) {
-            console.log(error);
-        } finally { setLoader(false) }
+        }
     }
-
     const AlertConfirm = async (message, icon, confirmButtonName, textarea = false, messageDeleted = "Your file has been deleted.") => {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -251,31 +266,27 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
 
         return false;
     }
+    const swalAlert = (message, title, icon) => {
+        let timerInterval;
 
-    const SubmitVerified = async () => {
-        setLoader(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const fm = new FormData();
-        fm.append("status_approval", "Verified");
-        // fm.append("layak_bayar", updatePengajuanApproval.layak_bayar);
-        // fm.append("upload_bukti_bayar", updatePengajuanApproval.upload_bukti_bayar);
-        try {
-            const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + idTransaksi, fm, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-            // console.log(resultApi);
-            if (resultApi.status == 200) {
-                swalAlert(resultApi.data.message, resultApi.statusText, "success");
-                setOpenModal({ ...openModal, open: false });
-                setReload(prev => !prev);
-
+        Swal.fire({
+            title: title,
+            html: message,
+            icon: icon,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            willClose: () => {
+                clearInterval(timerInterval);
+            },
+        }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log("I was closed by the timer");
             }
-        } catch (error) {
-            console.log(error);
-        } finally { setLoader(false) }
+        });
     }
     const SubmitReject = async () => {
         const resultConfirm = await AlertConfirm("Apakah anda yakin ingin reject data ini ? ", "warning", "Reject", true, "Data berhasil Confirm");
@@ -308,28 +319,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
 
     }
 
-    const swalAlert = (message, title, icon) => {
-        let timerInterval;
-
-        Swal.fire({
-            title: title,
-            html: message,
-            icon: icon,
-            timer: 5000,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-            },
-            willClose: () => {
-                clearInterval(timerInterval);
-            },
-        }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log("I was closed by the timer");
-            }
-        });
-    }
     const toCurrency = (amount) => {
         const hasil = new Intl.NumberFormat("id-ID", {
             style: "currency",
@@ -337,23 +326,15 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
         }).format(amount);
         return hasil
     }
-
-
     useEffect(() => {
         if (openModal.open) {
             // console.log(openModal);
             const datas = openModal.data;
             setIdTransaksi(datas.id_transaksi);
             getTransaksiById(datas.id_transaksi);
-            getStatusPengajuan();
-            getStatusLayakBayar();
-            // setShowData({
-            //     jenis_transaksi: datas.jenis_transaksi,
-            //     proyek: datas.proyek,
-            //     detail_transaksi: datas.detailTransaksi
-            // })
+
         }
-    }, [openModal.open, loader, reload])
+    }, [openModal.open, reload])
     return (
         <Modal size="xl" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }} enforceFocus={false}>
             <Modal.Header>
@@ -379,7 +360,7 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
                             </Col>
                             <Divider className="mt-3 mb-3" />
                             {/* {showData.detail_transaksi && showData.detail_transaksi.map((item, index) => (
-                                <Col xl={6} key={index}>
+                                <Col xl={12} key={index}>
                                     <div className="row gy-2 pb-3">
                                         <Row>
                                             <Col xl={4}>
@@ -419,6 +400,10 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
                                             </Col>
 
                                         </Row>
+
+
+
+
                                     </div>
                                 </Col>
                             ))} */}
@@ -517,91 +502,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
                                         </div>
                                     </Col>
                                 ))}
-                            <Divider className="mt-3 mb-3" />
-
-                            {/* {showData.status_approval == "Approved" || showData.status_approval == "Reject" ? (
-                                <Col xl={12}>
-                                    <div className="row gy-2 pb-3">
-                                        <Row>
-                                            <Col xl={2}>
-                                                <label htmlFor="nama-proyek" className="form-label ">Approval<span style={{ color: "red" }}>*</span> :</label>
-                                            </Col>
-                                            <Col xl={8}>
-                                                <h2> <span className={`badge ${showData.status_approval == "Approved" ? "bg-success" : "bg-danger"} col-xl-2`}>{showData.status_approval}</span></h2>
-                                            </Col>
-                                        </Row>
-
-
-
-                                    </div>
-                                </Col>
-                            ) : (
-                                <Col xl={12}>
-                                    <div className="row gy-2 pb-3">
-                                        <label htmlFor="nama-proyek" className="form-label ">Approval<span style={{ color: "red" }}>*</span> :</label>
-                                        <Select name="state" className="basic-multi-select " options={dataApproval} isSearchable
-                                            menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Approval" onChange={(e) => setUpdatePengajuanApproval({ ...updatePengajuanApproval, status_approval: e.value })}
-                                        />
-                                    </div>
-                                </Col>
-                            )} */}
-
-                            {/* {showData.layak_bayar == "Layak Bayar" || showData.layak_bayar == "Tidak Layak Bayar" ? (
-                                <Col xl={12}>
-                                    <div className="row gy-2 pb-3">
-                                        <Row>
-                                            <Col xl={2}>
-                                                <label htmlFor="nama-proyek" className="form-label ">Layak Bayar<span style={{ color: "red" }}>*</span> :</label>
-                                            </Col>
-                                            <Col xl={8}>
-
-                                                <h2><span className={`badge ${showData.layak_bayar == "Layak Bayar" ? "bg-success" : "bg-danger"}`}>{showData.layak_bayar}</span></h2>
-                                            </Col>
-                                        </Row>
-                                    </div>
-                                </Col>
-                            ) : (
-                                <Col xl={12}>
-                                    <div className="row gy-2 pb-3">
-                                        <label htmlFor="nama-proyek" className="form-label ">Layak Bayar<span style={{ color: "red" }}>*</span> :</label>
-                                        <Select name="state" className="basic-multi-select " options={layakBayar} isSearchable
-                                            menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Status Layak Bayar" onChange={(e) => setUpdatePengajuanApproval({ ...updatePengajuanApproval, layak_bayar: e.value })}
-                                        />
-                                    </div>
-                                </Col>
-                            )} */}
-
-
-                            {/* {showData.bukti_bayar ? (
-                                <Col xl={12}>
-                                    <div className="row gy-2 pb-3">
-                                        <Row>
-                                            <Col xl={2}>
-                                                <label htmlFor="nama-proyek" className="form-label ">Dokumen Bukti Bayar<span style={{ color: "red" }}>*</span> :</label>
-                                            </Col>
-                                            <Col xl={8}>
-                                                <Button variant='contained' type="button" className="btn btn-primary" onClick={() => { getFileDokumenBuktiBayar(idTransaksi, "Bukti Pembayaran") }}>Lihat Dokumen</Button>
-                                            </Col>
-                                        </Row>
-                                    </div>
-                                </Col>
-                            ) : (
-                                <Col xl={12}>
-                                    <Form.Group controlId="formFile" className="mb-3">
-                                        <Form.Label>Upload Bukti Bayar</Form.Label>
-                                        <Form.Control type="file" onChange={(e) => setUpdatePengajuanApproval({ ...updatePengajuanApproval, upload_bukti_bayar: e.target.files[0] })} />
-                                    </Form.Group>
-                                </Col>
-
-                            )} */}
-
-
-                            {/* <Col xl={12}>
-                                <label htmlFor="nama-proyek" className="form-label ">Catatan :</label>
-                                <textarea type="text" value={dataSubmit.catatan} className={`form-control`} id="keterangan" placeholder="Catatan" rows={3} onChange={(e) => setDataSubmit({ ...dataSubmit, catatan: e.target.value })} />
-                            </Col> */}
-
-
                         </div>
                     </Col>
 
@@ -613,9 +513,10 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
                         variant="contained"
                         type="button"
                         className="btn btn-success"
-                        onClick={SubmitVerified}
+                        onClick={HandlePayment}
+                    // onClick={SubmitVerified}
                     >
-                        Verified
+                        Payment
                     </Button>
 
                     <Button
@@ -643,4 +544,4 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
     )
 }
 
-export default DetailApprovalPengajuan;
+export default DetailPaymentChecklist;
