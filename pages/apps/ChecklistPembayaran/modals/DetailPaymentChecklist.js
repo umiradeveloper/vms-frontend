@@ -306,9 +306,10 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                 });
                 // console.log(resultApi);
                 if (resultApi.status == 200) {
+                    setReload(prev => !prev);
                     swalAlert(resultApi.data.message, resultApi.statusText, "success");
                     setOpenModal({ ...openModal, open: false });
-                    setReload(prev => !prev);
+                    
                 }
             } catch (error) {
                 console.log(error);

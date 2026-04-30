@@ -242,8 +242,9 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             });
             // console.log(result);
             if (result.status == 200) {
-                swalAlert(result.data.message, result.statusText, "success");
                 setReload(prev => !prev);
+                swalAlert(result.data.message, result.statusText, "success");
+                
                 // setOpenModal({ ...openModal, open: false });
                 // setFormTransaksi(result.data?.data);
             }
@@ -304,7 +305,7 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             //     detail_transaksi: datas.detailTransaksi
             // })
         }
-    }, [openModal.open, loader, reload])
+    }, [openModal.open, reload])
     return (
         <>
             <Modal size="xl" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }}>

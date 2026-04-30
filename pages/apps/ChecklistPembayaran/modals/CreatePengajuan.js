@@ -116,8 +116,9 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader, reload, s
             });
             console.log(result);
             if (result.status == 200) {
-                 swalAlert(result.data.message, result.statusText, "success");
                  setReload(prev => !prev);
+                 swalAlert(result.data.message, result.statusText, "success");
+                 
                  setOpenModal({...openModal, open: false});
                 // setFormTransaksi(result.data?.data);
             }
