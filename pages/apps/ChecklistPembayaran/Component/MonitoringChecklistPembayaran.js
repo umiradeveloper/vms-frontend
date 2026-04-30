@@ -88,7 +88,7 @@ const MonitoringChecklistPembayaran = ({loader, setLoader}) => {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            console.log(result);
+            // console.log(result);
             if (result.status == 200) {
                 const pengajuanArr = [];
                 if (result.data.data?.length > 0) {
@@ -128,7 +128,7 @@ const MonitoringChecklistPembayaran = ({loader, setLoader}) => {
     }
     useEffect(() => {
         getMonitoring();
-    },[loader])
+    },[openDetailPengajuan.open, openModalSurat.open])
 
     return(
          <Row>
