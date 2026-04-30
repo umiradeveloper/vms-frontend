@@ -363,4 +363,4 @@ const CreatePengajuanAbsensi = ({ openModal, setOpenModal, loader, setLoader }) 
     );
 }
 
-export default CreatePengajuanAbsensi;
+export default dynamic(() => Promise.resolve(CreatePengajuanAbsensi), { ssr: false });

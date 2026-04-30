@@ -480,4 +480,4 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 }
 
-export default CreateEmployee;
+export default dynamic(() => Promise.resolve(CreateEmployee), { ssr: false });

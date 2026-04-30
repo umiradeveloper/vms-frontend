@@ -2,6 +2,7 @@
 import { Button, Divider } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Col, Modal, Row } from "react-bootstrap";
+import dynamic from "next/dynamic";
 
 
 const DetailOvertime = ({ openModal, setOpenModal, loader, setLoader }) => {
@@ -121,4 +122,4 @@ const DetailOvertime = ({ openModal, setOpenModal, loader, setLoader }) => {
     )
 }
 
-export default DetailOvertime;
+export default dynamic(() => Promise.resolve(DetailOvertime), { ssr: false });

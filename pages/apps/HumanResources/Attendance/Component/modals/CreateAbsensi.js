@@ -230,4 +230,4 @@ const CreateAbsensi = ({openModal, setOpenModal, loader, setLoader}) => {
     );
 }
 
-export default CreateAbsensi;
+export default dynamic(() => Promise.resolve(CreateAbsensi), { ssr: false });

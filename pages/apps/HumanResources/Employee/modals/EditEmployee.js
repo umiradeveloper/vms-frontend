@@ -511,4 +511,4 @@ const EditEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 }
 
-export default EditEmployee;
+export default dynamic(() => Promise.resolve(EditEmployee), { ssr: false });

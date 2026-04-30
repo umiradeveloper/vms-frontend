@@ -193,4 +193,4 @@ const CreateOvertime = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 }
 
-export default CreateOvertime;
+export default dynamic(() => Promise.resolve(CreateOvertime), { ssr: false });

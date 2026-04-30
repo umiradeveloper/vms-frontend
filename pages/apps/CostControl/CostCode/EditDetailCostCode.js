@@ -222,4 +222,4 @@ const EditDetailCostCode = ({openModal, setOpenModal, loader, setLoader, dataUpd
     )
 }
 
-export default EditDetailCostCode;
+export default dynamic(() => Promise.resolve(EditDetailCostCode), { ssr: false });

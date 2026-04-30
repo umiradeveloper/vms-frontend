@@ -649,4 +649,4 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
     )
 }
 
-export default DetailPengajuan;
+export default dynamic(() => Promise.resolve(DetailPengajuan), { ssr: false });

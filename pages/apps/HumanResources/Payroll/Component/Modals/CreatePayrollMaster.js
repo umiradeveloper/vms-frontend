@@ -116,4 +116,4 @@ const CreatePayrollMaster = ({loader, setLoader, openModal, setOpenModal}) => {
     )
 }
 
-export default CreatePayrollMaster;
+export default dynamic(() => Promise.resolve(CreatePayrollMaster), { ssr: false });

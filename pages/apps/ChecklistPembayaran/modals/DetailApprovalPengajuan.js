@@ -643,4 +643,4 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
     )
 }
 
-export default DetailApprovalPengajuan;
+export default dynamic(() => Promise.resolve(DetailApprovalPengajuan), { ssr: false });

@@ -248,4 +248,4 @@ const DetailUploadCostCode = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 }
 
-export default DetailUploadCostCode;
+export default dynamic(() => Promise.resolve(DetailUploadCostCode), { ssr: false });

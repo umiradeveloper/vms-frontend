@@ -268,4 +268,4 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
     )
 }
 
-export default CreatePengajuan;
+export default dynamic(() => Promise.resolve(CreatePengajuan), { ssr: false });

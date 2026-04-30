@@ -544,4 +544,4 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
     )
 }
 
-export default DetailPaymentChecklist;
+export default dynamic(() => Promise.resolve(DetailPaymentChecklist), { ssr: false });

@@ -317,4 +317,4 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
     )
 }
 
-export default CreatePengajuanOvertime;
+export default dynamic(() => Promise.resolve(CreatePengajuanOvertime), { ssr: false });

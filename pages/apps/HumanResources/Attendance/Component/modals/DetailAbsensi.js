@@ -1,6 +1,7 @@
 import { Button, Divider } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Col, Modal, Row } from "react-bootstrap";
+import dynamic from "next/dynamic";
 
 
 const DetailAbsensi = ({ openModal, setOpenModal, loader, setLoader }) => {
@@ -118,4 +119,4 @@ const DetailAbsensi = ({ openModal, setOpenModal, loader, setLoader }) => {
     )
 }
 
-export default DetailAbsensi;
+export default dynamic(() => Promise.resolve(DetailAbsensi), { ssr: false });

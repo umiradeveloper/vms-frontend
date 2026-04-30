@@ -285,4 +285,4 @@ const AddDataRapa = ({ openModal, setOpenModal, loader, setLoader }) => {
 
 }
 
-export default AddDataRapa;
+export default dynamic(() => Promise.resolve(AddDataRapa), { ssr: false });

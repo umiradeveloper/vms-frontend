@@ -207,4 +207,4 @@ const AddDetailCostCode = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 }
 
-export default AddDetailCostCode;
+export default dynamic(() => Promise.resolve(AddDetailCostCode), { ssr: false });
