@@ -353,7 +353,7 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             //     detail_transaksi: datas.detailTransaksi
             // })
         }
-    }, [openModal.open, loader, reload])
+    }, [openModal.open, reload])
     return (
         <Modal size="xl" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }} enforceFocus={false}>
             <Modal.Header>
