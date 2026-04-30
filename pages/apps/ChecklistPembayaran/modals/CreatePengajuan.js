@@ -6,7 +6,7 @@ const Select = dynamic(() => import("react-select"), { ssr: false });
 import Swal from "sweetalert2";
 import apiConfig from "@/utils/AxiosConfig";
 
-const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
+const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader, reload, setReload }) => {
     const [jenisTransaksi, setJenisTransaksi] = useState([]);
     const [proyek, setProyek] = useState([]);
     const [kodeTransaksi, setKodeTransaksi] = useState();
@@ -117,6 +117,7 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             console.log(result);
             if (result.status == 200) {
                  swalAlert(result.data.message, result.statusText, "success");
+                 setReload(prev => !prev);
                  setOpenModal({...openModal, open: false});
                 // setFormTransaksi(result.data?.data);
             }

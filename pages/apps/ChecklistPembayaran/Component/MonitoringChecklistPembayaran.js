@@ -8,9 +8,9 @@ import DetailSuratPayment from "./DetailSuratPayment";
 import { Button } from "@mui/material";
 
 
-const MonitoringChecklistPembayaran = ({loader, setLoader}) => {
+const MonitoringChecklistPembayaran = ({loader, setLoader, reload, setReload}) => {
      const [datatable, setDatatable] = useState([]);
-    const [reload, setReload] = useState(false);
+    // const [reload, setReload] = useState(false);
     const [openDetailPengajuan, setOpenDetailPengajuan] = useState({
         open: false,
         data:{}
@@ -128,7 +128,7 @@ const MonitoringChecklistPembayaran = ({loader, setLoader}) => {
     }
     useEffect(() => {
         getMonitoring();
-    },[openDetailPengajuan.open, openModalSurat.open])
+    },[openDetailPengajuan.open, openModalSurat.open, reload])
 
     return(
          <Row>

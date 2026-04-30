@@ -13,18 +13,19 @@ const PengajuanChecklistPembayaran = () => {
         open: false
     })
     const [loader, setLoader] = useState(false);
+    const [reload, setReload] = useState(false);
     return (
         <Fragment>
             <Seo title={"Human Resources System"} />
             <PageHeaderVms title='Checklist Pembayaran' item='Pengajuan Pembayaran' active_item='Pengajuan Pembayaran' />
             <LoadersSimUmira open={loader} />
-            <CreatePengajuan openModal={openModalAdd} setOpenModal={setOpenModalAdd} loader={loader} setLoader={setLoader} />
+            <CreatePengajuan openModal={openModalAdd} setOpenModal={setOpenModalAdd} loader={loader} setLoader={setLoader} reload={reload} setReload={setReload} />
             <Row className="d-flex gap-3">
                 <Col xl={12} className="d-flex justify-content-end">
                     <Button variant="contained" color="success" onClick={() => setOpenModalAdd({ open: true })}>Pengajuan Jenis Transaksi</Button>
                 </Col>
                 <Col xl={12}>
-                    <MonitoringChecklistPembayaran loader={loader} setLoader={setLoader} />
+                    <MonitoringChecklistPembayaran loader={loader} setLoader={setLoader} reload={reload} setReload={setReload} />
                 </Col>
             </Row>
         </Fragment>
