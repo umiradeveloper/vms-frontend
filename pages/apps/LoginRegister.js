@@ -259,6 +259,12 @@ const LoginRegister = () => {
                                                                         Login Account
                                                                     </Button>
 																</div>
+																<Link
+																	href="/apps/ForgotPassword"
+																	className="small text-muted text-decoration-none"
+																	>
+																	Forgot Password?
+																</Link>
 															</form>
 															<div className="text-start mt-5 ms-0">
 																{/* <div className="mb-1"><Link href={"/components/authentication/resetpassword/"}>Forgot password?</Link></div> */}
