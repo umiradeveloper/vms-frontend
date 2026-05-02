@@ -67,7 +67,7 @@ const UserManagement= () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/users/all", {
+            const response = await axios.get(apiUrl+"/users/all/staff", {
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization": "Bearer "+localStorage.getItem("token")
