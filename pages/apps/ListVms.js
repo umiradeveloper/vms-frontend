@@ -127,7 +127,7 @@ const ListVms = () => {
                     xlsxArr.push({
                         nama_perusahaan: user.nama_perusahaan,
                         alamat_perusahaan: user.alamat_perusahaan,
-                        kualifikasi_usaha: user.kualifikasi_usaha.kualifikasi,
+                        kualifikasi_usaha: user.kualifikasi_usaha?.kualifikasi,
                         klasifikasi_usaha: user.klasifikasi_usaha,
                         kategori: user.kategori,
                         spesialisasi: user.spesialisasi,
