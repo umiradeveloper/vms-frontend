@@ -27,8 +27,8 @@ const DetailBk = ({openModal, setOpenModal}) => {
 
     const COLUMNS = [
         {
-            Header: "Nama vendor",
-            accessor: "nama_vendor",
+            Header: "Tanggal",
+            accessor: "tanggal_penerima",
         },
         {
             Header: "Realisasi Volume",
@@ -38,14 +38,15 @@ const DetailBk = ({openModal, setOpenModal}) => {
             Header: "Realisasi Harga",
             accessor: "harga_total",
         },
-        {
-            Header: "Nama Penerima",
-            accessor: "nama_penerima",
+       {
+            Header: "NO PO",
+            accessor: "no_po",
         },
         {
-            Header: "Tanggal Penerimaan",
-            accessor: "tanggal_penerima",
+            Header: "Invoice / Nota",
+            accessor: "invoice_nota",
         },
+        
         {
             Header: "Aksi",
             accessor: "aksi",
@@ -108,11 +109,13 @@ const DetailBk = ({openModal, setOpenModal}) => {
                 const arrBk = [];
                 for(const data of result.data.data){
                     arrBk.push({
-                        nama_vendor: data.nama_vendor,
+                        // nama_vendor: data.nama_vendor,
                         volume_bk: data.volume_bk,
                         harga_total: toCurrency(data.harga_total),
-                        nama_penerima: data.nama_penerima,
+                        // nama_penerima: data.nama_penerima,
                         tanggal_penerima: (data.tanggal_penerima)?data.tanggal_penerima:"-",
+                        invoice_nota: data.invoice_nota ?? "-",
+                        no_po: data.no_po ?? "-",
                         aksi:<div className="d-flex flex-row gap-2">
                                     <button className="btn btn-danger" onClick={() => deleteData(data.id_biaya_kontruksi)}>Delete</button>
                                 </div>
