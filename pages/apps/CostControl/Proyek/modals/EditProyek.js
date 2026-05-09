@@ -18,6 +18,8 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
         deskripsi_proyek: "",
         tanggal_awal_kontrak: "",
         tanggal_akhir_kontrak: "",
+        periode_awal_progress: "",
+        periode_akhir_progress: "",
         kerja_tambah:"",
         kerja_kurang:""
     })
@@ -41,6 +43,8 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
                 deskripsi_proyek: data.deskripsi_proyek,
                 tanggal_awal_kontrak: data.tanggal_awal_kontrak,
                 tanggal_akhir_kontrak: data.tanggal_akhir_kontrak,
+                periode_awal_progress: data.periode_awal_progress,
+                periode_akhir_progress: data.periode_akhir_progress,
                 biaya_rap: parseInt(cleanCurrency(valueRap)),
                 biaya_rab: parseInt(cleanCurrency(valueRab))
             };
@@ -81,7 +85,9 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
                     kode_proyek: result.data.data.kode_proyek,
                     deskripsi_proyek: result.data.data.deskripsi_proyek,
                     tanggal_awal_kontrak: (result.data.data.tanggal_awal_kontrak)?result.data.data.tanggal_awal_kontrak:"",
-                    tanggal_akhir_kontrak: (result.data.data.tanggal_akhir_kontrak)?result.data.data.tanggal_akhir_kontrak:""
+                    tanggal_akhir_kontrak: (result.data.data.tanggal_akhir_kontrak)?result.data.data.tanggal_akhir_kontrak:"",
+                    periode_awal_progress: (result.data.data.periode_awal_progress)?result.data.data.periode_awal_progress:"",
+                    periode_akhir_progress: (result.data.data.periode_akhir_progress)?result.data.data.periode_akhir_progress:""
                 });
                 setValueRap((result.data.data.biaya_rap)?toCurrency(result.data.data.biaya_rap):"");
                 setValueRab((result.data.data.biaya_rab)?toCurrency(result.data.data.biaya_rab):"");
@@ -202,6 +208,35 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
                                         dateFormat: "Y-m-d",
                                     }}
                                     onChange={(val, valStr) => setData({ ...data, tanggal_akhir_kontrak: valStr })}
+                                    placeholder="Tanggal Akhir Kontrak"
+                                />
+                            </Col>
+                            <Col xl={12}>
+                                <label htmlFor="nama-proyek" className="form-label ">Periode Awal Progress <span style={{ color: "red" }}>*</span> :</label>
+                                {/* <input type="text" className={`form-control`} id="tanggal_awal_kontrak" placeholder="Tanggal Awal Kontrak" /> */}
+                                <Flatpickr
+                                    className="form-control"
+                                    value={data.periode_awal_progress}
+                                    options={{
+                                        dateFormat: "Y-m-d",
+                                    }}
+                                    onChange={(val, valStr) => setData({ ...data, periode_awal_progress: valStr })}
+                                    // onChange={(val,valStr) => {
+                                    // 	console.log(valStr)
+                                    // }}
+                                    placeholder="Tanggal Awal Kontrak"
+                                />
+                            </Col>
+                            <Col xl={12}>
+                                <label htmlFor="nama-proyek" className="form-label ">Periode Akhir Progress <span style={{ color: "red" }}>*</span> :</label>
+                                {/* <input type="text" className={`form-control`} id="tanggal_akhir_kontrak" placeholder="Tanggal Akhir Kontrak" /> */}
+                                <Flatpickr
+                                    className="form-control"
+                                    value={data.periode_akhir_progress}
+                                    options={{
+                                        dateFormat: "Y-m-d",
+                                    }}
+                                    onChange={(val, valStr) => setData({ ...data, periode_akhir_progress: valStr })}
                                     placeholder="Tanggal Akhir Kontrak"
                                 />
                             </Col>

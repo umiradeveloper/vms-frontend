@@ -22,9 +22,22 @@ import LoadersSimUmira from "@/pages/apps/Component/LoaderSimUmira";
 import { Fragment, useEffect, useState } from "react";
 import PageHeaderVms from "../../Component/PageHeaderVms";
 
+import { Visibility } from "@mui/icons-material";
+import DetailDashboardBkPu from "./modals/DetailDashboardBkPu";
+import DetailDashboardBkKategori from "./modals/DetailDashboardBkKategori";
+
 const DashboardProyek = () => {
   const [data, setData] = useState([]);
   const [loader, setLoader] = useState(false);
+  
+   const [openDetailBkPu, setOpenDetailBkPu] = useState({
+    open: false,
+    data_proyek: {}
+  })
+   const [openDetailBkkategori, setOpenDetailBkKategori] = useState({
+    open: false,
+    data_proyek: {}
+  })
 
   const toCurrency = (val) =>
     new Intl.NumberFormat("id-ID", {
@@ -46,6 +59,8 @@ const DashboardProyek = () => {
   };
 
   const formatPercent = (value) => `${value.toFixed(2)}%`;
+
+
 
   const getAllProyek = async () => {
     try {
@@ -79,6 +94,9 @@ const DashboardProyek = () => {
       />
 
       <LoadersSimUmira open={loader} />
+      
+      <DetailDashboardBkKategori openModal={openDetailBkkategori} setOpenModal={setOpenDetailBkKategori} loader={loader} setLoader={setLoader} />
+      <DetailDashboardBkPu openModal={openDetailBkPu} setOpenModal={setOpenDetailBkPu} loader={loader} setLoader={setLoader} />
 
       <Container fluid>
         <Row className="g-4">
@@ -146,14 +164,34 @@ const DashboardProyek = () => {
                         <h6>{toCurrency(p.proyek.biaya_rap)}</h6>
                       </div>
 
-                      <div className="mb-3">
+                      {/* <div className="mb-3">
                         <small className="text-muted">
                           Posisi Biaya Konstruksi
                         </small>
                         <h5>{toCurrency(bkNow)}</h5>
+                      </div> */}
+                      <div className="mb-3 p-3 border rounded d-flex justify-content-between align-items-center">
+
+                          {/* LEFT: text */}
+                          <div>
+                              <small className="text-muted">
+                                  Posisi Biaya Konstruksi
+                              </small>
+                              <h5 className="mb-0">{toCurrency(bkNow)}</h5>
+                          </div>
+
+                          {/* RIGHT: eye button */}
+                          <button
+                              className="btn btn-light border rounded-circle d-flex align-items-center justify-content-center"
+                              style={{ width: 38, height: 38 }}
+                              onClick={() => setOpenDetailBkKategori({open: true, data_proyek: p.proyek})} // function kamu
+                          >
+                              <Visibility fontSize="small" />
+                          </button>
+
                       </div>
 
-                      <div className="mb-3">
+                      {/* <div className="mb-3">
                         <span
                           className={`badge px-3 py-2 ${
                             bkPu <= 100
@@ -164,6 +202,50 @@ const DashboardProyek = () => {
                           BK/PU Saat Ini :{" "}
                           {formatPercent(bkPu)}
                         </span>
+                      </div> */}
+                     <div className="mb-3 p-3 border rounded d-flex justify-content-between align-items-center">
+
+                          {/* LEFT: text */}
+                          {/* <div>
+                              <small className="text-muted">
+                                  BK/PU Saat Ini :
+                              </small>
+                               <span
+                                  className={`badge ${
+                                    bkPu <= 100
+                                      ? "bg-success"
+                                      : "bg-danger"
+                                  }`}
+                                >
+                          
+                          {formatPercent(bkPu)}
+                        </span>
+                          </div> */}
+                           <div>
+                              <small className="text-muted">
+                                   BK/PU Saat Ini :
+                              </small>
+                              <h5 className="mb-0"><span
+                                  className={`badge ${
+                                    bkPu <= 100
+                                      ? "bg-success"
+                                      : "bg-danger"
+                                  }`}
+                                >
+                          
+                          {formatPercent(bkPu)}
+                        </span></h5>
+                          </div>
+
+                          {/* RIGHT: eye button */}
+                          <button
+                              className="btn btn-light border rounded-circle d-flex align-items-center justify-content-center"
+                              style={{ width: 38, height: 38 }}
+                              onClick={() => setOpenDetailBkPu({open: true, data_proyek: p.proyek})} // function kamu
+                          >
+                              <Visibility fontSize="small" />
+                          </button>
+
                       </div>
 
                       <Accordion flush>

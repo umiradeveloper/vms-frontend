@@ -10,11 +10,14 @@ import { Button } from "@mui/material";
 import DetailUploadCostCode from "./DetailUploadCostCode";
 import AddDetailCostCode from "./AddDetailCostCode";
 import EditDetailCostCode from "./EditDetailCostCode";
+import CostCodeProyek from "./modals/CostCodeProyek";
+
 
 
 const DaftarCostCode = () => {
     const [datatable, setDatatable] = useState([]);
     const [loader, setLoader] = useState(false);
+    const [reload, setReload] = useState(false);
     const [detailTambah, setDetailTambah] = useState({
         open: false
     })
@@ -25,6 +28,11 @@ const DaftarCostCode = () => {
     
     const [detailUpload, setDetailUpload] = useState({
         open: false
+    })
+    const [detailProyek, setDetailproyek] = useState({
+        open: false,
+        cost_code: "",
+        nama_cost_code:""
     })
     const COLUMNS = [
         {
@@ -64,10 +72,31 @@ const DaftarCostCode = () => {
             accessor: "satuan",
         },
         {
+            Header: "Biaya",
+            accessor: "biaya",
+        },
+        {
+            Header: "Volume",
+            accessor: "volume",
+        },
+        {
+            Header: "Proyek",
+            accessor: "proyek",
+        },
+        {
             Header: "Aksi",
             accessor: "aksi",
         },
     ]
+    const toCurrency = (value) => {
+        if (!value) return "Rp0";
+
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0
+        }).format(Number(value));
+    };
 
     const getDaftarCostCode = async() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -79,23 +108,42 @@ const DaftarCostCode = () => {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            // console.log(result);
+            console.log(result);
             if(result.status == 200){
                  if(result.data.data.length > 0){
 
                     const dataTableArr = [];
 
                     for(const res of result.data.data){
+                        let total_volume = 0;
+                        let harga_total = 0;
+                        if(res.proyek.length > 0){
+                            for(const pr of res.proyek){
+                                total_volume += pr.volume;
+                                harga_total += pr.harga_total;
+                            }
+                        }
+
                         dataTableArr.push({
                             kode: res.cost_code,
-                            kategori: res.kategori.nama_kategori,
-                            kode_kategori: res.kategori.kode_kategori,
+                            kategori: res.nama_kategori,
+                            kode_kategori: res.kode_kategori,
                             klasifikasi: res.klasifikasi,
                             kode_jenis: res.kode_jenis,
                             spesifikasi: res.spesifikasi,
                             jenis: res.jenis,
                             nama: res.nama,
                             satuan: res.satuan,
+                            volume: total_volume,
+                            biaya: (harga_total > 0)?toCurrency(harga_total):toCurrency(0),
+                            proyek: (res.proyek.length > 0)?
+                                <div className="d-flex flex-row gap-2">
+                                    <button className="btn btn-success" onClick={() => {
+                                        // getProyekByCostCode(res.cost_code)
+                                        setDetailproyek({open: true, cost_code: res.cost_code, nama_cost_code: res.nama})
+                                    }}>Lihat Proyek</button>
+                                </div>
+                                :"-",
                             aksi:<div className="d-flex flex-row gap-2">
                                     <button className="btn btn-warning" onClick={() => {
                                         setDataEdit(res);
@@ -117,6 +165,8 @@ const DaftarCostCode = () => {
         }
     }
 
+
+
     useEffect(() => {
         getDaftarCostCode();
     },[detailUpload.open, detailTambah.open, detailEdit.open])
@@ -129,12 +179,15 @@ const DaftarCostCode = () => {
             <DetailUploadCostCode openModal={detailUpload} setOpenModal={setDetailUpload} loader={loader} setLoader={setLoader}/>
             <AddDetailCostCode openModal={detailTambah} setOpenModal={setDetailTambah} loader={loader} setLoader={setLoader}/>
             <EditDetailCostCode openModal={detailEdit} setOpenModal={setDetailEdit} loader={loader} setLoader={setLoader} dataUpdate={dataEdit} />
+            <CostCodeProyek openModal={detailProyek} setOpenModal={setDetailproyek} loader={loader} setLoader={setLoader} />
             <Row>
                 
                 <Col xl={12}>
                     <Card className="custom-card">
                         <Card.Header>
                             <Col xl={12} className="d-flex justify-content-end mt-2 mb-2 gap-2">
+                                
+                                <Button variant="contained"color="warning" href="/template/template_cost_code.xlsx">Download Template Cost Code</Button>
                                 <Button variant="contained"color="primary" onClick={() => setDetailUpload({open: true})}>Upload Data</Button>
                                 <Button variant="contained" color="secondary" onClick={() => setDetailTambah({open: true})}>Tambah Data</Button>
                             </Col>

@@ -1,3 +1,4 @@
+
 import Swal from "sweetalert2";
 import Seo from "@/shared/layout-components/seo/seo";
 import { Fragment, useEffect, useState } from "react";
@@ -7,10 +8,10 @@ import { Button, Card, Col, Row } from "react-bootstrap";
 import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl";
 import apiConfig from "@/utils/AxiosConfig";
 import { useRouter } from "next/router";
-import DetailApprovalBk from "./DetailApprovalBk";
+import DetailMonitoringBk from "./DetailMonitoringBk";
 
 
-const DaftarApproval = () => {
+const MonitoringPengajuanBk = () => {
     const [loader, setLoader] = useState(false);
     const [reload, setReload] = useState(false);
     const [datatable, setDataTable] = useState([]);
@@ -53,7 +54,7 @@ const DaftarApproval = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
             const result = await apiConfig.get(
-                apiUrl + "/CostControl/pengajuan/get-approve-pengajuan-bk",
+                apiUrl + "/CostControl/pengajuan/get-monitoring-pengajuan-bk",
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -215,10 +216,10 @@ const DaftarApproval = () => {
 
     return (
         <Fragment>
-            <Seo title={"Approval Pengajuan Biaya Kontruksi"} />
-            <PageHeaderVms title='Approval Biaya Kontruksi' item='Approval' active_item='Daftar Pengajuan Biaya Konstruksi' />
+            <Seo title={"Monitoring Pengajuan Biaya Kontruksi"} />
+            <PageHeaderVms title='Monitoring Biaya Kontruksi' item='Monitoring' active_item='Daftar Monitoring Pengajuan Biaya Konstruksi' />
             <LoadersSimUmira open={loader} />
-            <DetailApprovalBk openModal={openDetail} setOpenModal={setOpenDetail} loader={loader} setLoader={setLoader}  reload={reload} setReload={setReload}/>
+            <DetailMonitoringBk openModal={openDetail} setOpenModal={setOpenDetail} loader={loader} setLoader={setLoader}  reload={reload} setReload={setReload}/>
             <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
@@ -240,5 +241,5 @@ const DaftarApproval = () => {
 
 }
 
-DaftarApproval.layout = "ContentlayoutVms";
-export default DaftarApproval;
+MonitoringPengajuanBk.layout = "ContentlayoutVms";
+export default MonitoringPengajuanBk;

@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 
 
 
-const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
+const UploadBk = ({openModal, setOpenModal, reload, setReload}) => {
     const [loader, setLoader] = useState(false);
     const [dataTable, setDataTable] = useState([]);
     const [dataProyek, setDataProyek] = useState({
@@ -21,11 +21,14 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
         biaya_rap: "",
         biaya_rab:""
     })
-    const [totalRapa, setTotalRapa] = useState();
     const COLUMNS = [
         {
             Header: "Cost Code",
             accessor: "cost_code",
+        },
+        {
+            Header: "Tanggal",
+            accessor: "tanggal",
         },
         {
             Header: "Kategori",
@@ -37,10 +40,10 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
             accessor: "nama",
         },
        
-        {
-            Header: "Spesifikasi",
-            accessor: "spesifikasi",
-        },
+        // {
+        //     Header: "Spesifikasi",
+        //     accessor: "spesifikasi",
+        // },
         {
             Header: "satuan",
             accessor: "satuan",
@@ -56,6 +59,14 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
         {
             Header: "Harga Total",
             accessor: "harga_total",
+        },
+        {
+            Header: "Invoice Nota",
+            accessor: "invoice_nota",
+        },
+        {
+            Header: "NO PO",
+            accessor: "no_po",
         },
     ];
     const getDataById = async() =>{
@@ -89,17 +100,14 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
     const submit = async() => {
         setLoader(true);
         let dataSubmit = {
-            kode_proyek: dataProyek.kode_proyek,
-            // kategori:[],
-            // kode_rap:[],
-            // group:[],
-            // item_pekerjaan:[],
-            // spesifikasi:[],
-            // satuan:[],
+            id_proyek: openModal.id_proyek,
+            
             cost_code: [],
-            volume:[],
-            harga_satuan:[],
-            harga_total:[]
+            volume_bk:[],
+            tanggal:[],
+            harga_total:[],
+            no_po:[],
+            invoice_nota:[]
         }
         for(const data of dataTable){
             // dataSubmit.kategori.push((data.kategori)?data.kategori:"-");
@@ -109,13 +117,15 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
             // dataSubmit.spesifikasi.push((data.spesifikasi)?data.spesifikasi:"-");
             // dataSubmit.satuan.push((data.satuan)?data.satuan:"-");
             dataSubmit.cost_code.push((data.cost_code)?data.cost_code:"");
-            dataSubmit.volume.push((data.volume)?data.volume:0);
-            dataSubmit.harga_satuan.push((data.harga_satuan)?clearCurrency(data.harga_satuan):0);
+            dataSubmit.volume_bk.push((data.volume)?data.volume:0);
+            dataSubmit.tanggal.push((data.tanggal)?data.tanggal:null);
+            dataSubmit.no_po.push((data.no_po)?data.no_po:null);
+            dataSubmit.invoice_nota.push((data.invoice_nota)?data.invoice_nota:null);
             dataSubmit.harga_total.push((data.harga_total)?clearCurrency(data.harga_total):0);
         }
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.post(apiUrl + "/CostControl/Rapa/create-rapa-bulk", dataSubmit,{
+            const result = await apiConfig.post(apiUrl + "/CostControl/BiayaKonstruksi/create-bk-bulk", dataSubmit,{
 				headers: {
 					"Content-Type": "application/json",
 					"Authorization": "Bearer " + localStorage.getItem("token")
@@ -188,26 +198,46 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
             });
             const costCodeUpload = [];
             const mergeArrayUpload = [];
-            let total_rapa_temp = 0;
+            console.log(normalized)
            for(const data of normalized){
             if(data["Cost Code"]){
                 
                 costCodeUpload.push((data["Cost Code"])?data["Cost Code"]:"")
                 mergeArrayUpload.push({
                     cost_code: (data["Cost Code"])?data["Cost Code"]:"",
+                    tanggal: (data["TANGGAL"])?excelDateToSQL(data["TANGGAL"]):"",
+                    no_po: (data["NO PO"])?data["NO PO"]:"",
+                    invoice_nota: (data["INVOICE NOTA"])?data["INVOICE NOTA"]:"",
                     volume: (data["VOLUME"])?data["VOLUME"]:"",
                     harga_satuan: (data["HARGA SATUAN"])?data["HARGA SATUAN"]:"",
                     total_harga: (data["TOTAL HARGA"])?data["TOTAL HARGA"]:""
                 })
-                total_rapa_temp += (data["TOTAL HARGA"])?data["TOTAL HARGA"]:0
             }
+            // console.log(data)
+            // console.log(data["ITEM PEKERJAAN"])
+            // if(data["ITEM PEKERJAAN"]){
+            //     arrUpload.push({
+            //         kode_rap: (data["KODE RAP"])?data["KODE RAP"]:"",
+            //         kategori: (data["KATEGORI"])?data["KATEGORI"]:"",
+            //         item_pekerjaan: (data["ITEM PEKERJAAN"])?data["ITEM PEKERJAAN"]:"",
+            //         spesifikasi: (data["SPESIFIKASI"])?data["SPESIFIKASI"]:"",
+            //         satuan: (data["SAT"])?data["SAT"]:"",
+            //         volume: (data["VOLUME"])?data["VOLUME"]:"",
+            //         harga_satuan: (data["HARGA SATUAN"])?toCurrency(data["HARGA SATUAN"]):"",
+            //         harga_total: (data["TOTAL HARGA"])?toCurrency(data["TOTAL HARGA"]):"",
+            //         harga_satuan_ori: (data["HARGA SATUAN"])?data["HARGA SATUAN"]:"",
+            //         harga_total_ori: (data["TOTAL HARGA"])?data["TOTAL HARGA"]:"",
+            //     });
+            // }
              
            }
-           setTotalRapa(total_rapa_temp);
-        //    console.log(total_rapa_temp)
+        //    console.log(costCodeUpload)
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
                 try {
-                    const result = await apiConfig.post(apiUrl + "/CostControl/Rapa/get-cost-code-rapa", {CostCode: costCodeUpload},{
+                    const result = await apiConfig.post(apiUrl + "/CostControl/BiayaKonstruksi/get-cost-code-rapa", {CostCode: costCodeUpload},{
+                        params:{
+                            id_proyek: openModal.id_proyek
+                        },  
                         headers: {
                             "Content-Type": "application/json",
                             "Authorization": "Bearer " + localStorage.getItem("token")
@@ -231,6 +261,9 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
                                 spesifikasi: element.spesifikasi,
                                 satuan: element.satuan,
                                 volume: element.volume,
+                                tanggal: element.tanggal,
+                                no_po: element.no_po,
+                                invoice_nota: element.invoice_nota,
                                 harga_satuan: toCurrency(element.harga_satuan),
                                 harga_total: toCurrency(element.total_harga)
                             })
@@ -243,13 +276,29 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
                     setLoader(false);
                     console.log("e = "+error);
                 }
+            console.log(arrUpload)
            setDataTable(arrUpload);
            setLoader(false);
         };
 
         reader.readAsBinaryString(file);
     };
-    
+    const excelDateToSQL = (value) => {
+        if (!value) return null;
+
+        if (typeof value === "string") {
+            const d = new Date(value);
+            return isNaN(d) ? null : d.toISOString().split("T")[0];
+        }
+
+        if (typeof value === "number") {
+            const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+            const jsDate = new Date(excelEpoch.getTime() + value * 86400000);
+            return jsDate.toISOString().split("T")[0];
+        }
+
+        return null;
+    };
     
     const toCurrency = (value) => {
         if (!value) return "Rp0";
@@ -280,7 +329,7 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
         <Modal size="xl" show={openModal.open} onHide={() => {setOpenModal({...openModal, open: false});setDataTable([])}}>
             <LoadersSimUmira open={loader} />
             <Modal.Header>
-                <h6 className="modal-title" id="exampleModalLabel">Upload Rapa</h6>
+                <h6 className="modal-title" id="exampleModalLabel">Upload BK</h6>
             </Modal.Header>
             <Modal.Body>
                 <h6>Kode Proyek : {dataProyek.kode_proyek}</h6>
@@ -288,11 +337,10 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
                 <h6>Tanggal Berakhir Kontrak : {dataProyek.tanggal_kontrak}</h6>
                 <h6>RAB (Rincian Anggaran Biaya) : {dataProyek.biaya_rab}</h6>
                 <h6>RAP (Rincian Anggaran Proyek) : {dataProyek.biaya_rap}</h6>
-                <h6>Total RAPA : {toCurrency(totalRapa)}</h6>
                 <Divider />
                     <Row className="g-3 pt-2 pb-2">
                         <Col xl={6}>
-                            <label htmlFor="contact-address-firstname" className="form-label ">Upload Rapa <span style={{ color: "red" }}>*</span> :</label>
+                            <label htmlFor="contact-address-firstname" className="form-label ">Upload BK<span style={{ color: "red" }}>*</span> :</label>
                             <input type="file" className={`form-control`} id="upload_rapa" onChange={handleFile} placeholder="Upload Rapa"  />
                         </Col>
                         {/* <Col xl={6}>
@@ -313,5 +361,5 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
     )
 }
 
-export default dynamic(() => Promise.resolve(UploadDataRapa), { ssr: false });
+export default dynamic(() => Promise.resolve(UploadBk), { ssr: false });
 

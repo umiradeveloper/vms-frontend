@@ -8,6 +8,7 @@ import apiConfig from "@/utils/AxiosConfig";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import CreatePengajuanBk from "./modals/CreatePengajuanBk";
+import CreatePengajuanBkBulk from "./modals/CreatePengajuanBkBulk";
 
 
 
@@ -41,6 +42,11 @@ const DetailProyekBk = () => {
      const [openModalUpload, setOpenModalUpload] = useState({
         id_proyek:"",
         open_modal: false
+    })
+    const [openModalUploadBulk, setOpenModalUploadBulk] = useState({
+        id_proyek:"",
+        open_modal: false,
+        dataProyek:{}
     })
      const COLUMNS = [
         {
@@ -242,7 +248,8 @@ const DetailProyekBk = () => {
             <Seo title={"Detail Pengajuan Biaya Konstruksi"} />
             <PageHeaderVms title='Pengajuan Biaya Kontruksi' item='Daftar Proyek Biaya Konstruksi' active_item='Detail Pengajuan Biaya Konstruksi' />
             <LoadersSimUmira open={loader} />
-            <CreatePengajuanBk openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
+            {/* <CreatePengajuanBk openModal={openModalUpload} setOpenModal={setOpenModalUpload} /> */}
+            <CreatePengajuanBkBulk openModal={openModalUploadBulk} setOpenModal={setOpenModalUploadBulk} />
             {/* <UploadDataRapa openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
             <EditDataRapa openModal={openModalEdit} setOpenModal={setOpenModalEdit}/> */}
              <Row>
@@ -258,7 +265,7 @@ const DetailProyekBk = () => {
                             </button>
                             <button
                                 type="button" className="btn btn-primary label-btn rounded-pill"
-                                onClick={() => setOpenModalUpload({id_proyek: params.get("id"), open_modal: true})}
+                                onClick={() => setOpenModalUploadBulk({id_proyek: params.get("id"), open_modal: true, dataProyek: dataProyek})}
                                 // onClick={() => console.log("test")}
                                 // onClick={() => navigate.push("/apps/CostControl/Rapa/DaftarRapa")}
                             >

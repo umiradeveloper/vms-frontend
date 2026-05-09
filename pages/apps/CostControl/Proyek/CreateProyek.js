@@ -22,6 +22,8 @@ const CreateProyek = () => {
 		deskripsi_proyek: "",
 		tanggal_awal_kontrak: "",
 		tanggal_akhir_kontrak: "",
+		periode_awal_progress:"",
+		periode_akhir_progress:"",
 		bk_pu_awal:"",
 		kerja_tambah:0,
 		kerja_kurang:0
@@ -62,6 +64,8 @@ const CreateProyek = () => {
 			deskripsi_proyek: data.deskripsi_proyek,
 			tanggal_awal_kontrak: data.tanggal_awal_kontrak,
 			tanggal_akhir_kontrak: data.tanggal_akhir_kontrak,
+			periode_awal_progress: data.periode_awal_progress,
+			periode_akhir_progress: data.periode_akhir_progress,
 			biaya_rap: parseInt(valueRapClean),
 			biaya_rab: parseInt(valueRabClean),
 			// bk_pu_awal: data.bk_pu_awal,
@@ -175,6 +179,37 @@ const CreateProyek = () => {
 												dateFormat: "Y-m-d",
 											}}
 											onChange={(val, valStr) => setData({ ...data, tanggal_akhir_kontrak: valStr })}
+											placeholder="Tanggal Akhir Kontrak"
+										/>
+									</Col>
+
+
+									<Col xl={12}>
+										<label htmlFor="nama-proyek" className="form-label ">Periode Awal Progress <span style={{ color: "red" }}>*</span> :</label>
+										{/* <input type="text" className={`form-control`} id="tanggal_awal_kontrak" placeholder="Tanggal Awal Kontrak" /> */}
+										<Flatpickr
+											className="form-control"
+											value={data.periode_awal_progress}
+											options={{
+												dateFormat: "Y-m-d",
+											}}
+											onChange={(val, valStr) => setData({ ...data,periode_awal_progress: valStr })}
+											// onChange={(val,valStr) => {
+											// 	console.log(valStr)
+											// }}
+											placeholder="Tanggal Awal Kontrak"
+										/>
+									</Col>
+									<Col xl={12}>
+										<label htmlFor="nama-proyek" className="form-label ">Periode Akhir Progress <span style={{ color: "red" }}>*</span> :</label>
+										{/* <input type="text" className={`form-control`} id="tanggal_akhir_kontrak" placeholder="Tanggal Akhir Kontrak" /> */}
+										<Flatpickr
+											className="form-control"
+											value={data.periode_akhir_progress}
+											options={{
+												dateFormat: "Y-m-d",
+											}}
+											onChange={(val, valStr) => setData({ ...data, periode_akhir_progress: valStr })}
 											placeholder="Tanggal Akhir Kontrak"
 										/>
 									</Col>

@@ -9,12 +9,14 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import CreateBk from "./modals/CreateBk";
 import DetailBk from "./modals/DetailBk";
+import UploadBk from "./modals/UploadBk";
 
 
 
 const DetailProyekBk = () => {
     const [dataTable, setDataTable] = useState([]);
     const [loader, setLoader] = useState(false);
+    const [reload, setReload] = useState(false);
     const params = useSearchParams();
     const navigate = useRouter();
     const [dataProyek, setDataProyek] = useState({
@@ -45,6 +47,10 @@ const DetailProyekBk = () => {
     const [openModalUpload, setOpenModalUpload] = useState({
         id_proyek: "",
         open_modal: false
+    })
+     const [openModalUploadBulk, setOpenModalUploadBulk] = useState({
+        id_proyek: "",
+        open: false
     })
 
     const COLUMNS = [
@@ -249,7 +255,7 @@ const DetailProyekBk = () => {
             getRapa();
             getBkByProyek();
         }
-    }, [params.get("id"), openModalUpload, openModalEdit])
+    }, [params.get("id"), openModalUpload, openModalEdit, reload])
 
     return (
         <Fragment>
@@ -258,6 +264,7 @@ const DetailProyekBk = () => {
             <LoadersSimUmira open={loader} />
             <CreateBk openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
             <DetailBk openModal={openModalEdit} setOpenModal={setOpenModalEdit} />
+            <UploadBk openModal={openModalUploadBulk} setOpenModal={setOpenModalUploadBulk} reload={reload} setReload={setReload}  />
             {/* <UploadDataRapa openModal={openModalUpload} setOpenModal={setOpenModalUpload} />
             <EditDataRapa openModal={openModalEdit} setOpenModal={setOpenModalEdit}/> */}
             <Row>
@@ -271,14 +278,30 @@ const DetailProyekBk = () => {
                                 <i className="ri-arrow-left-line label-btn-icon me-2 rounded-pill" />
                                 kembali
                             </button>
-                            <button
+                            <a
+                                href="/template/template-bk.xlsx"
+                                download
+                                className="btn btn-success label-btn rounded-pill"
+                            >
+                                <i className="ri-download-2-line label-btn-icon me-2 rounded-pill" />
+                                Download Template BK
+                            </a>
+                            {/* <button
                                 type="button" className="btn btn-primary label-btn rounded-pill"
                                 onClick={() => setOpenModalUpload({ id_proyek: params.get("id"), open_modal: true })}
+                            
+                            >
+                                <i className="ri-add-circle-line label-btn-icon me-2 rounded-pill" />
+                                Input Biaya Konstruksi
+                            </button> */}
+                             <button
+                                type="button" className="btn btn-primary label-btn rounded-pill"
+                                onClick={() => setOpenModalUploadBulk({ id_proyek: params.get("id"), open: true })}
                             // onClick={() => console.log("test")}
                             // onClick={() => navigate.push("/apps/CostControl/Rapa/DaftarRapa")}
                             >
                                 <i className="ri-add-circle-line label-btn-icon me-2 rounded-pill" />
-                                Input Biaya Konstruksi
+                                Upload Biaya Konstruksi
                             </button>
 
                         </Card.Header>
