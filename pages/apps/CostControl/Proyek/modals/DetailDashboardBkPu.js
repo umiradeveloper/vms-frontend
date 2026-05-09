@@ -3,6 +3,7 @@ import { Button, Col, Modal, Row } from "react-bootstrap";
 import apiConfig from "@/utils/AxiosConfig";
 import { useEffect, useState } from "react";
 import BasicTableCostControl from "../../../DataTables/DataTablesCostControl";
+import dynamic from "next/dynamic";
 
 
 const DetailDashboardBkPu = ({openModal, setOpenModal, loader, setLoader}) => {
@@ -186,4 +187,4 @@ const DetailDashboardBkPu = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 }
 
-export default DetailDashboardBkPu;
+export default dynamic(() => Promise.resolve(DetailDashboardBkPu), { ssr: false });

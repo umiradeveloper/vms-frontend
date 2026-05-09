@@ -2,6 +2,7 @@ import { Divider } from "@mui/material";
 import { Button, Col, Modal, Row } from "react-bootstrap";
 import apiConfig from "@/utils/AxiosConfig";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
 
 const CostCodeProyek = ({openModal, setOpenModal, loader, setLoader}) => {
@@ -91,4 +92,4 @@ const CostCodeProyek = ({openModal, setOpenModal, loader, setLoader}) => {
     )
 }
 
-export default CostCodeProyek;
+export default dynamic(() => Promise.resolve(CostCodeProyek), { ssr: false });

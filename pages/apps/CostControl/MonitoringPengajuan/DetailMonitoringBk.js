@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import apiConfig from "@/utils/AxiosConfig";
 import { useEffect, useState } from "react";
 import { Divider } from "@mui/material";
+import dynamic from "next/dynamic";
 
 const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload, setReload }) => {
     const [dataTable, setDataTable] = useState([]);
@@ -566,4 +567,4 @@ const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload
     )
 }
 
-export default DetailMonitoringBk;
+export default dynamic(() => Promise.resolve(DetailMonitoringBk), { ssr: false });

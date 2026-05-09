@@ -6,6 +6,7 @@ import BasicTableCostControl from "../../../DataTables/DataTablesCostControl";
 import apiConfig from "@/utils/AxiosConfig";
 import { Visibility } from "@mui/icons-material";
 import DetailDashboardBiayaKonstruksi from "./DetailDashboardBiayaKonstruksi";
+import dynamic from "next/dynamic";
 
 const DetailDashboardBkKategori = ({openModal, setOpenModal, loader, setLoader}) => {
     const [dataTable, setDataTable] = useState([]);
@@ -129,4 +130,4 @@ const DetailDashboardBkKategori = ({openModal, setOpenModal, loader, setLoader})
     )
 }
 
-export default DetailDashboardBkKategori;
+export default dynamic(() => Promise.resolve(DetailDashboardBkKategori), { ssr: false });

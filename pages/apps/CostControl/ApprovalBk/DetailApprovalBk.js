@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import apiConfig from "@/utils/AxiosConfig";
 import { useEffect, useState } from "react";
 import { Divider } from "@mui/material";
+import dynamic from "next/dynamic";
 
 const DetailApprovalBk = ({ openModal, setOpenModal, loader, setLoader, reload, setReload }) => {
     const [dataTable, setDataTable] = useState([]);
@@ -603,4 +604,4 @@ const DetailApprovalBk = ({ openModal, setOpenModal, loader, setLoader, reload, 
     )
 }
 
-export default DetailApprovalBk;
+export default dynamic(() => Promise.resolve(DetailApprovalBk), { ssr: false });

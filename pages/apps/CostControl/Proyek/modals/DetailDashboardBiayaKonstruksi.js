@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import BasicTableCostControl from "../../../DataTables/DataTablesCostControl";
 import apiConfig from "@/utils/AxiosConfig";
+import dynamic from "next/dynamic";
 
 
 
@@ -134,4 +135,4 @@ const DetailDashboardBiayaKonstruksi = ({ openModal, setOpenModal, loader, setLo
     )
 }
 
-export default DetailDashboardBiayaKonstruksi;
+export default dynamic(() => Promise.resolve(DetailDashboardBiayaKonstruksi), { ssr: false });
