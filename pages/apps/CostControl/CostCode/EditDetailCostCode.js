@@ -35,7 +35,7 @@ const EditDetailCostCode = ({openModal, setOpenModal, loader, setLoader, dataUpd
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            console.log(result)
+            // console.log(result)
             if(result.status == 200){
                  if(result.data.data.length > 0){
                     const kategoriArr = [];
@@ -64,7 +64,7 @@ const EditDetailCostCode = ({openModal, setOpenModal, loader, setLoader, dataUpd
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            console.log(result)
+            // console.log(result)
             if(result.status == 200){
                  if(result.data.data.length > 0){
                     const satuanArr = [];
@@ -131,7 +131,7 @@ const EditDetailCostCode = ({openModal, setOpenModal, loader, setLoader, dataUpd
     }
 
     useEffect(() => {
-        // console.log(dataUpdate)
+        console.log(dataUpdate)
         setDataSubmit({
                 id_cost_code: dataUpdate.id_cost_code,
                 kode: dataUpdate.cost_code,
@@ -166,7 +166,9 @@ const EditDetailCostCode = ({openModal, setOpenModal, loader, setLoader, dataUpd
                             </Col>
                             <Col xl={12}>
                                  <label htmlFor="nama-proyek" className="form-label ">Kategori<span style={{ color: "red" }}>*</span> :</label>
-                                <Select name="state"  className="basic-multi-select " options={kategori} isSearchable defaultInputValue={dataUpdate.kategori?.nama_kategori}
+                                <Select name="state"  className="basic-multi-select " options={kategori} isSearchable defaultValue={kategori.find(
+        (item) => item.value === dataSubmit.nama_kategori+"|"+dataSubmit.kode_kategori
+    )}
                                     menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Kategori" onChange={(e) => {
                                         const splitE = e.label.split("|");
                                         setDataSubmit({...dataSubmit,
