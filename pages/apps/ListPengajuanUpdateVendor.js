@@ -175,9 +175,9 @@ const ListPengajuanUpdateVendor = () => {
                 
                     pengajuanArr.push({
                             id_pengajuan: user.id_pengajuan,
-                            nama_perusahaan: user.vendor.nama_perusahaan,
+                            nama_perusahaan: user.vendor?.nama_perusahaan,
                             tanggal_pengajuan: new Date(user.tanggal_pengajuan).toLocaleString("id-ID"),
-                            kualifikasi_usaha: user.vendor.kualifikasi_usaha.kualifikasi,
+                            kualifikasi_usaha: user.vendor?.kualifikasi_usaha?.kualifikasi,
                             klasifikasi_usaha: user.klasifikasi_usaha,
                             kategori: user.kategori,
                             spesialisasi: user.spesialisasi,
