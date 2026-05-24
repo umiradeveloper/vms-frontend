@@ -59,10 +59,26 @@ const TablePaymentPembayaran = ({loader, setLoader}) => {
             accessor: "tanggal_jatuh_tempo",
         },
         {
+            Header: "Nilai Invoice Yang Di Tagih",
+            accessor: "total_yang_di_tagih",
+        },
+        {
+            Header: "Nilai Invoice Yang Terbayar",
+            accessor: "total_yang_terbayar",
+        },
+        {
             Header: "Aksi",
             accessor: "aksi",
         }
     ]
+
+    const toCurrency = (amount) => {
+        const hasil = new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR"
+        }).format(amount);
+        return hasil
+    }
 
   
 
@@ -76,12 +92,20 @@ const TablePaymentPembayaran = ({loader, setLoader}) => {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            // console.log(result);
+            console.log(result);
             if (result.status == 200) {
                 const pengajuanArr = [];
                 if (result.data.data?.length > 0) {
 
                     for (const datas of result.data.data) {
+                        // let total_yang_di_tagih = 0;
+                        let total_yang_terbayar = 0;
+                        // for(const detail of datas.detailTransaksi){
+                        //     total_yang_di_tagih += detail.nilai;
+                        // }
+                        for(const detail of datas.detailPayment){
+                            total_yang_terbayar += detail.nominal_bayar;
+                        }
                         pengajuanArr.push({
                             kode_trx: datas.kode_transaksi,
                             nama: datas.user_pengajuan?.nama,
@@ -92,6 +116,8 @@ const TablePaymentPembayaran = ({loader, setLoader}) => {
                             tanggal_verified: (datas.approved_at)?datas.approved_at.replace("T", " "):"",
                             sla_pembayaran: datas.tempo_pembayaran_after_verified + " Hari",
                             tanggal_jatuh_tempo: datas.tanggal_jatuh_tempo_after_verified,
+                            total_yang_di_tagih: toCurrency(datas.nilai_invoice_bersih),
+                            total_yang_terbayar: toCurrency(total_yang_terbayar),
                             status_pengajuan: <h5><span className={`badge ${(datas.status_pengajuan == "Verified")?"bg-success-gradient":(datas.status_pengajuan == "Pengajuan")?"bg-info-gradient":"bg-danger-gradient"}`}>{datas.status_pengajuan}</span></h5>,
                             aksi: <div className="d-flex flex-row gap-2">
                                 <button className="btn btn-info" onClick={() => {setOpenModal({open: true, data: datas})}} >Detail</button>

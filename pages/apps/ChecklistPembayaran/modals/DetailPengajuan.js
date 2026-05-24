@@ -24,7 +24,9 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
         status_approval: "",
         layak_bayar: "",
         bukti_bayar: "",
-        detail_transaksi: []
+        detail_transaksi: [],
+        pengajuanTransaksi: [],
+        detailPembayaran: []
     })
     const [updatePengajuanApproval, setUpdatePengajuanApproval] = useState({
         status_approval: "",
@@ -63,7 +65,7 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
     const getFileDokumenBuktiBayar = async (id, nama) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/dokumen-bukti-bayar?id=" + id, {
+            const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/dokumen-bukti-bayar?id=" + id, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -72,6 +74,290 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
             Swal.fire({ title: "Dokumen Transaksi " + nama, html: `<iframe src="${url}" width="100%" height="500px" style="border:none;"></iframe>`, width: "80%", showConfirmButton: false, showCloseButton: true });
         } catch (e) { Swal.fire("Error", "Gagal membuka dokumen", "error"); }
+    };
+    const getDokumenBuktiBayar = async (dataDokumen = []) => {
+
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        try {
+
+            let htmlDokumen = "";
+
+            for (const item of dataDokumen) {
+
+                const result = await apiConfig.get(
+                    apiUrl +
+                    "/ChecklistTransaksi/transaksi/Proyek/dokumen-bukti-bayar?id=" +
+                    item.id_checklist_bukti_bayar,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization":
+                                "Bearer " + localStorage.getItem("token"),
+                        },
+                        responseType: "blob",
+                    }
+                );
+
+                const url = window.URL.createObjectURL(
+                    new Blob([result.data], {
+                        type: "application/pdf",
+                    })
+                );
+
+                htmlDokumen += `
+                <div style="
+                    position:relative;
+                    margin-bottom:35px;
+                    border-radius:24px;
+                    overflow:hidden;
+                    background:linear-gradient(145deg,#ffffff 0%,#f8fafc 100%);
+                    border:1px solid rgba(255,255,255,0.2);
+                    box-shadow:
+                        0 10px 30px rgba(0,0,0,0.08),
+                        0 2px 10px rgba(0,0,0,0.04);
+                ">
+
+                    <!-- GLOW -->
+                    <div style="
+                        position:absolute;
+                        width:220px;
+                        height:220px;
+                        border-radius:50%;
+                        background:rgba(139,92,246,0.08);
+                        top:-100px;
+                        right:-80px;
+                    "></div>
+
+                    <!-- HEADER -->
+                    <div style="
+                        position:relative;
+                        padding:22px 24px;
+                        background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 100%);
+                        color:white;
+                    ">
+
+                        <div style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:space-between;
+                            gap:20px;
+                            flex-wrap:wrap;
+                        ">
+
+                            <div>
+                                <div style="
+                                    font-size:18px;
+                                    font-weight:700;
+                                    margin-bottom:6px;
+                                ">
+                                    📄 Dokumen bukti pembayaran transaksi proyek
+                                </div>
+
+                                <div style="
+                                    opacity:0.8;
+                                    font-size:13px;
+                                ">
+                                    ${toCurrency(item.nominal_bayar)}
+                                </div>
+                            </div>
+
+                            <div style="
+                                width:60px;
+                                height:60px;
+                                border-radius:50%;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                background:rgba(255,255,255,0.15);
+                                backdrop-filter:blur(10px);
+                                border:1px solid rgba(255,255,255,0.2);
+                                font-size:28px;
+                            ">
+                                💳
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTENT -->
+                    <div style="
+                        padding:18px;
+                        background:#f8fafc;
+                    ">
+
+                        <!-- INFO -->
+                        <div style="
+                            margin-bottom:16px;
+                            padding:14px 18px;
+                            border-radius:18px;
+                            background:white;
+                            border:1px solid #e2e8f0;
+                            display:flex;
+                            align-items:center;
+                            justify-content:space-between;
+                            flex-wrap:wrap;
+                            gap:15px;
+                        ">
+
+                            <div>
+                                <div style="
+                                    font-size:12px;
+                                    color:#64748b;
+                                    margin-bottom:4px;
+                                ">
+                                    Status Dokumen
+                                </div>
+
+                                <div style="
+                                    font-size:15px;
+                                    font-weight:600;
+                                    color:#0f172a;
+                                ">
+                                    Dokumen Pembayaran Tersedia
+                                </div>
+                            </div>
+
+                            <div style="
+                                padding:10px 18px;
+                                border-radius:999px;
+                                background:rgba(16,185,129,0.12);
+                                color:#059669;
+                                font-weight:600;
+                                font-size:13px;
+                            ">
+                                ✔ Verified
+                            </div>
+                        </div>
+
+                        <!-- PDF VIEW -->
+                        <div style="
+                            border-radius:20px;
+                            overflow:hidden;
+                            border:1px solid #e2e8f0;
+                            background:white;
+                            box-shadow:0 4px 15px rgba(0,0,0,0.04);
+                        ">
+
+                            <iframe 
+                                src="${url}" 
+                                width="100%" 
+                                height="600px" 
+                                style="
+                                    border:none;
+                                    background:white;
+                                "
+                            ></iframe>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+            }
+
+            Swal.fire({
+                html: `
+                <div style="
+                    position:relative;
+                    padding:10px;
+                    text-align:left;
+                ">
+
+                    <!-- HEADER -->
+                    <div style="
+                        position:sticky;
+                        top:0;
+                        z-index:10;
+                        margin-bottom:25px;
+                        padding:24px;
+                        border-radius:24px;
+                        background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+                        color:white;
+                        overflow:hidden;
+                        box-shadow:0 10px 30px rgba(79,70,229,0.25);
+                    ">
+
+                        <div style="
+                            position:absolute;
+                            width:260px;
+                            height:260px;
+                            border-radius:50%;
+                            background:rgba(255,255,255,0.08);
+                            top:-120px;
+                            right:-100px;
+                        "></div>
+
+                        <div style="
+                            position:relative;
+                            display:flex;
+                            align-items:center;
+                            justify-content:space-between;
+                            flex-wrap:wrap;
+                            gap:20px;
+                        ">
+
+                            <div>
+                                <div style="
+                                    font-size:28px;
+                                    font-weight:800;
+                                    margin-bottom:6px;
+                                ">
+                                    Detail Pembayaran
+                                </div>
+
+                                <div style="
+                                    font-size:14px;
+                                    opacity:0.8;
+                                ">
+                                    Dokumen bukti pembayaran transaksi proyek
+                                </div>
+                            </div>
+
+                            <div style="
+                                width:80px;
+                                height:80px;
+                                border-radius:50%;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                background:rgba(255,255,255,0.15);
+                                backdrop-filter:blur(10px);
+                                border:1px solid rgba(255,255,255,0.2);
+                                font-size:38px;
+                            ">
+                                💰
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTENT -->
+                    <div style="
+                        max-height:75vh;
+                        overflow-y:auto;
+                        padding-right:8px;
+                    ">
+                        ${htmlDokumen}
+                    </div>
+
+                </div>
+            `,
+                width: "90%",
+                background: "#f1f5f9",
+                showConfirmButton: false,
+                showCloseButton: true,
+                customClass: {
+                    popup: "rounded-5",
+                    closeButton: "swal2-close-custom",
+                },
+            });
+
+        } catch (e) {
+
+            Swal.fire(
+                "Error",
+                "Gagal membuka dokumen pembayaran",
+                "error"
+            );
+        }
     };
 
 
@@ -88,13 +374,33 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             console.log(resultApi);
             if (resultApi.status == 200) {
                 const datas = resultApi.data.data;
+                let bayar = 0;
+                for (const dataBayar of datas.detailPayment) {
+                    bayar += dataBayar.nominal_bayar ?? 0
+                }
                 setShowData({
                     jenis_transaksi: datas.jenis_transaksi,
                     proyek: datas.proyek,
                     bukti_bayar: datas.upload_bukti_pembayaran,
                     layak_bayar: datas.layak_bayar,
                     status_approval: datas.status_pengajuan,
-                    detail_transaksi: datas.detailTransaksi
+                    nama_vendor: datas.nama_vendor ?? "-",
+                    kategori: datas.kategori ?? "-",
+                    nomor_invoice: datas.nomor_invoice ?? "-",
+                    nilai_invoice: datas.nilai_invoice,
+                    pph: datas.pph,
+                    ppn: datas.ppn,
+                    retensi: datas.retensi,
+                    kasbon: datas.kasbon,
+                    tanggal_invoice: datas.tanggal_invoice,
+                    no_po_kontrak: datas.no_po_kontrak,
+                    nilai_invoice_bersih: datas.nilai_invoice_bersih,
+                    biaya_potongan_lainnya: datas.biaya_potongan_lainnya,
+                    nilai_yang_terbayar: bayar,
+                    nilai_sisa: datas.nilai_invoice_bersih - bayar,
+                    detail_transaksi: datas.detailTransaksi,
+                    pengajuanTransaksi: datas.pengajuanTransaksi,
+                    detailPembayaran: datas.detailPembayaran
                 })
                 setUpdatePengajuanApproval({
                     layak_bayar: datas.layak_bayar,
@@ -219,22 +525,22 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
     }
     const updateDokumenDetailTransaksi = async (index, item) => {
         const selectedFile = fileTransaksi[index];
-        const inputNilai = nilaiTransaksi[index];
+        // const inputNilai = nilaiTransaksi[index];
         // console.log(selectedFile)
-        if (!selectedFile || !inputNilai) {
+        if (!selectedFile) {
 
-            alert("Pilih file dulu atau nilai tidak boleh kosong");
+            alert("File tidak boleh kosong");
             return;
         }
 
         const formData = new FormData();
         formData.append("upload_dokumen_transaksi", selectedFile);
-        formData.append("nilai_transaksi", inputNilai);
+        // formData.append("nilai_transaksi", inputNilai);
         // formData.append("id_detail_transaksi", item.id_detail_transaksi);
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const result = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi-pengajuan?id=" + item.id_detail_transaksi, formData, {
+            const result = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/update-detail-transaksi-pengajuan?id=" + item.id_detail_transaksi, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -244,7 +550,7 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
             if (result.status == 200) {
                 setReload(prev => !prev);
                 swalAlert(result.data.message, result.statusText, "success");
-                
+
                 // setOpenModal({ ...openModal, open: false });
                 // setFormTransaksi(result.data?.data);
             }
@@ -318,313 +624,1250 @@ const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
 
                         <Col xl={12} className="rounded-3">
                             <div className="row gy-2 pb-3">
+                                <Col xl={12} className="mb-4">
 
-                                <Col xl={12}>
-                                    <div className="row gy-2 pb-3">
-                                        <label htmlFor="nama-proyek" className="form-label">Jenis Transaksi<span style={{ color: "red" }}>*</span> :</label>
-                                        <span>{showData.jenis_transaksi}</span>
-                                    </div>
-                                </Col>
-                                <Col xl={12} >
-                                    <div className="row gy-2 pb-3">
-                                        <label htmlFor="nama-proyek" className="form-label ">Proyek<span style={{ color: "red" }}>*</span> :</label>
-                                        <span>{showData.proyek}</span>
-                                    </div>
-                                </Col>
+                                    <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-                                {/* {showData.detail_transaksi && showData.detail_transaksi.map((item, index) => (
-                                    <>
-                                        <Divider className="mt-3 mb-3" />
-                                        <Col xl={12} key={index}>
-                                            <div className="row gy-2 pb-3">
-                                                <Row>
-                                                    <Col xl={3}>
-                                                        <label htmlFor="nama-proyek" className="form-label ">{item.pertanyaan}<span style={{ color: "red" }}>*</span> :</label>
+                                        {/* Header */}
+                                        <div className="bg-primary bg-gradient p-4 text-white">
+
+                                            <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                                                <div>
+                                                    <h4 className="fw-bold mb-1">
+                                                        Detail Pengajuan Transaksi
+                                                    </h4>
+
+                                                    <span className="opacity-75">
+                                                        Informasi transaksi dan invoice proyek
+                                                    </span>
+                                                </div>
+
+                                                <div className="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center"
+                                                    style={{
+                                                        width: "70px",
+                                                        height: "70px"
+                                                    }}
+                                                >
+                                                    <i className="ri-file-list-3-line fs-1"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="card-body p-4">
+
+                                            <Row className="gy-4">
+
+                                                {/* Jenis Transaksi */}
+                                                <Col xl={6}>
+                                                    <div className="bg-light rounded-4 p-4 h-100 border">
+
+                                                        <small className="text-muted d-block mb-2">
+                                                            Jenis Transaksi
+                                                        </small>
+
+                                                        <h5 className="fw-bold text-dark mb-0">
+                                                            {showData.jenis_transaksi || "-"}
+                                                        </h5>
+                                                    </div>
+                                                </Col>
+
+                                                {/* Proyek */}
+                                                <Col xl={6}>
+                                                    <div className="bg-light rounded-4 p-4 h-100 border">
+
+                                                        <small className="text-muted d-block mb-2">
+                                                            Proyek
+                                                        </small>
+
+                                                        <h5 className="fw-bold text-dark mb-0">
+                                                            {showData.proyek || "-"}
+                                                        </h5>
+                                                    </div>
+                                                </Col>
+                                                {/* Vendor */}
+                                                <Col xl={6}>
+                                                    <div className="bg-light rounded-4 p-4 h-100 border">
+
+                                                        <small className="text-muted d-block mb-2">
+                                                            Nama Vendor
+                                                        </small>
+
+                                                        <div className="d-flex align-items-center">
+                                                            <div
+                                                                className="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center me-3"
+                                                                style={{
+                                                                    width: "50px",
+                                                                    height: "50px"
+                                                                }}
+                                                            >
+                                                                <i className="ri-store-2-line text-primary fs-4"></i>
+                                                            </div>
+
+                                                            <div>
+                                                                <h5 className="fw-bold text-dark mb-0">
+                                                                    {showData.nama_vendor || "-"}
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                {/* Kategori Material */}
+                                                <Col xl={6}>
+                                                    <div className="bg-light rounded-4 p-4 h-100 border">
+
+                                                        <small className="text-muted d-block mb-2">
+                                                            Kategori
+                                                        </small>
+
+                                                        <div className="d-flex align-items-center">
+                                                            <div
+                                                                className="rounded-circle bg-warning bg-opacity-10 d-flex align-items-center justify-content-center me-3"
+                                                                style={{
+                                                                    width: "50px",
+                                                                    height: "50px"
+                                                                }}
+                                                            >
+                                                                <i className="ri-stack-line text-warning fs-4"></i>
+                                                            </div>
+
+                                                            <div>
+                                                                <h5 className="fw-bold text-dark mb-0">
+                                                                    {showData.kategori || "-"}
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                
+
+                                                {/* Nilai Invoice */}
+                                                <Col xl={6}>
+                                                    <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
+                                                        style={{
+                                                            background:
+                                                                "linear-gradient(135deg, #0d6efd 0%, #084298 100%)"
+                                                        }}
+                                                    >
+
+                                                        <div
+                                                            style={{
+                                                                position: "absolute",
+                                                                right: "-20px",
+                                                                top: "-20px",
+                                                                opacity: 0.15,
+                                                                fontSize: "120px"
+                                                            }}
+                                                        >
+                                                            <i className="ri-calendar-line"></i>
+                                                        </div>
+
+                                                        <small className="d-block mb-2 opacity-75">
+                                                            NO PO / Kontrak
+                                                        </small>
+
+                                                        <h2 className="fw-bold mb-0">
+                                                            {showData.no_po_kontrak || "-"}
+                                                        </h2>
+                                                    </div>
+                                                </Col>
+
+                                                {/* Nilai Invoice */}
+                                                <Col xl={6}>
+                                                    <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
+                                                        style={{
+                                                            background:
+                                                                "linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%)"
+                                                        }}
+                                                    >
+
+                                                        <div
+                                                            style={{
+                                                                position: "absolute",
+                                                                right: "-20px",
+                                                                top: "-20px",
+                                                                opacity: 0.15,
+                                                                fontSize: "120px"
+                                                            }}
+                                                        >
+                                                            <i className="ri-money-dollar-circle-line"></i>
+                                                        </div>
+
+                                                        <small className="d-block mb-2 opacity-75">
+                                                            Nilai Invoice
+                                                        </small>
+
+                                                        <h2 className="fw-bold mb-0">
+                                                            {toCurrency(showData.nilai_invoice) || "-"}
+                                                        </h2>
+                                                    </div>
+                                                </Col>
+                                                <Col xl={6}>
+                                                    <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
+                                                        style={{
+                                                            background:
+                                                                "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)"
+                                                        }}
+                                                    >
+
+                                                        <div
+                                                            style={{
+                                                                position: "absolute",
+                                                                right: "-20px",
+                                                                top: "-20px",
+                                                                opacity: 0.15,
+                                                                fontSize: "120px"
+                                                            }}
+                                                        >
+                                                            <i className="ri-bill-line"></i>
+                                                        </div>
+
+                                                        <small className="d-block mb-2 opacity-75">
+                                                            Nomor Invoice
+                                                        </small>
+
+                                                        <h2 className="fw-bold mb-0">
+                                                            {showData.nomor_invoice || "-"}
+                                                        </h2>
+                                                    </div>
+                                                </Col>
+
+                                                {/* Nilai Invoice */}
+                                                <Col xl={6}>
+                                                    <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
+                                                        style={{
+                                                            background:
+                                                                "linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)"
+                                                        }}
+                                                    >
+
+                                                        <div
+                                                            style={{
+                                                                position: "absolute",
+                                                                right: "-20px",
+                                                                top: "-20px",
+                                                                opacity: 0.15,
+                                                                fontSize: "120px"
+                                                            }}
+                                                        >
+                                                            <i className="ri-clipboard-line"></i>
+                                                        </div>
+
+                                                        <small className="d-block mb-2 opacity-75">
+                                                            Tanggal Invoice
+                                                        </small>
+
+                                                        <h2 className="fw-bold mb-0">
+                                                            {showData.tanggal_invoice || "-"}
+                                                        </h2>
+                                                    </div>
+                                                </Col>
+
+                                                {/* PPN */}
+                                                <Col xl={3} md={6}>
+                                                    <div className="card border-0 shadow-sm rounded-4 h-100">
+
+                                                        <div className="card-body text-center p-4">
+
+                                                            <div className="mb-3">
+                                                                <div
+                                                                    className="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                                    style={{
+                                                                        width: "60px",
+                                                                        height: "60px"
+                                                                    }}
+                                                                >
+                                                                    <i className="ri-percent-line text-success fs-3"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            <small className="text-muted d-block mb-2">
+                                                                PPN
+                                                            </small>
+
+                                                            <h5 className="fw-bold mb-0">
+                                                                {toCurrency(showData.ppn) || "-"}
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                {/* PPH */}
+                                                <Col xl={3} md={6}>
+                                                    <div className="card border-0 shadow-sm rounded-4 h-100">
+
+                                                        <div className="card-body text-center p-4">
+
+                                                            <div className="mb-3">
+                                                                <div
+                                                                    className="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                                    style={{
+                                                                        width: "60px",
+                                                                        height: "60px"
+                                                                    }}
+                                                                >
+                                                                    <i className="ri-bank-card-line text-danger fs-3"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            <small className="text-muted d-block mb-2">
+                                                                PPH
+                                                            </small>
+
+                                                            <h5 className="fw-bold mb-0">
+                                                                {toCurrency(showData.pph) || "-"}
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                {/* Retensi */}
+                                                <Col xl={3} md={6}>
+                                                    <div className="card border-0 shadow-sm rounded-4 h-100">
+
+                                                        <div className="card-body text-center p-4">
+
+                                                            <div className="mb-3">
+                                                                <div
+                                                                    className="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                                    style={{
+                                                                        width: "60px",
+                                                                        height: "60px"
+                                                                    }}
+                                                                >
+                                                                    <i className="ri-secure-payment-line text-warning fs-3"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            <small className="text-muted d-block mb-2">
+                                                                Retensi
+                                                            </small>
+
+                                                            <h5 className="fw-bold mb-0">
+                                                                {toCurrency(showData.retensi) || "-"}
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                {/* Kasbon */}
+                                                <Col xl={3} md={6}>
+                                                    <div className="card border-0 shadow-sm rounded-4 h-100">
+
+                                                        <div className="card-body text-center p-4">
+
+                                                            <div className="mb-3">
+                                                                <div
+                                                                    className="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                                    style={{
+                                                                        width: "60px",
+                                                                        height: "60px"
+                                                                    }}
+                                                                >
+                                                                    <i className="ri-wallet-3-line text-info fs-3"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            <small className="text-muted d-block mb-2">
+                                                                Kasbon
+                                                            </small>
+
+                                                            <h5 className="fw-bold mb-0">
+                                                                {toCurrency(showData.kasbon) || "-"}
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                {/* Kasbon */}
+                                                <Col xl={12} md={12}>
+                                                    <div className="card border-0 shadow-sm rounded-4 h-100">
+
+                                                        <div className="card-body text-center p-4">
+
+                                                            <div className="mb-3">
+                                                                <div
+                                                                    className="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                                    style={{
+                                                                        width: "60px",
+                                                                        height: "60px"
+                                                                    }}
+                                                                >
+                                                                    <i className="ri-coupon-3-line text-info fs-3"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            <small className="text-muted d-block mb-2">
+                                                                Biaya Potongan Lainnya
+                                                            </small>
+
+                                                            <h5 className="fw-bold mb-0">
+                                                                {toCurrency(showData.biaya_potongan_lainnya ?? 0) || "-"}
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                {/* Nilai Bersih */}
+                                                <Col xl={12}>
+                                                    <div className="border rounded-4 p-4 bg-light">
+
+                                                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                                                            <div>
+                                                                <small className="text-muted d-block mb-2">
+                                                                    Nilai Invoice Yang Dibayarkan
+                                                                </small>
+
+                                                                <h2 className="fw-bold text-success mb-0">
+                                                                    {toCurrency(showData.nilai_invoice_bersih) || "-"}
+                                                                </h2>
+                                                            </div>
+
+                                                            <div
+                                                                className="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                                                                style={{
+                                                                    width: "80px",
+                                                                    height: "80px"
+                                                                }}
+                                                            >
+                                                                <i className="ri-money-dollar-box-line text-success fs-1"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                                <Row className="gy-4">
+
+                                                    {/* ===================== NILAI TERBAYAR ===================== */}
+                                                    <Col xl={6}>
+                                                        <div
+                                                            className="position-relative overflow-hidden rounded-4 p-4 h-100 border-0"
+                                                            style={{
+                                                                background:
+                                                                    "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                                                                boxShadow: "0 10px 30px rgba(16,185,129,0.25)",
+                                                            }}
+                                                        >
+
+                                                            {/* Glow */}
+                                                            <div
+                                                                style={{
+                                                                    position: "absolute",
+                                                                    width: "220px",
+                                                                    height: "220px",
+                                                                    borderRadius: "50%",
+                                                                    background: "rgba(255,255,255,0.08)",
+                                                                    top: "-100px",
+                                                                    right: "-70px",
+                                                                }}
+                                                            />
+
+                                                            {/* Background Icon */}
+                                                            <div
+                                                                style={{
+                                                                    position: "absolute",
+                                                                    right: "-10px",
+                                                                    bottom: "-20px",
+                                                                    fontSize: "120px",
+                                                                    opacity: 0.12,
+                                                                    color: "#fff",
+                                                                }}
+                                                            >
+                                                                <i className="ri-money-dollar-circle-line"></i>
+                                                            </div>
+
+                                                            <div className="position-relative">
+
+                                                                <div className="d-flex align-items-start justify-content-between">
+
+                                                                    <div>
+                                                                        <small className="text-white opacity-75 d-block mb-2">
+                                                                            Nilai Yang Terbayar
+                                                                        </small>
+
+                                                                        <h2 className="fw-bold text-white mb-1">
+                                                                            {toCurrency(showData.nilai_yang_terbayar)}
+                                                                        </h2>
+
+                                                                        <small className="text-white opacity-75">
+                                                                            Total pembayaran yang telah diterima
+                                                                        </small>
+                                                                    </div>
+
+                                                                    {/* ICON */}
+                                                                    <div
+                                                                        className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                        style={{
+                                                                            width: "75px",
+                                                                            height: "75px",
+                                                                            background: "rgba(255,255,255,0.15)",
+                                                                            backdropFilter: "blur(10px)",
+                                                                            border: "1px solid rgba(255,255,255,0.2)",
+                                                                        }}
+                                                                    >
+                                                                        <i className="ri-bank-card-fill text-white fs-1"></i>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* FOOTER */}
+                                                                <div
+                                                                    className="mt-4 rounded-4 p-3"
+                                                                    style={{
+                                                                        background: "rgba(255,255,255,0.12)",
+                                                                        backdropFilter: "blur(12px)",
+                                                                        border: "1px solid rgba(255,255,255,0.15)",
+                                                                    }}
+                                                                >
+                                                                    <div className="d-flex align-items-center justify-content-between">
+
+                                                                        <div>
+                                                                            <small className="text-white opacity-75 d-block mb-1">
+                                                                                Status Pembayaran
+                                                                            </small>
+
+                                                                            <h6 className="fw-bold text-white mb-0">
+                                                                                Pembayaran Berjalan
+                                                                            </h6>
+                                                                        </div>
+                                                                        <div className="d-flex align-items-center gap-2">
+
+                                                                            {/* DETAIL BUTTON */}
+                                                                            <Button
+                                                                                variant="contained"
+                                                                                className="btn rounded-pill px-4 py-2 fw-semibold text-white border-0"
+                                                                                style={{
+                                                                                    background: "rgba(255,255,255,0.18)",
+                                                                                    backdropFilter: "blur(10px)",
+                                                                                    border: "1px solid rgba(255,255,255,0.2)",
+                                                                                    boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
+                                                                                }}
+                                                                                onClick={() => getDokumenBuktiBayar(showData.detailPembayaran)}
+                                                                            >
+                                                                                <i className="ri-file-list-3-line me-2"></i>
+                                                                                Detail Pembayaran
+                                                                            </Button>
+
+                                                                            {/* ICON */}
+                                                                            <div
+                                                                                className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                                style={{
+                                                                                    width: "55px",
+                                                                                    height: "55px",
+                                                                                    background: "rgba(255,255,255,0.15)",
+                                                                                }}
+                                                                            >
+                                                                                <i className="ri-arrow-up-circle-fill text-white fs-3"></i>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div
+                                                                            className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                            style={{
+                                                                                width: "55px",
+                                                                                height: "55px",
+                                                                                background: "rgba(255,255,255,0.15)",
+                                                                            }}
+                                                                        >
+                                                                            <i className="ri-arrow-up-circle-fill text-white fs-3"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </Col>
-                                                    <Col xl={3}>
-                                                        <Button variant='contained' type="button" className="btn btn-primary" onClick={() => { getFileTransaksi(item.id_detail_transaksi, item.pertanyaan) }}>Lihat Dokumen</Button>
+
+                                                    {/* ===================== NILAI SISA ===================== */}
+                                                    <Col xl={6}>
+                                                        <div
+                                                            className="position-relative overflow-hidden rounded-4 p-4 h-100 border-0"
+                                                            style={{
+                                                                background:
+                                                                    "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
+                                                                boxShadow: "0 10px 30px rgba(245,158,11,0.25)",
+                                                            }}
+                                                        >
+
+                                                            {/* Glow */}
+                                                            <div
+                                                                style={{
+                                                                    position: "absolute",
+                                                                    width: "220px",
+                                                                    height: "220px",
+                                                                    borderRadius: "50%",
+                                                                    background: "rgba(255,255,255,0.08)",
+                                                                    top: "-100px",
+                                                                    right: "-70px",
+                                                                }}
+                                                            />
+
+                                                            {/* Background Icon */}
+                                                            <div
+                                                                style={{
+                                                                    position: "absolute",
+                                                                    right: "-10px",
+                                                                    bottom: "-20px",
+                                                                    fontSize: "120px",
+                                                                    opacity: 0.12,
+                                                                    color: "#fff",
+                                                                }}
+                                                            >
+                                                                <i className="ri-wallet-3-line"></i>
+                                                            </div>
+
+                                                            <div className="position-relative">
+
+                                                                <div className="d-flex align-items-start justify-content-between">
+
+                                                                    <div>
+                                                                        <small className="text-white opacity-75 d-block mb-2">
+                                                                            Nilai Sisa Invoice
+                                                                        </small>
+
+                                                                        <h2 className="fw-bold text-white mb-1">
+                                                                            {toCurrency(showData.nilai_sisa)}
+                                                                        </h2>
+
+                                                                        <small className="text-white opacity-75">
+                                                                            Sisa tagihan yang belum dibayarkan
+                                                                        </small>
+                                                                    </div>
+
+                                                                    {/* ICON */}
+                                                                    <div
+                                                                        className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                        style={{
+                                                                            width: "75px",
+                                                                            height: "75px",
+                                                                            background: "rgba(255,255,255,0.15)",
+                                                                            backdropFilter: "blur(10px)",
+                                                                            border: "1px solid rgba(255,255,255,0.2)",
+                                                                        }}
+                                                                    >
+                                                                        <i className="ri-funds-fill text-white fs-1"></i>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* FOOTER */}
+                                                                <div
+                                                                    className="mt-4 rounded-4 p-3"
+                                                                    style={{
+                                                                        background: "rgba(255,255,255,0.12)",
+                                                                        backdropFilter: "blur(12px)",
+                                                                        border: "1px solid rgba(255,255,255,0.15)",
+                                                                    }}
+                                                                >
+                                                                    <div className="d-flex align-items-center justify-content-between">
+
+                                                                        <div>
+                                                                            <small className="text-white opacity-75 d-block mb-1">
+                                                                                Status Invoice
+                                                                            </small>
+
+                                                                            <h6 className="fw-bold text-white mb-0">
+                                                                                Menunggu Pelunasan
+                                                                            </h6>
+                                                                        </div>
+
+                                                                        <div
+                                                                            className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                            style={{
+                                                                                width: "55px",
+                                                                                height: "55px",
+                                                                                background: "rgba(255,255,255,0.15)",
+                                                                            }}
+                                                                        >
+                                                                            <i className="ri-time-fill text-white fs-3"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </Col>
-                                                    <Col xl={2}>
-                                                        <h6><span>Nilai : {toCurrency(item.nilai)}</span></h6>
-                                                    </Col>
-                                                    {item.checklist ? (
-                                                        <>
-
-                                                            <Col xl={2}>
-                                                                <h2><span className={`badge ${item.checklist == 1 ? "bg-success" : "bg-danger"}`}>{item.checklist == 1 ? "Verified" : "Not Verified"}</span></h2>
-                                                            </Col>
-                                                            {item.checklist == 2 && (
-                                                                <Col xl={12} className="mt-2 mb-2">
-                                                                    <Form.Group controlId="formFile" className="mb-3">
-                                                                        <Form.Label>Upload Ulang Dokumen {item.pertanyaan}</Form.Label>
-                                                                        <Form.Control type="file" onChange={(e) => { handleFileChange(index, e.target.files[0]) }} />
-                                                                    </Form.Group>
-                                                                    <Form.Control
-                                                                        type="number"
-                                                                        placeholder="Masukan Nilai"
-                                                                        onChange={(e) => handleInputChange(index, e.target.value)}
-                                                                        className="mb-2 mt-2"
-                                                                    />
-                                                                    <Button variant='contained' type="button" className="btn btn-primary" onClick={() => {updateDokumenDetailTransaksi(index, item)}}>Submit</Button>
-                                                                </Col>
-                                                            )}
-                                                            {item.catatan && (
-                                                                <Col xl={12}>
-                                                                    <h6><span className="text-danger" style={{ overflowWrap: "break-word", fontStyle: "italic" }}>
-                                                                        Catatan : {item.catatan}
-                                                                    </span></h6>
-                                                                </Col>
-                                                            )}
-
-
-                                                        </>
-
-                                                    ) : (
-                                                        <Col xl={2}>
-                                                            <h2><span className={`badge bg-info`}>On Review</span></h2>
-
-                                                        </Col>
-                                                    )}
 
                                                 </Row>
 
+                                            </Row>
+                                        </div>
+                                    </div>
+                                </Col>
 
 
-                                            </div>
-                                        </Col>
-                                    </>
-                                ))} */}
 
-                                {showData.detail_transaksi &&
-                                    showData.detail_transaksi.map((item, index) => (
-                                        <Col xl={12} key={index} className="mb-4">
-                                            <div className="card border-0 shadow-sm rounded-4">
+                                {/* ===================== DETAIL DOKUMEN ===================== */}
+                                <div className="mt-4">
+                                    <div className="d-flex align-items-center justify-content-between mb-4">
+                                        <div>
+                                            <h5 className="fw-bold mb-1 text-dark">
+                                                Detail Dokumen Transaksi
+                                            </h5>
+                                            <small className="text-muted">
+                                                Informasi dokumen dan status verifikasi
+                                            </small>
+                                        </div>
+
+                                        <div>
+                                            <span className="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
+                                                {showData.detail_transaksi?.length || 0} Dokumen
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {showData.detail_transaksi &&
+                                        showData.detail_transaksi.map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden"
+                                                style={{
+                                                    background:
+                                                        "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
+                                                }}
+                                            >
+                                                {/* TOP BAR */}
+                                                <div
+                                                    className={`px-4 py-2 ${item.checklist == 1
+                                                        ? "bg-success"
+                                                        : item.checklist == 2
+                                                            ? "bg-danger"
+                                                            : "bg-info"
+                                                        }`}
+                                                >
+                                                    <div className="d-flex align-items-center justify-content-between">
+                                                        <div className="text-white fw-semibold">
+                                                            <i className="ri-file-list-3-line me-2"></i>
+                                                            Dokumen Transaksi
+                                                        </div>
+
+                                                        <span className="badge bg-white text-dark px-3 py-2 rounded-pill">
+                                                            {item.checklist == 1
+                                                                ? "Verified"
+                                                                : item.checklist == 2
+                                                                    ? "Not Verified"
+                                                                    : "On Review"}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
                                                 <div className="card-body p-4">
 
-                                                    {/* Header */}
-                                                    <Row className="align-items-center gy-3">
+                                                    {/* TITLE */}
+                                                    <div className="mb-4">
+                                                        <h5 className="fw-bold text-dark mb-1">
+                                                            {item.pertanyaan}
+                                                        </h5>
 
-                                                        <Col xl={4}>
-                                                            <h6 className="fw-bold text-dark mb-1">
-                                                                {item.pertanyaan}
-                                                            </h6>
-                                                            <small className="text-muted">
-                                                                Detail Dokumen Transaksi
-                                                            </small>
-                                                        </Col>
+                                                        <small className="text-muted">
+                                                            Dokumen pendukung transaksi proyek
+                                                        </small>
+                                                    </div>
 
-                                                        <Col xl={3}>
-                                                            <Button
-                                                                variant="contained"
-                                                                className="btn btn-primary w-100"
-                                                                onClick={() =>
-                                                                    getFileTransaksi(
-                                                                        item.id_detail_transaksi,
-                                                                        item.pertanyaan
-                                                                    )
-                                                                }
-                                                            >
-                                                                <i className="ri-file-search-line me-2"></i>
-                                                                Lihat Dokumen
-                                                            </Button>
-                                                        </Col>
+                                                    {/* ACTION CARD */}
+                                                    <div className="row g-3">
 
-                                                        <Col xl={2}>
-                                                            <div className="bg-light rounded-3 p-2 text-center">
-                                                                <small className="text-muted d-block">
-                                                                    Nilai
-                                                                </small>
-                                                                <h6 className="mb-0 fw-bold text-success">
-                                                                    {toCurrency(item.nilai)}
-                                                                </h6>
-                                                            </div>
-                                                        </Col>
+                                                        {/* VIEW FILE */}
+                                                        <div className="col-xl-6">
+                                                            <div className="border rounded-4 p-3 h-100 bg-light-subtle">
+                                                                <div className="d-flex flex-column h-100 justify-content-between">
+                                                                    <div>
+                                                                        <small className="text-muted d-block mb-2">
+                                                                            Dokumen
+                                                                        </small>
 
-                                                        <Col xl={3}>
-                                                            {item.checklist ? (
-                                                                <div className="text-xl-end">
-                                                                    <span
-                                                                        className={`badge px-3 py-2 fs-6 ${item.checklist == 1
-                                                                                ? "bg-success"
-                                                                                : "bg-danger"
-                                                                            }`}
+                                                                        <h6 className="fw-semibold">
+                                                                            File Transaksi
+                                                                        </h6>
+                                                                    </div>
+
+                                                                    <Button
+                                                                        variant="contained"
+                                                                        className="btn btn-primary mt-3"
+                                                                        onClick={() =>
+                                                                            getFileTransaksi(
+                                                                                item.id_detail_transaksi,
+                                                                                item.pertanyaan
+                                                                            )
+                                                                        }
                                                                     >
-                                                                        {item.checklist == 1
-                                                                            ? "Verified"
-                                                                            : "Not Verified"}
-                                                                    </span>
+                                                                        <i className="ri-eye-line me-2"></i>
+                                                                        Lihat Dokumen
+                                                                    </Button>
                                                                 </div>
-                                                            ) : (
-                                                                <div className="text-xl-end">
-                                                                    <span className="badge bg-info px-3 py-2 fs-6">
-                                                                        On Review
-                                                                    </span>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* STATUS */}
+                                                        <div className="col-xl-6">
+                                                            <div className="border rounded-4 p-3 h-100 bg-light-subtle">
+                                                                <small className="text-muted d-block mb-2">
+                                                                    Status Verifikasi
+                                                                </small>
+
+                                                                <div className="mt-2">
+                                                                    {item.checklist == 1 && (
+                                                                        <div className="d-flex align-items-center text-success">
+                                                                            <i className="ri-checkbox-circle-fill fs-4 me-2"></i>
+                                                                            <div>
+                                                                                <h6 className="mb-0 fw-bold">
+                                                                                    Verified
+                                                                                </h6>
+                                                                                <small>
+                                                                                    Dokumen telah diverifikasi
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+
+                                                                    {item.checklist == 2 && (
+                                                                        <div className="d-flex align-items-center text-danger">
+                                                                            <i className="ri-close-circle-fill fs-4 me-2"></i>
+                                                                            <div>
+                                                                                <h6 className="mb-0 fw-bold">
+                                                                                    Not Verified
+                                                                                </h6>
+                                                                                <small>
+                                                                                    Dokumen perlu revisi
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+
+                                                                    {!item.checklist && (
+                                                                        <div className="d-flex align-items-center text-info">
+                                                                            <i className="ri-time-fill fs-4 me-2"></i>
+                                                                            <div>
+                                                                                <h6 className="mb-0 fw-bold">
+                                                                                    On Review
+                                                                                </h6>
+                                                                                <small>
+                                                                                    Menunggu proses verifikasi
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
-                                                            )}
-                                                        </Col>
-                                                    </Row>
+                                                            </div>
+                                                        </div>
 
-                                                    {/* Upload ulang jika reject */}
-                                                    {item.checklist == 2 && (
-                                                        <div className="mt-4 border-top pt-4">
 
-                                                            <h6 className="fw-semibold text-danger mb-3">
-                                                                Upload Ulang Dokumen
-                                                            </h6>
+                                                    </div>
 
-                                                            <Form.Group className="mb-3">
-                                                                <Form.Label>
-                                                                    Upload Dokumen {item.pertanyaan}
-                                                                </Form.Label>
+                                                    {/* CATATAN */}
+                                                    {item.catatan && (
+                                                        <div
+                                                            className="mt-4 p-4 rounded-4"
+                                                            style={{
+                                                                background:
+                                                                    "linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%)",
+                                                                borderLeft: "5px solid #dc3545",
+                                                            }}
+                                                        >
+                                                            <div className="d-flex align-items-start">
+                                                                <div className="me-3">
+                                                                    <i className="ri-error-warning-fill text-danger fs-3"></i>
+                                                                </div>
 
-                                                                <Form.Control
-                                                                    type="file"
-                                                                    onChange={(e) =>
-                                                                        handleFileChange(
-                                                                            index,
-                                                                            e.target.files[0]
-                                                                        )
-                                                                    }
-                                                                />
-                                                            </Form.Group>
+                                                                <div>
+                                                                    <h6 className="fw-bold text-danger mb-2">
+                                                                        Catatan Reviewer
+                                                                    </h6>
 
-                                                            <Form.Control
-                                                                type="number"
-                                                                placeholder="Masukan Nilai"
-                                                                className="mb-3"
-                                                                onChange={(e) =>
-                                                                    handleInputChange(
-                                                                        index,
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                            />
-
-                                                            <Button
-                                                                variant="contained"
-                                                                className="btn btn-primary"
-                                                                onClick={() =>
-                                                                    updateDokumenDetailTransaksi(
-                                                                        index,
-                                                                        item
-                                                                    )
-                                                                }
-                                                            >
-                                                                <i className="ri-upload-cloud-line me-2"></i>
-                                                                Submit Revisi
-                                                            </Button>
+                                                                    <div
+                                                                        className="text-dark"
+                                                                        style={{
+                                                                            lineHeight: "1.7",
+                                                                            overflowWrap: "break-word",
+                                                                        }}
+                                                                    >
+                                                                        {item.catatan}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     )}
 
-                                                    {/* Catatan */}
-                                                    {item.catatan && (
-                                                        <div className="mt-4 p-3 rounded-3 bg-danger-subtle border-start border-4 border-danger">
-                                                            <small className="text-danger fw-semibold d-block mb-1">
-                                                                Catatan Reviewer
-                                                            </small>
-
-                                                            <span
-                                                                className="text-danger fst-italic"
-                                                                style={{ overflowWrap: "break-word" }}
+                                                    {/* REUPLOAD */}
+                                                    {item.checklist == 2 && (
+                                                        <div className="mt-4">
+                                                            <div
+                                                                className="rounded-4 p-4"
+                                                                style={{
+                                                                    background:
+                                                                        "linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%)",
+                                                                    border: "1px solid #ffe69c",
+                                                                }}
                                                             >
-                                                                {item.catatan}
-                                                            </span>
+                                                                <div className="d-flex align-items-center mb-3">
+                                                                    <i className="ri-upload-cloud-2-line text-warning fs-3 me-2"></i>
+
+                                                                    <div>
+                                                                        <h5 className="fw-bold mb-0 text-dark">
+                                                                            Upload Revisi Dokumen
+                                                                        </h5>
+
+                                                                        <small className="text-muted">
+                                                                            Upload ulang dokumen yang telah direvisi
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <Row className="gy-3">
+                                                                    <Col xl={12}>
+                                                                        <Form.Group>
+                                                                            <Form.Label className="fw-semibold">
+                                                                                Upload Dokumen Baru
+                                                                            </Form.Label>
+
+                                                                            <Form.Control
+                                                                                type="file"
+                                                                                className="rounded-3"
+                                                                                onChange={(e) =>
+                                                                                    handleFileChange(
+                                                                                        index,
+                                                                                        e.target.files[0]
+                                                                                    )
+                                                                                }
+                                                                            />
+                                                                        </Form.Group>
+                                                                    </Col>
+
+                                                                    {/* <Col xl={6}>
+                                                                        <Form.Group>
+                                                                            <Form.Label className="fw-semibold">
+                                                                                Nilai Dokumen
+                                                                            </Form.Label>
+
+                                                                            <Form.Control
+                                                                                type="number"
+                                                                                placeholder="Masukan nilai transaksi"
+                                                                                className="rounded-3"
+                                                                                onChange={(e) =>
+                                                                                    handleInputChange(
+                                                                                        index,
+                                                                                        e.target.value
+                                                                                    )
+                                                                                }
+                                                                            />
+                                                                        </Form.Group>
+                                                                    </Col> */}
+                                                                </Row>
+
+                                                                <div className="mt-4 text-end">
+                                                                    <Button
+                                                                        variant="contained"
+                                                                        className="btn btn-warning px-4 py-2"
+                                                                        onClick={() =>
+                                                                            updateDokumenDetailTransaksi(
+                                                                                index,
+                                                                                item
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <i className="ri-upload-2-line me-2"></i>
+                                                                        Submit Revisi
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     )}
                                                 </div>
                                             </div>
-                                        </Col>
-                                    ))}
-                                <Divider className="mt-3 mb-3" />
+                                        ))}
+                                </div>
 
-                                {showData.status_approval == "Approved" || showData.status_approval == "Reject" ? (
-                                    <Col xl={12}>
-                                        <div className="row gy-2 pb-3">
-                                            <Row>
-                                                <Col xl={2}>
-                                                    <label htmlFor="nama-proyek" className="form-label ">Approval<span style={{ color: "red" }}>*</span> :</label>
-                                                </Col>
-                                                <Col xl={8}>
-                                                    <h2><span className={`badge ${showData.status_approval == "Approved" ? "bg-success" : "bg-danger"} col-xl-2`}>{showData.status_approval}</span></h2>
-                                                </Col>
-                                            </Row>
+                                {/* ===================== STATUS SECTION ===================== */}
+                                <div className="card border-0 shadow-sm rounded-4 mt-4">
+                                    <div className="card-body p-4">
 
+                                        <div className="d-flex align-items-center justify-content-between mb-4">
+                                            <div>
+                                                <h5 className="fw-bold mb-1">
+                                                    Status Transaksi
+                                                </h5>
 
+                                                <small className="text-muted">
+                                                    Status approval dan pembayaran transaksi
+                                                </small>
+                                            </div>
 
+                                            <div>
+                                                <i className="ri-shield-check-line fs-2 text-primary"></i>
+                                            </div>
                                         </div>
-                                    </Col>
-                                ) : (
-                                    <Col xl={12}>
-                                        <div className="row gy-2 pb-3">
-                                            <Row>
-                                                <Col xl={2}>
-                                                    <label htmlFor="nama-proyek" className="form-label ">Approval<span style={{ color: "red" }}>*</span> :</label>
-                                                </Col>
-                                                <Col xl={8}>
-                                                    <h2><span className={`badge bg-info`}>{showData.status_approval}</span></h2>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </Col>
-                                )}
 
-                                {showData.layak_bayar == "Layak Bayar" || showData.layak_bayar == "Tidak Layak Bayar" ? (
-                                    <Col xl={12}>
-                                        <div className="row gy-2 pb-3">
-                                            <Row>
-                                                <Col xl={2}>
-                                                    <label htmlFor="nama-proyek" className="form-label ">Layak Bayar<span style={{ color: "red" }}>*</span> :</label>
-                                                </Col>
-                                                <Col xl={8}>
-                                                    <h2><span className={`badge ${showData.layak_bayar == "Layak Bayar" ? "bg-success" : "bg-danger"}`}>{showData.layak_bayar}</span></h2>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </Col>
-                                ) : (
-                                    <Col xl={12}>
-                                        <div className="row gy-2 pb-3">
-                                            <Row>
-                                                <Col xl={2}>
-                                                    <label htmlFor="nama-proyek" className="form-label ">Layak Bayar<span style={{ color: "red" }}>*</span> :</label>
-                                                </Col>
-                                                <Col xl={10}>
-                                                    <h2><span className={`badge ${(showData.status_approval == "Reject") ? "bg-danger" : "bg-info"}`}>{(showData.status_approval == "Reject") ? "Tidak Layak Bayar" : "On Review"}</span></h2>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </Col>
-                                )}
+                                        <Row className="gy-4">
 
 
-                                {showData.bukti_bayar ? (
-                                    <Col xl={12}>
-                                        <div className="row gy-2 pb-3">
-                                            <Row>
-                                                <Col xl={2}>
-                                                    <label htmlFor="nama-proyek" className="form-label ">Dokumen Bukti Bayar<span style={{ color: "red" }}>*</span> :</label>
-                                                </Col>
-                                                <Col xl={10}>
-                                                    <Button variant='contained' type="button" className="btn btn-primary" onClick={() => { getFileDokumenBuktiBayar(idTransaksi, "Bukti Pembayaran") }}>Lihat Dokumen</Button>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </Col>
-                                ) : (
-                                    <Col xl={12}>
-                                        <div className="row gy-2 pb-3">
-                                            <Row>
-                                                <Col xl={2}>
-                                                    <label htmlFor="nama-proyek" className="form-label ">Bukti Bayar<span style={{ color: "red" }}>*</span> :</label>
-                                                </Col>
-                                                <Col xl={8}>
-                                                    <h2><span className={`badge ${(showData.status_approval == "Reject") ? "bg-danger" : "bg-info"}`}>{(showData.status_approval == "Reject") ? "Reject" : "On Review"}</span></h2>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </Col>
 
-                                )}
+                                            {/* ===================== STATUS SECTION ===================== */}
+
+                                            <Row className="gy-4">
+
+                                                {/* ===================== STATUS LAYAK BAYAR ===================== */}
+                                                <Col xl={12}>
+                                                    <div
+                                                        className="position-relative overflow-hidden rounded-4 p-4 h-100 border-0"
+                                                        style={{
+                                                            background:
+                                                                showData.layak_bayar == "Layak Bayar"
+                                                                    ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
+                                                                    : showData.layak_bayar == "Tidak Layak Bayar"
+                                                                        ? "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"
+                                                                        : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                                                            boxShadow:
+                                                                "0 10px 30px rgba(0,0,0,0.12)",
+                                                        }}
+                                                    >
+
+                                                        {/* Glow */}
+                                                        <div
+                                                            style={{
+                                                                position: "absolute",
+                                                                width: "250px",
+                                                                height: "250px",
+                                                                borderRadius: "50%",
+                                                                background: "rgba(255,255,255,0.08)",
+                                                                top: "-120px",
+                                                                right: "-80px",
+                                                            }}
+                                                        />
+
+                                                        {/* Background Icon */}
+                                                        <div
+                                                            style={{
+                                                                position: "absolute",
+                                                                right: "-10px",
+                                                                bottom: "-20px",
+                                                                fontSize: "120px",
+                                                                opacity: 0.12,
+                                                                color: "#fff",
+                                                            }}
+                                                        >
+                                                            <i
+                                                                className={
+                                                                    showData.layak_bayar == "Layak Bayar"
+                                                                        ? "ri-checkbox-circle-line"
+                                                                        : showData.layak_bayar == "Tidak Layak Bayar"
+                                                                            ? "ri-close-circle-line"
+                                                                            : "ri-loader-4-line"
+                                                                }
+                                                            ></i>
+                                                        </div>
+
+                                                        <div className="position-relative">
+
+                                                            {/* HEADER */}
+                                                            <div className="d-flex align-items-start justify-content-between">
+
+                                                                <div>
+                                                                    <small className="text-white opacity-75 d-block mb-2">
+                                                                        Status Layak Bayar
+                                                                    </small>
+
+                                                                    <h2 className="fw-bold text-white mb-2">
+                                                                        {showData.layak_bayar ||
+                                                                            (showData.status_approval == "Reject"
+                                                                                ? "Tidak Layak Bayar"
+                                                                                : "On Review")}
+                                                                    </h2>
+
+                                                                    <div
+                                                                        className="rounded-pill px-3 py-2 d-inline-flex align-items-center"
+                                                                        style={{
+                                                                            background: "rgba(255,255,255,0.18)",
+                                                                            backdropFilter: "blur(10px)",
+                                                                            border: "1px solid rgba(255,255,255,0.2)",
+                                                                        }}
+                                                                    >
+                                                                        <i className="ri-shield-check-line me-2 text-white"></i>
+
+                                                                        <span className="text-white small fw-semibold">
+                                                                            {showData.layak_bayar == "Layak Bayar"
+                                                                                ? "Transaksi Siap Dibayar"
+                                                                                : showData.layak_bayar == "Tidak Layak Bayar"
+                                                                                    ? "Perlu Perbaikan"
+                                                                                    : "Sedang Direview"}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* ICON */}
+                                                                <div
+                                                                    className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                    style={{
+                                                                        width: "75px",
+                                                                        height: "75px",
+                                                                        background: "rgba(255,255,255,0.15)",
+                                                                        backdropFilter: "blur(12px)",
+                                                                        border: "1px solid rgba(255,255,255,0.2)",
+                                                                    }}
+                                                                >
+                                                                    <i
+                                                                        className={`fs-1 text-white ${showData.layak_bayar == "Layak Bayar"
+                                                                            ? "ri-checkbox-circle-fill"
+                                                                            : showData.layak_bayar == "Tidak Layak Bayar"
+                                                                                ? "ri-close-circle-fill"
+                                                                                : "ri-loader-4-line"
+                                                                            }`}
+                                                                    ></i>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* FOOTER INFO */}
+                                                            <div
+                                                                className="mt-4 rounded-4 p-3"
+                                                                style={{
+                                                                    background: "rgba(255,255,255,0.12)",
+                                                                    backdropFilter: "blur(12px)",
+                                                                    border: "1px solid rgba(255,255,255,0.15)",
+                                                                }}
+                                                            >
+                                                                <div className="d-flex align-items-center justify-content-between">
+
+                                                                    <div>
+                                                                        <small className="text-white opacity-75 d-block mb-1">
+                                                                            Approval Status
+                                                                        </small>
+
+                                                                        <h5 className="fw-bold text-white mb-0">
+                                                                            {showData.status_approval || "Waiting"}
+                                                                        </h5>
+                                                                    </div>
+
+                                                                    <div
+                                                                        className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                        style={{
+                                                                            width: "55px",
+                                                                            height: "55px",
+                                                                            background: "rgba(255,255,255,0.15)",
+                                                                        }}
+                                                                    >
+                                                                        <i className="ri-git-pull-request-line text-white fs-3"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+
+                                            </Row>
+                                        </Row>
+                                    </div>
+                                </div>
+
+                                 <Col xl={12} className="mt-4">
+                                <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                                    {/* HEADER */}
+                                    <div
+                                        className="text-white p-4"
+                                        style={{
+                                            background:
+                                                "linear-gradient(135deg,#0f172a 0%,#334155 100%)",
+                                        }}
+                                    >
+                                        <div className="d-flex align-items-center justify-content-between">
+
+                                            <div>
+                                                <h5 className="mb-1 fw-bold">
+                                                    Disposisi Approval Head Office
+                                                </h5>
+
+                                                <small className="opacity-75">
+                                                    Persetujuan Finance
+                                                </small>
+                                            </div>
+
+                                            <div>
+                                                <i className="ri-team-line fs-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* BODY */}
+                                    <div className="card-body p-4">
+
+                                        <div
+                                            className="rounded-4 p-4"
+                                            style={{
+                                                background:
+                                                    "linear-gradient(145deg,#ffffff 0%,#f8fafc 100%)",
+                                                border: "1px solid #e2e8f0",
+                                            }}
+                                        >
+
+                                            <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                                                {/* LEFT */}
+                                                <div>
+
+                                                    <div className="d-flex align-items-center gap-3">
+
+                                                        <div
+                                                            className="rounded-circle d-flex align-items-center justify-content-center"
+                                                            style={{
+                                                                width: "65px",
+                                                                height: "65px",
+                                                                background:
+                                                                    "linear-gradient(135deg,#0ea5e9 0%,#2563eb 100%)",
+                                                                color: "#fff",
+                                                            }}
+                                                        >
+                                                            <i className="ri-file-check-line fs-2"></i>
+                                                        </div>
+
+                                                        <div>
+                                                            <h5 className="fw-bold mb-1">
+                                                                {showData.approvedBy?.nama && (
+                                                                    <span>{showData.approvedBy.nama}</span>
+                                                                )}
+                                                            </h5>
+
+                                                            <small className="text-muted">
+                                                                Approval Verifikasi Dokumen
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* RIGHT */}
+                                                <div className="text-end">
+
+                                                    <span className="badge bg-success rounded-pill px-4 py-3 fs-6">
+                                                        <i className="ri-checkbox-circle-fill me-2"></i>
+                                                        Approve
+                                                    </span>
+
+                                                    <div className="mt-2 text-muted small">
+                                                        22 Mei 2026 • 10:30 WIB
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* CATATAN */}
+                                            <div
+                                                className="mt-4 rounded-4 p-3"
+                                                style={{
+                                                    background: "#fff",
+                                                    border: "1px solid #e2e8f0",
+                                                    borderLeft: "4px solid #0ea5e9",
+                                                }}
+                                            >
+                                                <small className="text-muted d-block mb-2">
+                                                    Catatan Verified
+                                                </small>
+
+                                                <div className="text-dark">
+                                                    {showData.catatan_verified ?? "-"}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </Col>
 
 
                                 {/* <Col xl={12}>

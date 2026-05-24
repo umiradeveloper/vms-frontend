@@ -155,13 +155,15 @@ const DaftarCostCode = () => {
                     }
                     setDatatable(dataTableArr);
                     // setKategori(kategoriArr);
-                    setLoader(false);
+                    // setLoader(false);
                 }
             }
             // console.log(result)
         } catch (error) {
-            setLoader(false);
+            // setLoader(false);
             console.log(error);
+        }finally{
+            setLoader(false);
         }
     }
 

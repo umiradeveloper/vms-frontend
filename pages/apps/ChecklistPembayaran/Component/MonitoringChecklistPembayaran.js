@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
 import DetailPengajuan from "../modals/DetailPengajuan";
-import DetailSuratPayment from "./DetailSuratPayment";
+// import DetailSuratPayment from "./DetailSuratPayment";
 import { Button } from "@mui/material";
 
 
@@ -40,36 +40,64 @@ const MonitoringChecklistPembayaran = ({loader, setLoader, reload, setReload}) =
             Header: "Jenis Transaksi",
             accessor: "jenis_transaksi",
         },
+         {
+            Header: "Kategori",
+            accessor: "kategori",
+        },
+        {
+            Header: "Nama Vendor",
+            accessor: "nama_vendor",
+        },
+        {
+            Header: "Nomor Invoice",
+            accessor: "nomor_invoice",
+        },
+       
+        
         {
             Header: "Keterangan",
             accessor: "keterangan",
         },
-         {
-            Header: "Catatan Verified",
-            accessor: "catatan_verified",
+        {
+            Header: "Nilai Invoice (NETTO)",
+            accessor: "nilai_invoice_bersih",
         },
         {
-            Header: "Catatan Payment",
-            accessor: "catatan_payment",
+            Header: "Nilai yang di bayar",
+            accessor: "nilai_yang_terbayar",
+        },
+        {
+            Header: "Sisa Yang Belum Terbayar",
+            accessor: "sisa_yang_belum_terbayar",
         },
         {
             Header: "Status Pengajuan",
             accessor: "status_pengajuan",
         },
-         {
-            Header: "Dokumen Output",
-            accessor: "dokumen_output",
-        },
+        //  {
+        //     Header: "Dokumen Output",
+        //     accessor: "dokumen_output",
+        // },
         {
             Header: "Aksi",
             accessor: "aksi",
         },
     ]
+    const toCurrency = (amount) => {
+        if (amount == null || amount === "") {
+            return "Rp 0";
+        }
+
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR"
+        }).format(amount);
+    }
       const Surat = () => {
             return(
                 <Modal size="lg" show={openModalSurat.open} onHide={() => setOpenModalSurat({...openModalSurat, open: false})} className="fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <Modal.Body className="">
-                      <DetailSuratPayment data={openModalSurat.data}/>
+                      {/* <DetailSuratPayment data={openModalSurat.data}/> */}
                     </Modal.Body>
                     <Modal.Footer className="">
                         <Button variant='contained' type="button" className="btn btn-secondary" onClick={() => setOpenModalSurat({...openModalSurat, open: false})}
@@ -88,28 +116,39 @@ const MonitoringChecklistPembayaran = ({loader, setLoader, reload, setReload}) =
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            // console.log(result);
+            console.log(result);
             if (result.status == 200) {
                 const pengajuanArr = [];
                 if (result.data.data?.length > 0) {
+                    
 
                     for (const datas of result.data.data) {
+                        let bayar = 0;
+                        for(const detailPayment of datas.detailPayment){
+                            bayar += detailPayment.nominal_bayar ?? 0;
+                        }
                         pengajuanArr.push({
                             kode_trx: datas.kode_transaksi,
                             nama: datas.user_pengajuan?.nama,
                             proyek:datas.proyek,
+                            nama_vendor: datas.nama_vendor ?? "-",
+                            kategori: datas.kategori ?? "-",
+                            nomor_invoice: datas.nomor_invoice ?? "-",
                             tanggal_pengajuan: datas.tanggal_pengajuan,
                             jenis_transaksi: datas.jenis_transaksi,
                             keterangan: datas.keterangan,
                             status_pengajuan: <h5><span className={`badge ${(datas.status_pengajuan == "Verified")?"bg-success-gradient":(datas.status_pengajuan == "Pengajuan")?"bg-info-gradient":(datas.status_pengajuan == "Payment")?"bg-primary-gradient":"bg-danger-gradient"}`}>{datas.status_pengajuan}</span></h5>,
-                            catatan_verified: datas.catatan_verified,
-                            catatan_payment: datas.catatan_payment,
-                            dokumen_output: (datas.status_pengajuan == "Payment")?
-                            <div className="d-flex flex-row gap-2">
-                                <button className="btn btn-secondary" onClick={() => setOpenModalSurat({open: true, data: datas})} >Dokumen</button>
-                            </div>
-                            :
-                            "-",
+                            nilai_invoice_bersih: toCurrency(datas.nilai_invoice_bersih) ?? "-",
+                            nilai_yang_terbayar: toCurrency(bayar),
+                            sisa_yang_belum_terbayar: toCurrency(datas.nilai_invoice_bersih - bayar),
+                            // catatan_verified: datas.catatan_verified,
+                            // catatan_payment: datas.catatan_payment,
+                            // dokumen_output: (datas.status_pengajuan == "Payment")?
+                            // <div className="d-flex flex-row gap-2">
+                            //     <button className="btn btn-secondary" onClick={() => setOpenModalSurat({open: true, data: datas})} >Dokumen</button>
+                            // </div>
+                            // :
+                            // "-",
                             aksi: <div className="d-flex flex-row gap-2">
                                 <button className="btn btn-info" onClick={() => setOpenDetailPengajuan({open: true, data: datas})} >Detail</button>
                             </div>

@@ -4,11 +4,12 @@ import { Col, Row } from "react-bootstrap";
 import Seo from "@/shared/layout-components/seo/seo";
 import PageHeaderVms from "../Component/PageHeaderVms";
 import LoadersSimUmira from "../Component/LoaderSimUmira";
-import CreatePengajuan from "./modals/CreatePengajuan";
+import CreatePengajuan from "./Component/Proyek/modals/CreatePengajuanProyek";
 import MonitoringChecklistPembayaran from "./Component/MonitoringChecklistPembayaran";
+import DaftarPengajuanTransaksi from "./Component/Proyek/DaftarPengajuanTransaksi";
 
 
-const PengajuanChecklistPembayaran = () => {
+const PengajuanChecklistPembayaranProyek = () => {
     const [openModalAdd, setOpenModalAdd] = useState({
         open: false
     })
@@ -25,7 +26,7 @@ const PengajuanChecklistPembayaran = () => {
                     <Button variant="contained" color="success" onClick={() => setOpenModalAdd({ open: true })}>Pengajuan Jenis Transaksi</Button>
                 </Col>
                 <Col xl={12}>
-                    <MonitoringChecklistPembayaran loader={loader} setLoader={setLoader} reload={reload} setReload={setReload} />
+                    <DaftarPengajuanTransaksi loader={loader} setLoader={setLoader} reload={reload} setReload={setReload} />
                 </Col>
             </Row>
         </Fragment>
@@ -33,5 +34,5 @@ const PengajuanChecklistPembayaran = () => {
 }
 
 
-PengajuanChecklistPembayaran.layout = "ContentlayoutVms";
-export default PengajuanChecklistPembayaran;
+PengajuanChecklistPembayaranProyek.layout = "ContentlayoutVms";
+export default PengajuanChecklistPembayaranProyek;

@@ -8,7 +8,7 @@ import apiConfig from "@/utils/AxiosConfig";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
 
-const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader, reload, setReload }) => {
+const CreatePengajuanProyek = ({ openModal, setOpenModal, loader, setLoader, reload, setReload }) => {
     const [jenisTransaksi, setJenisTransaksi] = useState([]);
     const [proyek, setProyek] = useState([]);
     const [kodeTransaksi, setKodeTransaksi] = useState();
@@ -204,7 +204,7 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader, reload, s
         })
         // console.log(formTransaksi)
         try {
-            const result = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/create-transaksi", fm, {
+            const result = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/create-transaksi", fm, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -507,7 +507,32 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader, reload, s
                                 <label htmlFor="nama-proyek" className="form-label ">Catatan :</label>
                                 <textarea type="text" value={dataSubmit.catatan} className={`form-control`} id="keterangan" placeholder="Catatan" rows={3} onChange={(e) => setDataSubmit({ ...dataSubmit, catatan: e.target.value })} />
                             </Col>
-                           
+                            <Col xl={12}>
+                                <label className="form-label">
+                                    Pilih Approver <span style={{ color: "red" }}>*</span> :
+                                </label>
+
+                                <Select
+                                    options={userApprover}
+                                    isMulti
+                                    isSearchable
+                                    placeholder="Pilih approver (berurutan)"
+                                    classNamePrefix="Select2"
+                                    onChange={(selected) => {
+                                        const approverArr = selected
+                                            ? selected.map((item, index) => ({
+                                                id_user: item.value,
+                                                urutan: index + 1
+                                            }))
+                                            : [];
+                                        setDataSubmit({
+                                            ...dataSubmit,
+                                            id_user_approver: approverArr
+                                        });
+                                    }}
+                                />
+
+                            </Col>
 
 
                         </div>
@@ -528,4 +553,4 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader, reload, s
     )
 }
 
-export default dynamic(() => Promise.resolve(CreatePengajuan), { ssr: false });
+export default dynamic(() => Promise.resolve(CreatePengajuanProyek), { ssr: false });

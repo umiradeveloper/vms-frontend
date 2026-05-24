@@ -6,10 +6,11 @@ import PageHeaderVms from "../Component/PageHeaderVms";
 import LoadersSimUmira from "../Component/LoaderSimUmira";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
-import DetailApprovalPengajuan from "./modals/DetailApprovalPengajuan";
+import DetailApprovalChecklistPembayaranProyek from "./Component/Proyek/modals/DetailApprovalChecklistPembayaranProyek";
+// import DetailApprovalPengajuan from "./modals/DetailApprovalPengajuan";
 
 
-const ApprovalChecklistPembayaran = () => {
+const ApprovalChecklistPembayaranProyek = () => {
     const [datatable, setDatatable] = useState([]);
     const [reload, setReload] = useState(false);
     const [loader, setLoader] = useState(false);
@@ -18,7 +19,7 @@ const ApprovalChecklistPembayaran = () => {
         data: {}
     })
     const COLUMNS = [
-        {
+         {
             Header: "Kode Transaksi",
             accessor: "kode_trx",
         },
@@ -82,20 +83,17 @@ const ApprovalChecklistPembayaran = () => {
         },
     ]
     const toCurrency = (amount) => {
-        if (amount == null || amount === "") {
-            return "Rp 0";
-        }
-
-        return new Intl.NumberFormat("id-ID", {
+        const hasil = new Intl.NumberFormat("id-ID", {
             style: "currency",
             currency: "IDR"
         }).format(amount);
+        return hasil
     }
     const getMonitoring = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-transaksi-by-status?status=Pengajuan", {
+            const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/get-transaksi-approval", {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -108,11 +106,11 @@ const ApprovalChecklistPembayaran = () => {
 
                     for (const datas of result.data.data) {
                         let bayar = 0;
-                        for(const detailPayment of datas.detailPayment){
+                        for(const detailPayment of datas.detailPembayaran){
                             bayar += detailPayment.nominal_bayar ?? 0;
                         }
                         pengajuanArr.push({
-                            kode_trx: datas.kode_transaksi,
+                           kode_trx: datas.kode_transaksi,
                             nama: datas.user_pengajuan?.nama,
                             proyek:datas.proyek,
                             nama_vendor: datas.nama_vendor ?? "-",
@@ -125,7 +123,6 @@ const ApprovalChecklistPembayaran = () => {
                             nilai_invoice_bersih: toCurrency(datas.nilai_invoice_bersih) ?? "-",
                             nilai_yang_terbayar: toCurrency(bayar),
                             sisa_yang_belum_terbayar: toCurrency(datas.nilai_invoice_bersih - bayar),
-                            status_pengajuan: <h5><span className={`badge ${(datas.status_pengajuan == "Verified")?"bg-success-gradient":(datas.status_pengajuan == "Pengajuan")?"bg-info-gradient":(datas.status_pengajuan == "Payment")?"bg-primary-gradient":"bg-danger-gradient"}`}>{datas.status_pengajuan}</span></h5>,
                             aksi: <div className="d-flex flex-row gap-2">
                                 <button className="btn btn-info" onClick={() => {setOpenModalDetail({open: true, data: datas})}} >Detail</button>
                             </div>
@@ -151,17 +148,18 @@ const ApprovalChecklistPembayaran = () => {
 
     return (
         <Fragment>
-            <Seo title={"Human Resources System"} />
-            <PageHeaderVms title='Checklist Pembayaran' item='Pengajuan Pembayaran' active_item='Approval Pembayaran' />
+            <Seo title={"Approval Checklist Pembayaran Proyek"} />
+            <PageHeaderVms title='Approval Checklist Pembayaran' item='Approval Checklist Pembayaran' active_item='Approval Checklist Pembayaran Proyek' />
             <LoadersSimUmira open={loader} />
             <Row>
-                <DetailApprovalPengajuan loader={loader} setLoader={setLoader} setOpenModal={setOpenModalDetail} openModal={openModalDetail} />
+                {/* <DetailApprovalPengajuan loader={loader} setLoader={setLoader} setOpenModal={setOpenModalDetail} openModal={openModalDetail} /> */}
+                <DetailApprovalChecklistPembayaranProyek loader={loader} setLoader={setLoader} setOpenModal={setOpenModalDetail} openModal={openModalDetail} />
                 <Col xl={12}>
                     <Card className="custom-card">
                         <Card.Header>
 
                             <div className="card-title">
-                                Daftar Approval Checklist Pembayaran
+                                Daftar Approval Checklist Pembayaran Proyek
                             </div>
                         </Card.Header>
                         <Card.Body>
@@ -176,5 +174,5 @@ const ApprovalChecklistPembayaran = () => {
         </Fragment>
     )
 }
-ApprovalChecklistPembayaran.layout = "ContentlayoutVms";
-export default ApprovalChecklistPembayaran;
+ApprovalChecklistPembayaranProyek.layout = "ContentlayoutVms";
+export default ApprovalChecklistPembayaranProyek;

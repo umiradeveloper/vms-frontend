@@ -213,7 +213,7 @@ const DetailSuratPayment = ({ data }) => {
                     variant="contained"
                     color="primary"
                     fullWidth
-                // onClick={download}
+                    onClick={download}
                 >
                     Download Surat (PDF)
                 </Button>

@@ -7,54 +7,51 @@ const Select = dynamic(() => import("react-select"), { ssr: false });
 import Swal from "sweetalert2";
 import apiConfig from "@/utils/AxiosConfig";
 
-
-
-const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) => {
+const DetailPengajuan = ({ openModal, setOpenModal, loader, setLoader }) => {
     const [idTransaksi, setIdTransaksi] = useState("");
+    const [fileTransaksi, setFileTransaksi] = useState([]);
+    const [nilaiTransaksi, setNilaiTransaksi] = useState([]);
     const [reload, setReload] = useState(false);
+    const [modalUploadTransaksi, setModalUploadTransaksi] = useState({
+        open: false,
+        id_detail_transaksi: "",
+        nama_transaksi: ""
+        // dokumen_files: null
+    })
     const [showData, setShowData] = useState({
         jenis_transaksi: "",
         proyek: "",
         status_approval: "",
         layak_bayar: "",
         bukti_bayar: "",
-        detail_transaksi: []
+        detail_transaksi: [],
+        pengajuanTransaksi: [],
+        detailPembayaran: []
     })
     const [updatePengajuanApproval, setUpdatePengajuanApproval] = useState({
         status_approval: "",
         layak_bayar: "",
-        upload_bukti_bayar: null,
-        nilai_bayar: 0
+        upload_bukti_bayar: null
     })
     const [dataApproval, setDataApproval] = useState([]);
     const [layakBayar, setLayakBayar] = useState([]);
-    const HandleVerified = async (id) => {
-        const resultConfirm = await AlertConfirm("Apakah anda yakin ingin memverifikasi data ini ? ", "warning", "Verified", false, "Data berhasil di confirm");
 
-        if (resultConfirm.status) {
-            // console.log("Isi textarea:", result.value);
-            setLoader(true);
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            try {
-                const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi?id=" + id + "&status_verified=verified", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }
-                });
-                if (resultApi.status == 200) {
-                    setReload(prev => !prev);
-                    swalAlert(result.data.message, result.statusText, "success");
-                }
-            } catch (error) {
-                console.log(error);
-            } finally { setLoader(false) }
-        }
-    }
+    const handleFileChange = (index, file) => {
+        const updated = [...fileTransaksi];
+        updated[index] = file; // simpan file
+        setFileTransaksi(updated);
+    };
+    const handleInputChange = (index, value) => {
+        const updated = [...nilaiTransaksi];
+        updated[index] = value; // simpan file
+        setNilaiTransaksi(updated);
+    };
+
+
     const getFileTransaksi = async (id, nama) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/dokumen-file?id=" + id, {
+            const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/dokumen-file?id=" + id, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -64,22 +61,18 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
             Swal.fire({ title: "Dokumen Transaksi " + nama, html: `<iframe src="${url}" width="100%" height="500px" style="border:none;"></iframe>`, width: "80%", showConfirmButton: false, showCloseButton: true });
         } catch (e) { Swal.fire("Error", "Gagal membuka dokumen", "error"); }
     };
-    const getDokumenTransaksiMerge = async (id) => {
+
+    const getFileDokumenBuktiBayar = async (id, nama) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/dokumen-transaksi-merge", {
-                params: {
-                    id: id
-                },
+            const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/dokumen-bukti-bayar?id=" + id, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }, responseType: "blob"
             });
             const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
-            // window.open(url);
-            Swal.fire({ title: "Dokumen Transaksi Merge ", html: `<iframe src="${url}" width="100%" height="500px" style="border:none;"></iframe>`, width: "80%", showConfirmButton: false, showCloseButton: true });
-           
+            Swal.fire({ title: "Dokumen Transaksi " + nama, html: `<iframe src="${url}" width="100%" height="500px" style="border:none;"></iframe>`, width: "80%", showConfirmButton: false, showCloseButton: true });
         } catch (e) { Swal.fire("Error", "Gagal membuka dokumen", "error"); }
     };
     const getDokumenBuktiBayar = async (dataDokumen = []) => {
@@ -94,7 +87,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
 
                 const result = await apiConfig.get(
                     apiUrl +
-                    "/ChecklistTransaksi/transaksi/dokumen-bukti-bayar?id=" +
+                    "/ChecklistTransaksi/transaksi/Proyek/dokumen-bukti-bayar?id=" +
                     item.id_checklist_bukti_bayar,
                     {
                         headers: {
@@ -366,384 +359,129 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
             );
         }
     };
-    const HandleNotVerified = async (id) => {
-        const resultConfirm = await AlertConfirm("Apakah anda yakin ingin tidak memverifikasi data ini ? ", "warning", "Not Verified", true, "Data berhasil Confirm");
 
-        if (resultConfirm.status) {
-            // console.log("Isi textarea:", result.value);
-            setLoader(true);
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            try {
-                const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi?id=" + id + "&catatan=" + resultConfirm.value + "&status_verified=not_verified", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }
-                });
-                // console.log("trx: " + resultApi)
-                if (resultApi.status == 200) {
-                    setReload(prev => !prev);
-                    swalAlert(result.data.message, result.statusText, "success");
-                    
-                }
-            } catch (error) {
-                console.log(error);
-            } finally { setLoader(false) }
-        }
-    }
+
     const getTransaksiById = async (id) => {
-
         setLoader(true);
-
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
         try {
-
-            const resultApi = await apiConfig.get(
-                apiUrl +
-                "/ChecklistTransaksi/transaksi/get-transaksi-by-id?id=" +
-                id,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization":
-                            "Bearer " + localStorage.getItem("token")
-                    }
+            const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/get-transaksi-by-id?id=" + id, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
-            );
-
-            // console.log(resultApi)
-            if (resultApi.status === 200) {
-
+            });
+            console.log(resultApi);
+            if (resultApi.status == 200) {
                 const datas = resultApi.data.data;
-
-                /* =========================
-                   TOTAL PEMBAYARAN
-                ========================= */
                 let bayar = 0;
-
-                for (const dataBayar of datas.detailPayment) {
-                    bayar += Number(dataBayar.nominal_bayar ?? 0);
+                for (const dataBayar of datas.detailPembayaran) {
+                    bayar += dataBayar.nominal_bayar ?? 0
                 }
-
-                /* =========================
-                   APPROVAL + DIGITAL SIGN
-                ========================= */
-                let approvalProyek = [];
-
-                if (datas.detailPersetujuanProyek?.length > 0) {
-
-                    approvalProyek = await Promise.all(
-
-                        datas.detailPersetujuanProyek.map(
-                            async (approval) => {
-
-                                const imgQr =
-                                    await digitalSign(
-                                        approval.id_persetujuan
-                                    );
-
-                                return {
-                                    id_persetujuan:
-                                        approval.id_persetujuan ?? "-",
-
-                                    nama_persetujuan:
-                                        approval.nama_persetujuan ?? "-",
-
-                                    jabatan_persetujuan:
-                                        approval.jabatan_persetujuan ?? "-",
-
-                                    tanggal_persetujuan:
-                                        approval.tanggal_persetujuan ?? "-",
-
-                                    status_approver:
-                                        approval.status_approver ?? "-",
-
-                                    catatan_persetujuan:
-                                        approval.catatan_persetujuan ?? "-",
-
-                                    qrCode:
-                                        imgQr.status
-                                            ? imgQr.image
-                                            : null,
-                                };
-                            }
-                        )
-                    );
-                }
-
-                /* =========================
-                   SET SHOW DATA
-                ========================= */
                 setShowData({
-                    id_transaksi: 
-                        datas.id_transaksi,
-                    jenis_transaksi:
-                        datas.jenis_transaksi,
-
-                    proyek:
-                        datas.proyek,
-
-                    bukti_bayar:
-                        datas.upload_bukti_pembayaran,
-
-                    layak_bayar:
-                        datas.layak_bayar,
-
-                    status_approval:
-                        datas.status_pengajuan,
-
-                    nama_vendor:
-                        datas.nama_vendor ?? "-",
-
-                    kategori:
-                        datas.kategori ?? "-",
-
-                    nomor_invoice:
-                        datas.nomor_invoice ?? "-",
-
-                    nilai_invoice:
-                        datas.nilai_invoice,
-
-                    pph:
-                        datas.pph,
-
-                    ppn:
-                        datas.ppn,
-
-                    retensi:
-                        datas.retensi,
-
-                    catatan_verified:
-                        datas.catatan_verified,
-
-                    approvedBy:
-                        datas.approvedBy,
-
-                    kasbon:
-                        datas.kasbon,
-
-                    nilai_invoice_bersih:
-                        datas.nilai_invoice_bersih,
-
-                    biaya_potongan_lainnya:
-                        datas.biaya_potongan_lainnya,
-
-                    nilai_yang_terbayar:
-                        bayar,
-
-                    nilai_sisa:
-                        (datas.nilai_invoice_bersih ?? 0) - bayar,
-
-                    detail_transaksi:
-                        datas.detailTransaksi,
-
-                    pengajuanTransaksi:
-                        approvalProyek,
-
-                    detailPayment:
-                        datas.detailPayment,
-
-                    transaksi_via:
-                        datas.transaksi_via,
-                    
-                    tanggal_invoice: 
-                        datas.tanggal_invoice,
-                    
-                    no_po_kontrak: 
-                        datas.no_po_kontrak
-                });
-
+                    jenis_transaksi: datas.jenis_transaksi,
+                    proyek: datas.proyek,
+                    bukti_bayar: datas.upload_bukti_pembayaran,
+                    layak_bayar: datas.layak_bayar,
+                    status_approval: datas.status_pengajuan,
+                    nama_vendor: datas.nama_vendor ?? "-",
+                    kategori: datas.kategori ?? "-",
+                    nomor_invoice: datas.nomor_invoice ?? "-",
+                    nilai_invoice: datas.nilai_invoice,
+                    pph: datas.pph,
+                    ppn: datas.ppn,
+                    retensi: datas.retensi,
+                    kasbon: datas.kasbon,
+                    tanggal_invoice: datas.tanggal_invoice,
+                    no_po_kontrak: datas.no_po_kontrak,
+                    nilai_invoice_bersih: datas.nilai_invoice_bersih,
+                    biaya_potongan_lainnya: datas.biaya_potongan_lainnya,
+                    nilai_yang_terbayar: bayar,
+                    nilai_sisa: datas.nilai_invoice_bersih - bayar,
+                    detail_transaksi: datas.detailTransaksi,
+                    pengajuanTransaksi: datas.pengajuanTransaksi,
+                    detailPembayaran: datas.detailPembayaran
+                })
                 setUpdatePengajuanApproval({
-                    layak_bayar:
-                        datas.layak_bayar,
-
-                    status_approval:
-                        datas.status_pengajuan,
-                });
+                    layak_bayar: datas.layak_bayar,
+                    status_approval: datas.status_pengajuan,
+                    // upload_bukti_bayar: datas.bukti_bayar
+                })
             }
-
         } catch (error) {
-
             console.log(error);
-
-        } finally {
-
-            setLoader(false);
-        }
-    };
-
-
-    /* =========================================
-       DIGITAL SIGN QR CODE
-    ========================================= */
-    const digitalSign = async (text) => {
-
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-        try {
-
-            const resultApi = await apiConfig.get(
-                apiUrl +
-                "/ChecklistTransaksi/transaksi/Proyek/digital-sign",
-                {
-                    params: {
-                        text: text
-                    },
-
-                    responseType: "blob",
-
-                    headers: {
-                        "Authorization":
-                            "Bearer " + localStorage.getItem("token")
-                    }
-                }
-            );
-
-            /* CONVERT BLOB TO IMAGE URL */
-            const imageUrl =
-                window.URL.createObjectURL(
-                    new Blob([resultApi.data], {
-                        type: "image/png"
-                    })
-                );
-
-            return {
-                status: true,
-                image: imageUrl,
-                message: null
-            };
-
-        } catch (error) {
-
-            return {
-                status: false,
-                image: null,
-                message: error
-            };
-        }
-    };
-    const HandlePayment = async () => {
-        const result = await Swal.fire({
-            title: 'Payment',
-            target: document.body,
-            html: `
-                
-                <div class="row">
-                    <div class="col-12">
-                        <div class="mb-3 text-start">
-                            <label for="upload_bukti_bayar" class="form-label">
-                                Upload Bukti Bayar
-                            </label>
-                            <input 
-                                type="file" 
-                                id="upload_bukti_bayar"
-                                class="form-control"
-                            >
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3 text-start">
-                            <label for="nilai_yang_dibayar" class="form-label">
-                                Nilai Yang Di Bayar
-                            </label>
-                            <input 
-                                type="text" 
-                                id="nilai_yang_di_bayar"
-                                class="form-control"
-                            >
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3 text-start">
-                            <label for="upload_bukti_bayar" class="form-label">
-                                Catatan Payment
-                            </label>
-                            <textarea 
-                                row="3"
-                                id="catatan_payment"
-                                class="form-control"
-                                placeholder="Catatan Payment"
-                            ></textarea>
-                        </div>
-                    </div>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Pay',
-            cancelButtonText: 'Close',
-            didOpen: () => {
-                const input = document.getElementById("nilai_yang_di_bayar");
-
-                input.addEventListener("input", function (e) {
-
-                    // ambil angka saja
-                    let value = e.target.value.replace(/\D/g, "");
-
-                    // format rupiah
-                    value = new Intl.NumberFormat("id-ID").format(value);
-
-                    e.target.value = value;
-                });
-            },
-            preConfirm: () => {
-                const upload = document.getElementById('upload_bukti_bayar').files[0];
-                const catatan = document.getElementById('catatan_payment').value;
-                const nilai_yang_di_bayar =
-                    document.getElementById('nilai_yang_di_bayar')
-                        .value
-                        .replace(/\./g, "");
-
-                if (!upload) {
-                    Swal.showValidationMessage('Upload Bukti Bayar');
-                    return false;
-                }
-                if (!nilai_yang_di_bayar) {
-                    Swal.showValidationMessage('Nilai yang di bayar');
-                    return false;
-                }
-
-                return { upload, catatan, nilai_yang_di_bayar };
-            }
-        });
-
-        if (result.isConfirmed) {
-            setLoader(true);
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const fm = new FormData();
-            fm.append("status_approval", "Payment");
-            fm.append("layak_bayar", "Layak Bayar");
-            fm.append("upload_bukti_bayar", result.value.upload);
-            fm.append("nilai_bayar", result.value.nilai_yang_di_bayar);
-            try {
-                const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + idTransaksi + "&catatan_payment=" + result.value.catatan, fm, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }
-                });
-                // console.log(resultApi);
-                if (resultApi.status == 200) {
-                    setReload(prev => !prev);
-                    swalAlert(resultApi.data.message, resultApi.statusText, "success");
-                    setOpenModal({ ...openModal, open: false });
-
-                }
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoader(false)
-            }
-        }
+        } finally { setLoader(false) }
     }
+
+    const getStatusPengajuan = async () => {
+        setLoader(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-master-status-approval", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            // console.log(resultApi);
+            if (resultApi.status == 200) {
+                const dataMasterApproval = [];
+                if (resultApi.data.data?.length > 0) {
+
+                    for (const datas of resultApi.data.data) {
+                        dataMasterApproval.push({
+                            value: datas,
+                            label: datas
+                        })
+                    }
+
+                }
+                setDataApproval(dataMasterApproval);
+
+            }
+        } catch (error) {
+            console.log(error);
+        } finally { setLoader(false) }
+    }
+
+    const getStatusLayakBayar = async () => {
+        setLoader(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-master-status-layak-bayar", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            // console.log(resultApi);
+            if (resultApi.status == 200) {
+                const dataMasterLayakBayar = [];
+                if (resultApi.data.data?.length > 0) {
+
+                    for (const datas of resultApi.data.data) {
+                        dataMasterLayakBayar.push({
+                            value: datas,
+                            label: datas
+                        })
+                    }
+
+                }
+                setLayakBayar(dataMasterLayakBayar);
+
+            }
+        } catch (error) {
+            console.log(error);
+        } finally { setLoader(false) }
+    }
+
     const AlertConfirm = async (message, icon, confirmButtonName, textarea = false, messageDeleted = "Your file has been deleted.") => {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: "btn btn-success",
                 cancelButton: "btn btn-danger me-2"
             },
-            buttonsStyling: false,
-
+            buttonsStyling: false
         });
         let objSwall = {
             title: "Apakah Yakin?",
@@ -754,21 +492,13 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
             cancelButtonText: "Kembali",
             reverseButtons: true,
 
-
         };
 
         if (textarea) {
             objSwall.input = 'textarea';
             objSwall.inputLabel = 'Catatan';
             objSwall.inputPlaceholder = 'Catatan....';
-            objSwall.inputValidator = (value) => {
-                if (!value) {
-                    return "Catatan wajib diisi!";
-                }
-            };
-            objSwall.didOpen = () => {
-                Swal.getInput().focus();
-            };
+
         }
         const result = await swalWithBootstrapButtons.fire(objSwall);
         if (result.isConfirmed) {
@@ -793,6 +523,56 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
 
         return false;
     }
+    const updateDokumenDetailTransaksi = async (index, item) => {
+        const selectedFile = fileTransaksi[index];
+        // const inputNilai = nilaiTransaksi[index];
+        // console.log(selectedFile)
+        if (!selectedFile) {
+
+            alert("File tidak boleh kosong");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("upload_dokumen_transaksi", selectedFile);
+        // formData.append("nilai_transaksi", inputNilai);
+        // formData.append("id_detail_transaksi", item.id_detail_transaksi);
+
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const result = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/update-detail-transaksi-pengajuan?id=" + item.id_detail_transaksi, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            // console.log(result);
+            if (result.status == 200) {
+                setReload(prev => !prev);
+                swalAlert(result.data.message, result.statusText, "success");
+
+                // setOpenModal({ ...openModal, open: false });
+                // setFormTransaksi(result.data?.data);
+            }
+
+            // alert("Upload berhasil");
+        } catch (error) {
+            console.error(error);
+            // alert("Upload gagal");
+        } finally {
+            setLoader(false);
+        }
+    }
+
+    const toCurrency = (amount) => {
+        const hasil = new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR"
+        }).format(amount);
+        return hasil
+    }
+
+
     const swalAlert = (message, title, icon) => {
         let timerInterval;
 
@@ -815,99 +595,69 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
             }
         });
     }
-    const SubmitReject = async () => {
-        const resultConfirm = await AlertConfirm("Apakah anda yakin ingin reject data ini ? ", "warning", "Reject", true, "Data berhasil Confirm");
-        if (resultConfirm.status) {
-            setLoader(true);
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const fm = new FormData();
-            fm.append("status_approval", "Reject");
-            // fm.append("layak_bayar", updatePengajuanApproval.layak_bayar);
-            // fm.append("upload_bukti_bayar", updatePengajuanApproval.upload_bukti_bayar);
-            try {
-                const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + idTransaksi + "&catatan_verified=" + resultConfirm.value, fm, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }
-                });
-                // console.log(resultApi);
-                if (resultApi.status == 200) {
-                    setReload(prev => !prev);
-                    swalAlert(resultApi.data.message, resultApi.statusText, "success");
-                    setOpenModal({ ...openModal, open: false });
 
-                }
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoader(false)
-            }
-        }
 
-    }
-
-    const toCurrency = (amount) => {
-        const hasil = new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR"
-        }).format(amount);
-        return hasil
-    }
     useEffect(() => {
         if (openModal.open) {
             // console.log(openModal);
             const datas = openModal.data;
             setIdTransaksi(datas.id_transaksi);
             getTransaksiById(datas.id_transaksi);
-
+            getStatusPengajuan();
+            getStatusLayakBayar();
+            // setShowData({
+            //     jenis_transaksi: datas.jenis_transaksi,
+            //     proyek: datas.proyek,
+            //     detail_transaksi: datas.detailTransaksi
+            // })
         }
     }, [openModal.open, reload])
     return (
-        <Modal size="xl" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }} enforceFocus={false}>
-            <Modal.Header>
-                <h6 className="modal-title" id="exampleModalLabel">Detail Transaksi</h6>
-            </Modal.Header>
-            <Modal.Body>
-                <Row>
+        <>
+            <Modal size="xl" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }}>
 
-                    <Col xl={12} className="rounded-3">
-                        <div className="row gy-2 pb-3">
+                <Modal.Header>
+                    <h6 className="modal-title" id="exampleModalLabel">Detail Transaksi</h6>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row>
 
-                            <Col xl={12} className="mb-4">
+                        <Col xl={12} className="rounded-3">
+                            <div className="row gy-2 pb-3">
+                                <Col xl={12} className="mb-4">
 
-                                <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
+                                    <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-                                    {/* Header */}
-                                    <div className="bg-primary bg-gradient p-4 text-white">
+                                        {/* Header */}
+                                        <div className="bg-primary bg-gradient p-4 text-white">
 
-                                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                            <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-                                            <div>
-                                                <h4 className="fw-bold mb-1">
-                                                    Detail Pengajuan Transaksi
-                                                </h4>
+                                                <div>
+                                                    <h4 className="fw-bold mb-1">
+                                                        Detail Pengajuan Transaksi
+                                                    </h4>
 
-                                                <span className="opacity-75">
-                                                    Informasi transaksi dan invoice proyek
-                                                </span>
-                                            </div>
+                                                    <span className="opacity-75">
+                                                        Informasi transaksi dan invoice proyek
+                                                    </span>
+                                                </div>
 
-                                            <div className="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center"
-                                                style={{
-                                                    width: "70px",
-                                                    height: "70px"
-                                                }}
-                                            >
-                                                <i className="ri-file-list-3-line fs-1"></i>
+                                                <div className="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center"
+                                                    style={{
+                                                        width: "70px",
+                                                        height: "70px"
+                                                    }}
+                                                >
+                                                    <i className="ri-file-list-3-line fs-1"></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    {/* Content */}
-                                    <div className="card-body p-4">
+                                        {/* Content */}
+                                        <div className="card-body p-4">
 
-                                       <Row className="gy-4">
+                                            <Row className="gy-4">
 
                                                 {/* Jenis Transaksi */}
                                                 <Col xl={6}>
@@ -1540,489 +1290,498 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                 </Row>
 
                                             </Row>
+                                        </div>
                                     </div>
-                                </div>
-                            </Col>
-                            {showData.detail_transaksi &&
-                                showData.detail_transaksi.map((item, index) => (
-                                    <Col xl={12} key={index} className="mb-4">
-                                        <div
-                                            className="card border-0 rounded-4 overflow-hidden"
-                                            style={{
-                                                background: "linear-gradient(145deg, #ffffff, #f8fbff)",
-                                                boxShadow: "0 10px 30px rgba(0,0,0,0.08)"
-                                            }}
-                                        >
-                                            {/* Top Accent */}
+                                </Col>
+
+
+
+                                {/* ===================== DETAIL DOKUMEN ===================== */}
+                                <div className="mt-4">
+                                    <div className="d-flex align-items-center justify-content-between mb-4">
+                                        <div>
+                                            <h5 className="fw-bold mb-1 text-dark">
+                                                Detail Dokumen Transaksi
+                                            </h5>
+                                            <small className="text-muted">
+                                                Informasi dokumen dan status verifikasi
+                                            </small>
+                                        </div>
+
+                                        <div>
+                                            <span className="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
+                                                {showData.detail_transaksi?.length || 0} Dokumen
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {showData.detail_transaksi &&
+                                        showData.detail_transaksi.map((item, index) => (
                                             <div
+                                                key={index}
+                                                className="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden"
                                                 style={{
-                                                    height: "6px",
                                                     background:
-                                                        item.checklist == 1
-                                                            ? "linear-gradient(90deg,#16a34a,#22c55e)"
-                                                            : item.checklist == 2
-                                                                ? "linear-gradient(90deg,#dc2626,#ef4444)"
-                                                                : "linear-gradient(90deg,#2563eb,#3b82f6)"
+                                                        "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
                                                 }}
-                                            />
+                                            >
+                                                {/* TOP BAR */}
+                                                <div
+                                                    className={`px-4 py-2 ${item.checklist == 1
+                                                        ? "bg-success"
+                                                        : item.checklist == 2
+                                                            ? "bg-danger"
+                                                            : "bg-info"
+                                                        }`}
+                                                >
+                                                    <div className="d-flex align-items-center justify-content-between">
+                                                        <div className="text-white fw-semibold">
+                                                            <i className="ri-file-list-3-line me-2"></i>
+                                                            Dokumen Transaksi
+                                                        </div>
 
-                                            <div className="card-body p-4">
+                                                        <span className="badge bg-white text-dark px-3 py-2 rounded-pill">
+                                                            {item.checklist == 1
+                                                                ? "Verified"
+                                                                : item.checklist == 2
+                                                                    ? "Not Verified"
+                                                                    : "On Review"}
+                                                        </span>
+                                                    </div>
+                                                </div>
 
-                                                {/* HEADER */}
-                                                <Row className="align-items-center gy-3">
+                                                <div className="card-body p-4">
 
-                                                    {/* LEFT */}
-                                                    <Col xl={7}>
-                                                        <div className="d-flex align-items-start gap-3">
+                                                    {/* TITLE */}
+                                                    <div className="mb-4">
+                                                        <h5 className="fw-bold text-dark mb-1">
+                                                            {item.pertanyaan}
+                                                        </h5>
 
-                                                            <div
-                                                                className="rounded-circle d-flex align-items-center justify-content-center"
-                                                                style={{
-                                                                    width: "55px",
-                                                                    height: "55px",
-                                                                    background:
-                                                                        item.checklist == 1
-                                                                            ? "rgba(34,197,94,0.12)"
-                                                                            : item.checklist == 2
-                                                                                ? "rgba(239,68,68,0.12)"
-                                                                                : "rgba(59,130,246,0.12)"
-                                                                }}
-                                                            >
-                                                                <i
-                                                                    className={`fs-3 ${item.checklist == 1
-                                                                        ? "ri-checkbox-circle-fill text-success"
-                                                                        : item.checklist == 2
-                                                                            ? "ri-close-circle-fill text-danger"
-                                                                            : "ri-time-line text-primary"
-                                                                        }`}
-                                                                />
-                                                            </div>
+                                                        <small className="text-muted">
+                                                            Dokumen pendukung transaksi proyek
+                                                        </small>
+                                                    </div>
 
-                                                            <div>
-                                                                <h5 className="fw-bold mb-1 text-dark">
-                                                                    {item.pertanyaan}
-                                                                </h5>
+                                                    {/* ACTION CARD */}
+                                                    <div className="row g-3">
 
-                                                                <div className="d-flex align-items-center gap-2 flex-wrap">
+                                                        {/* VIEW FILE */}
+                                                        <div className="col-xl-6">
+                                                            <div className="border rounded-4 p-3 h-100 bg-light-subtle">
+                                                                <div className="d-flex flex-column h-100 justify-content-between">
+                                                                    <div>
+                                                                        <small className="text-muted d-block mb-2">
+                                                                            Dokumen
+                                                                        </small>
 
-                                                                    <span className="text-muted small">
-                                                                        Dokumen Transaksi
-                                                                    </span>
+                                                                        <h6 className="fw-semibold">
+                                                                            File Transaksi
+                                                                        </h6>
+                                                                    </div>
 
-                                                                    <span className="text-secondary">
-                                                                        •
-                                                                    </span>
-
-                                                                    <span
-                                                                        className={`badge rounded-pill px-3 py-2 ${item.checklist == 1
-                                                                            ? "bg-success-subtle text-success"
-                                                                            : item.checklist == 2
-                                                                                ? "bg-danger-subtle text-danger"
-                                                                                : "bg-primary-subtle text-primary"
-                                                                            }`}
+                                                                    <Button
+                                                                        variant="contained"
+                                                                        className="btn btn-primary mt-3"
+                                                                        onClick={() =>
+                                                                            getFileTransaksi(
+                                                                                item.id_detail_transaksi,
+                                                                                item.pertanyaan
+                                                                            )
+                                                                        }
                                                                     >
-                                                                        {item.checklist == 1
-                                                                            ? "Verified"
-                                                                            : item.checklist == 2
-                                                                                ? "Not Verified"
-                                                                                : "On Review"}
-                                                                    </span>
+                                                                        <i className="ri-eye-line me-2"></i>
+                                                                        Lihat Dokumen
+                                                                    </Button>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </Col>
 
-                                                    {/* RIGHT ACTION */}
-                                                    <Col xl={5}>
-                                                        <div className="d-flex justify-content-xl-end gap-2 flex-wrap">
+                                                        {/* STATUS */}
+                                                        <div className="col-xl-6">
+                                                            <div className="border rounded-4 p-3 h-100 bg-light-subtle">
+                                                                <small className="text-muted d-block mb-2">
+                                                                    Status Verifikasi
+                                                                </small>
 
-                                                            <Button
-                                                                variant="contained"
-                                                                className="btn btn-primary px-4 rounded-3"
-                                                                onClick={() =>
-                                                                    getFileTransaksi(
-                                                                        item.id_detail_transaksi,
-                                                                        item.pertanyaan
-                                                                    )
-                                                                }
-                                                            >
-                                                                <i className="ri-eye-line me-2"></i>
-                                                                Lihat Dokumen
-                                                            </Button>
+                                                                <div className="mt-2">
+                                                                    {item.checklist == 1 && (
+                                                                        <div className="d-flex align-items-center text-success">
+                                                                            <i className="ri-checkbox-circle-fill fs-4 me-2"></i>
+                                                                            <div>
+                                                                                <h6 className="mb-0 fw-bold">
+                                                                                    Verified
+                                                                                </h6>
+                                                                                <small>
+                                                                                    Dokumen telah diverifikasi
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
 
-                                                            {!item.checklist && (
-                                                                <>
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        className="btn btn-success rounded-3"
-                                                                        onClick={() =>
-                                                                            HandleVerified(
-                                                                                item.id_detail_transaksi
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <i className="ri-check-line me-1"></i>
-                                                                        Verify
-                                                                    </Button>
+                                                                    {item.checklist == 2 && (
+                                                                        <div className="d-flex align-items-center text-danger">
+                                                                            <i className="ri-close-circle-fill fs-4 me-2"></i>
+                                                                            <div>
+                                                                                <h6 className="mb-0 fw-bold">
+                                                                                    Not Verified
+                                                                                </h6>
+                                                                                <small>
+                                                                                    Dokumen perlu revisi
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
 
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        className="btn btn-danger rounded-3"
-                                                                        onClick={() =>
-                                                                            HandleNotVerified(
-                                                                                item.id_detail_transaksi
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <i className="ri-close-line me-1"></i>
-                                                                        Reject
-                                                                    </Button>
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                    </Col>
-                                                </Row>
-
-                                                {/* NILAI */}
-
-
-                                                {/* CATATAN */}
-                                                {item.catatan && (
-                                                    <div
-                                                        className="mt-4 p-4 rounded-4"
-                                                        style={{
-                                                            background: "rgba(239,68,68,0.08)",
-                                                            border: "1px solid rgba(239,68,68,0.2)"
-                                                        }}
-                                                    >
-                                                        <div className="d-flex align-items-start gap-3">
-
-                                                            <div>
-                                                                <i className="ri-error-warning-fill text-danger fs-4"></i>
-                                                            </div>
-
-                                                            <div>
-                                                                <h6 className="text-danger fw-bold mb-1">
-                                                                    Catatan Reviewer
-                                                                </h6>
-
-                                                                <span
-                                                                    className="text-danger"
-                                                                    style={{
-                                                                        overflowWrap: "break-word",
-                                                                        lineHeight: "1.7"
-                                                                    }}
-                                                                >
-                                                                    {item.catatan}
-                                                                </span>
+                                                                    {!item.checklist && (
+                                                                        <div className="d-flex align-items-center text-info">
+                                                                            <i className="ri-time-fill fs-4 me-2"></i>
+                                                                            <div>
+                                                                                <h6 className="mb-0 fw-bold">
+                                                                                    On Review
+                                                                                </h6>
+                                                                                <small>
+                                                                                    Menunggu proses verifikasi
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         </div>
+
+
                                                     </div>
-                                                )}
+
+                                                    {/* CATATAN */}
+                                                    {item.catatan && (
+                                                        <div
+                                                            className="mt-4 p-4 rounded-4"
+                                                            style={{
+                                                                background:
+                                                                    "linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%)",
+                                                                borderLeft: "5px solid #dc3545",
+                                                            }}
+                                                        >
+                                                            <div className="d-flex align-items-start">
+                                                                <div className="me-3">
+                                                                    <i className="ri-error-warning-fill text-danger fs-3"></i>
+                                                                </div>
+
+                                                                <div>
+                                                                    <h6 className="fw-bold text-danger mb-2">
+                                                                        Catatan Reviewer
+                                                                    </h6>
+
+                                                                    <div
+                                                                        className="text-dark"
+                                                                        style={{
+                                                                            lineHeight: "1.7",
+                                                                            overflowWrap: "break-word",
+                                                                        }}
+                                                                    >
+                                                                        {item.catatan}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* REUPLOAD */}
+                                                    {item.checklist == 2 && (
+                                                        <div className="mt-4">
+                                                            <div
+                                                                className="rounded-4 p-4"
+                                                                style={{
+                                                                    background:
+                                                                        "linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%)",
+                                                                    border: "1px solid #ffe69c",
+                                                                }}
+                                                            >
+                                                                <div className="d-flex align-items-center mb-3">
+                                                                    <i className="ri-upload-cloud-2-line text-warning fs-3 me-2"></i>
+
+                                                                    <div>
+                                                                        <h5 className="fw-bold mb-0 text-dark">
+                                                                            Upload Revisi Dokumen
+                                                                        </h5>
+
+                                                                        <small className="text-muted">
+                                                                            Upload ulang dokumen yang telah direvisi
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <Row className="gy-3">
+                                                                    <Col xl={12}>
+                                                                        <Form.Group>
+                                                                            <Form.Label className="fw-semibold">
+                                                                                Upload Dokumen Baru
+                                                                            </Form.Label>
+
+                                                                            <Form.Control
+                                                                                type="file"
+                                                                                className="rounded-3"
+                                                                                onChange={(e) =>
+                                                                                    handleFileChange(
+                                                                                        index,
+                                                                                        e.target.files[0]
+                                                                                    )
+                                                                                }
+                                                                            />
+                                                                        </Form.Group>
+                                                                    </Col>
+
+                                                                    {/* <Col xl={6}>
+                                                                        <Form.Group>
+                                                                            <Form.Label className="fw-semibold">
+                                                                                Nilai Dokumen
+                                                                            </Form.Label>
+
+                                                                            <Form.Control
+                                                                                type="number"
+                                                                                placeholder="Masukan nilai transaksi"
+                                                                                className="rounded-3"
+                                                                                onChange={(e) =>
+                                                                                    handleInputChange(
+                                                                                        index,
+                                                                                        e.target.value
+                                                                                    )
+                                                                                }
+                                                                            />
+                                                                        </Form.Group>
+                                                                    </Col> */}
+                                                                </Row>
+
+                                                                <div className="mt-4 text-end">
+                                                                    <Button
+                                                                        variant="contained"
+                                                                        className="btn btn-warning px-4 py-2"
+                                                                        onClick={() =>
+                                                                            updateDokumenDetailTransaksi(
+                                                                                index,
+                                                                                item
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <i className="ri-upload-2-line me-2"></i>
+                                                                        Submit Revisi
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                </div>
+
+                                {/* ===================== STATUS SECTION ===================== */}
+                                <div className="card border-0 shadow-sm rounded-4 mt-4">
+                                    <div className="card-body p-4">
+
+                                        <div className="d-flex align-items-center justify-content-between mb-4">
+                                            <div>
+                                                <h5 className="fw-bold mb-1">
+                                                    Status Transaksi
+                                                </h5>
+
+                                                <small className="text-muted">
+                                                    Status approval dan pembayaran transaksi
+                                                </small>
+                                            </div>
+
+                                            <div>
+                                                <i className="ri-shield-check-line fs-2 text-primary"></i>
                                             </div>
                                         </div>
-                                    </Col>
-                                ))}
-                            <Divider className="mt-3 mb-3" />
-                            <div className="card border-0 shadow-sm rounded-4 mt-4">
-                                <div className="card-body p-4">
-
-
-                                    <Row className="gy-4">
-
-
-
-                                        {/* ===================== STATUS SECTION ===================== */}
 
                                         <Row className="gy-4">
 
-                                            {/* ===================== STATUS LAYAK BAYAR ===================== */}
-                                            <Col xl={12}>
-                                                <div
-                                                    className="position-relative overflow-hidden rounded-4 p-4 h-100 border-0"
-                                                    style={{
-                                                        background:
-                                                            showData.layak_bayar == "Layak Bayar"
-                                                                ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
-                                                                : showData.layak_bayar == "Tidak Layak Bayar"
-                                                                    ? "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"
-                                                                    : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-                                                        boxShadow:
-                                                            "0 10px 30px rgba(0,0,0,0.12)",
-                                                    }}
-                                                >
 
-                                                    {/* Glow */}
-                                                    <div
-                                                        style={{
-                                                            position: "absolute",
-                                                            width: "250px",
-                                                            height: "250px",
-                                                            borderRadius: "50%",
-                                                            background: "rgba(255,255,255,0.08)",
-                                                            top: "-120px",
-                                                            right: "-80px",
-                                                        }}
-                                                    />
 
-                                                    {/* Background Icon */}
+                                            {/* ===================== STATUS SECTION ===================== */}
+
+                                            <Row className="gy-4">
+
+                                                {/* ===================== STATUS LAYAK BAYAR ===================== */}
+                                                <Col xl={12}>
                                                     <div
+                                                        className="position-relative overflow-hidden rounded-4 p-4 h-100 border-0"
                                                         style={{
-                                                            position: "absolute",
-                                                            right: "-10px",
-                                                            bottom: "-20px",
-                                                            fontSize: "120px",
-                                                            opacity: 0.12,
-                                                            color: "#fff",
+                                                            background:
+                                                                showData.layak_bayar == "Layak Bayar"
+                                                                    ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
+                                                                    : showData.layak_bayar == "Tidak Layak Bayar"
+                                                                        ? "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"
+                                                                        : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                                                            boxShadow:
+                                                                "0 10px 30px rgba(0,0,0,0.12)",
                                                         }}
                                                     >
-                                                        <i
-                                                            className="ri-checkbox-circle-line"
-                                                        ></i>
-                                                    </div>
 
-                                                    <div className="position-relative">
-
-                                                        {/* HEADER */}
-                                                        <div className="d-flex align-items-start justify-content-between">
-
-                                                            <div>
-                                                                <small className="text-white opacity-75 d-block mb-2">
-                                                                    Dokumen Transaksi Merge
-                                                                </small>
-
-                                                               
-                                                                 <div className="d-flex align-items-center gap-2">
-
-                                                                        {/* DETAIL BUTTON */}
-                                                                        <Button
-                                                                            variant="contained"
-                                                                            className="btn rounded-pill px-4 py-2 fw-semibold text-white border-0"
-                                                                            style={{
-                                                                                background: "rgba(255,255,255,0.18)",
-                                                                                backdropFilter: "blur(10px)",
-                                                                                border: "1px solid rgba(255,255,255,0.2)",
-                                                                                boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
-                                                                            }}
-                                                                            onClick={() => getDokumenTransaksiMerge(showData.id_transaksi)}
-                                                                        >
-                                                                            <i className="ri-file-list-3-line me-2"></i>
-                                                                            Detail Dokumen Merge
-                                                                        </Button>
-
-                                                                        {/* ICON */}
-                                                                        <div
-                                                                            className="rounded-circle d-flex align-items-center justify-content-center"
-                                                                            style={{
-                                                                                width: "55px",
-                                                                                height: "55px",
-                                                                                background: "rgba(255,255,255,0.15)",
-                                                                            }}
-                                                                        >
-                                                                            <i className="ri-arrow-up-circle-fill text-white fs-3"></i>
-                                                                        </div>
-                                                                    </div>
-                                                             
-                                                            </div>
-
-                                                            {/* ICON */}
-                                                            <div
-                                                                className="rounded-circle d-flex align-items-center justify-content-center"
-                                                                style={{
-                                                                    width: "75px",
-                                                                    height: "75px",
-                                                                    background: "rgba(255,255,255,0.15)",
-                                                                    backdropFilter: "blur(12px)",
-                                                                    border: "1px solid rgba(255,255,255,0.2)",
-                                                                }}
-                                                            >
-                                                                <i
-                                                                    className={`fs-1 text-white ri-checkbox-circle-fill`}
-                                                                ></i>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* FOOTER INFO */}
+                                                        {/* Glow */}
                                                         <div
-                                                            className="mt-4 rounded-4 p-3"
                                                             style={{
-                                                                background: "rgba(255,255,255,0.12)",
-                                                                backdropFilter: "blur(12px)",
-                                                                border: "1px solid rgba(255,255,255,0.15)",
+                                                                position: "absolute",
+                                                                width: "250px",
+                                                                height: "250px",
+                                                                borderRadius: "50%",
+                                                                background: "rgba(255,255,255,0.08)",
+                                                                top: "-120px",
+                                                                right: "-80px",
                                                             }}
-                                                        >
-                                                            <div className="d-flex align-items-center justify-content-between">
+                                                        />
 
-                                                                <div>
-                                                                    <small className="text-white opacity-75 d-block mb-1">
-                                                                        Approval Status
-                                                                    </small>
-
-                                                                    <h5 className="fw-bold text-white mb-0">
-                                                                        {showData.status_approval || "Waiting"}
-                                                                    </h5>
-                                                                </div>
-
-                                                                <div
-                                                                    className="rounded-circle d-flex align-items-center justify-content-center"
-                                                                    style={{
-                                                                        width: "55px",
-                                                                        height: "55px",
-                                                                        background: "rgba(255,255,255,0.15)",
-                                                                    }}
-                                                                >
-                                                                    <i className="ri-git-pull-request-line text-white fs-3"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Col>
-
-
-                                        </Row>
-                                    </Row>
-                                </div>
-                            </div>
-
-                            <Col xl={12} className="mt-4">
-                                <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
-
-                                    {/* HEADER */}
-                                    <div
-                                        className="text-white p-4"
-                                        style={{
-                                            background:
-                                                "linear-gradient(135deg,#0f172a 0%,#334155 100%)",
-                                        }}
-                                    >
-                                        <div className="d-flex align-items-center justify-content-between">
-
-                                            <div>
-                                                <h5 className="mb-1 fw-bold">
-                                                    Disposisi Approval Head Office
-                                                </h5>
-
-                                                <small className="opacity-75">
-                                                    Persetujuan Finance
-                                                </small>
-                                            </div>
-
-                                            <div>
-                                                <i className="ri-team-line fs-1"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* BODY */}
-                                    <div className="card-body p-4">
-
-                                        <div
-                                            className="rounded-4 p-4"
-                                            style={{
-                                                background:
-                                                    "linear-gradient(145deg,#ffffff 0%,#f8fafc 100%)",
-                                                border: "1px solid #e2e8f0",
-                                            }}
-                                        >
-
-                                            <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-                                                {/* LEFT */}
-                                                <div>
-
-                                                    <div className="d-flex align-items-center gap-3">
-
+                                                        {/* Background Icon */}
                                                         <div
-                                                            className="rounded-circle d-flex align-items-center justify-content-center"
                                                             style={{
-                                                                width: "65px",
-                                                                height: "65px",
-                                                                background:
-                                                                    "linear-gradient(135deg,#0ea5e9 0%,#2563eb 100%)",
+                                                                position: "absolute",
+                                                                right: "-10px",
+                                                                bottom: "-20px",
+                                                                fontSize: "120px",
+                                                                opacity: 0.12,
                                                                 color: "#fff",
                                                             }}
                                                         >
-                                                            <i className="ri-file-check-line fs-2"></i>
+                                                            <i
+                                                                className={
+                                                                    showData.layak_bayar == "Layak Bayar"
+                                                                        ? "ri-checkbox-circle-line"
+                                                                        : showData.layak_bayar == "Tidak Layak Bayar"
+                                                                            ? "ri-close-circle-line"
+                                                                            : "ri-loader-4-line"
+                                                                }
+                                                            ></i>
                                                         </div>
 
-                                                        <div>
-                                                            <h5 className="fw-bold mb-1">
-                                                                {showData.approvedBy?.nama && (
-                                                                    <span>{showData.approvedBy.nama}</span>
-                                                                )}
-                                                            </h5>
+                                                        <div className="position-relative">
 
-                                                            <small className="text-muted">
-                                                                Approval Verifikasi Dokumen
-                                                            </small>
+                                                            {/* HEADER */}
+                                                            <div className="d-flex align-items-start justify-content-between">
+
+                                                                <div>
+                                                                    <small className="text-white opacity-75 d-block mb-2">
+                                                                        Status Layak Bayar
+                                                                    </small>
+
+                                                                    <h2 className="fw-bold text-white mb-2">
+                                                                        {showData.layak_bayar ||
+                                                                            (showData.status_approval == "Reject"
+                                                                                ? "Tidak Layak Bayar"
+                                                                                : "On Review")}
+                                                                    </h2>
+
+                                                                    <div
+                                                                        className="rounded-pill px-3 py-2 d-inline-flex align-items-center"
+                                                                        style={{
+                                                                            background: "rgba(255,255,255,0.18)",
+                                                                            backdropFilter: "blur(10px)",
+                                                                            border: "1px solid rgba(255,255,255,0.2)",
+                                                                        }}
+                                                                    >
+                                                                        <i className="ri-shield-check-line me-2 text-white"></i>
+
+                                                                        <span className="text-white small fw-semibold">
+                                                                            {showData.layak_bayar == "Layak Bayar"
+                                                                                ? "Transaksi Siap Dibayar"
+                                                                                : showData.layak_bayar == "Tidak Layak Bayar"
+                                                                                    ? "Perlu Perbaikan"
+                                                                                    : "Sedang Direview"}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* ICON */}
+                                                                <div
+                                                                    className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                    style={{
+                                                                        width: "75px",
+                                                                        height: "75px",
+                                                                        background: "rgba(255,255,255,0.15)",
+                                                                        backdropFilter: "blur(12px)",
+                                                                        border: "1px solid rgba(255,255,255,0.2)",
+                                                                    }}
+                                                                >
+                                                                    <i
+                                                                        className={`fs-1 text-white ${showData.layak_bayar == "Layak Bayar"
+                                                                            ? "ri-checkbox-circle-fill"
+                                                                            : showData.layak_bayar == "Tidak Layak Bayar"
+                                                                                ? "ri-close-circle-fill"
+                                                                                : "ri-loader-4-line"
+                                                                            }`}
+                                                                    ></i>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* FOOTER INFO */}
+                                                            <div
+                                                                className="mt-4 rounded-4 p-3"
+                                                                style={{
+                                                                    background: "rgba(255,255,255,0.12)",
+                                                                    backdropFilter: "blur(12px)",
+                                                                    border: "1px solid rgba(255,255,255,0.15)",
+                                                                }}
+                                                            >
+                                                                <div className="d-flex align-items-center justify-content-between">
+
+                                                                    <div>
+                                                                        <small className="text-white opacity-75 d-block mb-1">
+                                                                            Approval Status
+                                                                        </small>
+
+                                                                        <h5 className="fw-bold text-white mb-0">
+                                                                            {showData.status_approval || "Waiting"}
+                                                                        </h5>
+                                                                    </div>
+
+                                                                    <div
+                                                                        className="rounded-circle d-flex align-items-center justify-content-center"
+                                                                        style={{
+                                                                            width: "55px",
+                                                                            height: "55px",
+                                                                            background: "rgba(255,255,255,0.15)",
+                                                                        }}
+                                                                    >
+                                                                        <i className="ri-git-pull-request-line text-white fs-3"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </Col>
 
-                                                {/* RIGHT */}
-                                                <div className="text-end">
 
-                                                    <span className="badge bg-success rounded-pill px-4 py-3 fs-6">
-                                                        <i className="ri-checkbox-circle-fill me-2"></i>
-                                                        Approve
-                                                    </span>
-
-                                                    <div className="mt-2 text-muted small">
-                                                        22 Mei 2026 • 10:30 WIB
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* CATATAN */}
-                                            <div
-                                                className="mt-4 rounded-4 p-3"
-                                                style={{
-                                                    background: "#fff",
-                                                    border: "1px solid #e2e8f0",
-                                                    borderLeft: "4px solid #0ea5e9",
-                                                }}
-                                            >
-                                                <small className="text-muted d-block mb-2">
-                                                    Catatan Verified
-                                                </small>
-
-                                                <div className="text-dark">
-                                                    {showData.catatan_verified ?? "-"}
-                                                </div>
-                                            </div>
-                                        </div>
+                                            </Row>
+                                        </Row>
                                     </div>
-
                                 </div>
-                            </Col>
 
+                                <Col xl={12} className="mt-4">
+                                    <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-                            <Col xl={12} className="mt-4">
-                                <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
+                                        {/* Header */}
+                                        <div className="bg-primary text-white p-4">
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <h5 className="mb-1 fw-bold">
+                                                        Disposisi Approval
+                                                    </h5>
+                                                    <small className="opacity-75">
+                                                        Status Persetujuan Transaksi
+                                                    </small>
+                                                </div>
 
-                                    {/* Header */}
-                                    <div className="bg-primary text-white p-4">
-                                        <div className="d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <h5 className="mb-1 fw-bold">
-                                                    Disposisi Approval Proyek
-                                                </h5>
-                                                <small className="opacity-75">
-                                                    Status Persetujuan Transaksi
-                                                </small>
-                                            </div>
-
-                                            <div>
-                                                <i className="ri-git-merge-line fs-1"></i>
+                                                <div>
+                                                    <i className="ri-git-merge-line fs-1"></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    {/* Timeline */}
-                                    <div className="card-body p-4">
-                                        {showData.transaksi_via == "Proyek" && (
-                                            showData.pengajuanTransaksi?.length > 0 ? (
+                                        {/* Timeline */}
+                                        <div className="card-body p-4">
+
+                                            {showData.pengajuanTransaksi?.length > 0 ? (
                                                 showData.pengajuanTransaksi.map((item, index) => (
 
                                                     <div
@@ -2030,209 +1789,96 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                         className="position-relative ps-5 pb-4"
                                                     >
 
-                                                        {/* TIMELINE LINE */}
-                                                        {index !== showData.pengajuanTransaksi.length - 1 && (
-                                                            <div
-                                                                style={{
-                                                                    position: "absolute",
-                                                                    left: "34px",
-                                                                    top: "90px",
-                                                                    width: "3px",
-                                                                    height: "100%",
-                                                                    background:
-                                                                        "linear-gradient(to bottom, #cbd5e1 0%, #e2e8f0 100%)",
-                                                                    borderRadius: "999px",
-                                                                }}
-                                                            />
-                                                        )}
-
-                                                        {/* QR IMAGE */}
-                                                        <div
-                                                            className="position-absolute"
-                                                            style={{
-                                                                left: "0",
-                                                                top: "0",
-                                                                zIndex: 2,
-                                                            }}
-                                                        >
-                                                            <div
-                                                                className="rounded-4 overflow-hidden shadow-sm border border-3"
-                                                                style={{
-                                                                    width: "70px",
-                                                                    height: "70px",
-                                                                    background: "#fff",
-                                                                    borderColor:
-                                                                        item.status_approver === "Approve" || item.status_approver === "Pengajuan"
-                                                                            ? "#10b981"
-                                                                            : item.status_approver === "Reject"
-                                                                                ? "#ef4444"
-                                                                                : "#f59e0b",
-                                                                }}
-                                                            >
-
-                                                                {/* QR IMAGE */}
-                                                                <img
-                                                                    src={
-                                                                        item.qrCode ||
-                                                                        "/assets/images/qrcode-default.png"
-                                                                    }
-                                                                    alt="QR Approval"
-                                                                    className="w-100 h-100"
+                                                        {/* line */}
+                                                        {index !==
+                                                            showData.pengajuanTransaksi.length - 1 && (
+                                                                <div
                                                                     style={{
-                                                                        objectFit: "cover",
-                                                                        padding: "4px",
-                                                                        background: "#fff",
+                                                                        position: "absolute",
+                                                                        left: "18px",
+                                                                        top: "40px",
+                                                                        width: "2px",
+                                                                        height: "100%",
+                                                                        background: "#dee2e6"
                                                                     }}
                                                                 />
-                                                            </div>
+                                                            )}
 
-                                                            {/* STATUS BADGE */}
-                                                            <div
-                                                                className={`position-absolute rounded-circle d-flex align-items-center justify-content-center
-            ${item.status_approver === "Approve" || item.status_approver === "Pengajuan"
-                                                                        ? "bg-success"
-                                                                        : item.status_approver === "Reject"
-                                                                            ? "bg-danger"
-                                                                            : "bg-warning"
-                                                                    }`}
-                                                                style={{
-                                                                    width: "24px",
-                                                                    height: "24px",
-                                                                    right: "-8px",
-                                                                    bottom: "-8px",
-                                                                    color: "#fff",
-                                                                    border: "2px solid #fff",
-                                                                    fontSize: "12px",
-                                                                }}
-                                                            >
-                                                                <i
-                                                                    className={
-                                                                        item.status_approver === "Approve" || item.status_approver === "Pengajuan"
-                                                                            ? "ri-check-line"
-                                                                            : item.status_approver === "Reject"
-                                                                                ? "ri-close-line"
-                                                                                : "ri-time-line"
-                                                                    }
-                                                                />
-                                                            </div>
-                                                        </div>
-
-                                                        {/* CONTENT */}
+                                                        {/* circle */}
                                                         <div
-                                                            className="rounded-4 p-4 ms-5"
+                                                            className={`position-absolute rounded-circle d-flex align-items-center justify-content-center
+                            ${item.status_approver === "Approved"
+                                                                    ? "bg-success"
+                                                                    : item.status === "Reject"
+                                                                        ? "bg-danger"
+                                                                        : "bg-warning"
+                                                                }`}
                                                             style={{
-                                                                background:
-                                                                    "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
-                                                                border: "1px solid #e2e8f0",
-                                                                boxShadow: "0 6px 20px rgba(15,23,42,0.05)",
+                                                                width: "38px",
+                                                                height: "38px",
+                                                                left: "0",
+                                                                top: "0",
+                                                                color: "white"
                                                             }}
                                                         >
+                                                            <i
+                                                                className={
+                                                                    item.status_approver === "Approved"
+                                                                        ? "ri-check-line"
+                                                                        : item.status_approver === "Reject"
+                                                                            ? "ri-close-line"
+                                                                            : "ri-time-line"
+                                                                }
+                                                            />
+                                                        </div>
 
-                                                            {/* HEADER */}
-                                                            <div className="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                                                        {/* content */}
+                                                        <div className="bg-light rounded-4 p-3">
+
+                                                            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
 
                                                                 <div>
-                                                                    <h5 className="fw-bold mb-1 text-dark">
+                                                                    <h6 className="mb-1 fw-bold">
                                                                         {item.nama_persetujuan}
-                                                                    </h5>
+                                                                    </h6>
 
-                                                                    <div className="d-flex align-items-center gap-2">
-
-                                                                        <span
-                                                                            className="rounded-pill px-3 py-1"
-                                                                            style={{
-                                                                                background: "#eef2ff",
-                                                                                color: "#4338ca",
-                                                                                fontSize: "12px",
-                                                                                fontWeight: "600",
-                                                                            }}
-                                                                        >
-                                                                            <i className="ri-briefcase-4-line me-1"></i>
-                                                                            {item.jabatan_persetujuan}
-                                                                        </span>
-                                                                    </div>
+                                                                    <small className="text-muted">
+                                                                        {item.jabatan_persetujuan}
+                                                                    </small>
                                                                 </div>
 
-                                                                {/* STATUS */}
                                                                 <span
-                                                                    className={`badge rounded-pill px-4 py-2 fs-6
-                ${item.status_approver === "Approve" || item.status_approver === "Pengajuan"
+                                                                    className={`badge px-3 py-2
+                                    ${item.status_approver === "Approved"
                                                                             ? "bg-success"
-                                                                            : item.status_approver === "Reject"
+                                                                            : item.status === "Reject"
                                                                                 ? "bg-danger"
                                                                                 : "bg-warning text-dark"
                                                                         }`}
                                                                 >
-                                                                    <i
-                                                                        className={`me-1
-                    ${item.status_approver === "Approve" || item.status_approver === "Pengajuan"
-                                                                                ? "ri-checkbox-circle-fill"
-                                                                                : item.status_approver === "Reject"
-                                                                                    ? "ri-close-circle-fill"
-                                                                                    : "ri-loader-4-line"
-                                                                            }`}
-                                                                    ></i>
-
                                                                     {item.status_approver}
                                                                 </span>
                                                             </div>
 
-                                                            {/* CATATAN */}
                                                             {item.catatan_persetujuan && (
-                                                                <div
-                                                                    className="mt-4 rounded-4 p-3"
-                                                                    style={{
-                                                                        background: "#fff",
-                                                                        border: "1px solid #e2e8f0",
-                                                                        borderLeft: "4px solid #6366f1",
-                                                                    }}
-                                                                >
-
-                                                                    <small className="text-muted d-block mb-2">
-                                                                        Catatan Approval
+                                                                <div className="mt-3 p-3 rounded-3 bg-white border-start border-4 border-primary">
+                                                                    <small className="text-muted d-block mb-1">
+                                                                        Catatan
                                                                     </small>
 
-                                                                    <div
-                                                                        className="text-dark"
-                                                                        style={{
-                                                                            lineHeight: "1.7",
-                                                                        }}
-                                                                    >
+                                                                    <span className="fst-italic">
                                                                         {item.catatan_persetujuan}
-                                                                    </div>
+                                                                    </span>
                                                                 </div>
                                                             )}
 
-                                                            {/* FOOTER */}
-                                                            <div className="mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-                                                                {/* DATE */}
-                                                                <div className="d-flex align-items-center text-muted">
-                                                                    <i className="ri-calendar-2-line me-2"></i>
-
-                                                                    <small>
-                                                                        {item.tanggal_persetujuan || "-"}
+                                                            {item.tanggal_persetujuan && (
+                                                                <div className="mt-2 text-end">
+                                                                    <small className="text-muted">
+                                                                        {item.tanggal_persetujuan}
                                                                     </small>
                                                                 </div>
-
-                                                                {/* QR ACTION */}
-                                                                <Button
-                                                                    variant="contained"
-                                                                    className="btn rounded-pill px-4 py-2 border-0"
-                                                                    style={{
-                                                                        background:
-                                                                            "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)",
-                                                                        color: "#fff",
-                                                                        boxShadow: "0 6px 18px rgba(79,70,229,0.25)",
-                                                                    }}
-                                                                    onClick={() =>
-                                                                        window.open(item.qrCode, "_blank")
-                                                                    }
-                                                                >
-                                                                    <i className="ri-qr-code-line me-2"></i>
-                                                                    Lihat QR Approval
-                                                                </Button>
-                                                            </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 ))
@@ -2244,53 +1890,33 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                         Belum Ada Disposisi
                                                     </h6>
                                                 </div>
-                                            )
-                                        )}
-
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            </Col>
+                                </Col>
 
 
-                        </div>
-                    </Col>
-
-                </Row>
-            </Modal.Body>
-            <Modal.Footer className="d-flex justify-content-between align-items-center">
-                <div className="d-flex gap-2">
-                    <Button
-                        variant="contained"
-                        type="button"
-                        className="btn btn-success"
-                        onClick={HandlePayment}
-                    >
-                        Payment
-                    </Button>
-
-                    <Button
-                        variant="contained"
-                        type="button"
-                        className="btn btn-danger"
-                        onClick={SubmitReject}
-                    >
-                        Reject
-                    </Button>
-                </div>
-
-                <Button
-                    variant="contained"
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setOpenModal({ ...openModal, open: false })}
-                >
-                    Close
-                </Button>
+                                {/* <Col xl={12}>
+                                <label htmlFor="nama-proyek" className="form-label ">Catatan :</label>
+                                <textarea type="text" value={dataSubmit.catatan} className={`form-control`} id="keterangan" placeholder="Catatan" rows={3} onChange={(e) => setDataSubmit({ ...dataSubmit, catatan: e.target.value })} />
+                            </Col> */}
 
 
-            </Modal.Footer>
-        </Modal>
+                            </div>
+                        </Col>
+
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer className="d-flex gap-2">
+
+
+                    <Button variant='contained' type="button" className="btn btn-secondary"
+                        data-bs-dismiss="modal" onClick={() => setOpenModal({ ...openModal, open: false })}>Close</Button>
+
+                </Modal.Footer>
+            </Modal>
+        </>
     )
 }
 
-export default dynamic(() => Promise.resolve(DetailPaymentChecklist), { ssr: false });
+export default dynamic(() => Promise.resolve(DetailPengajuan), { ssr: false });
