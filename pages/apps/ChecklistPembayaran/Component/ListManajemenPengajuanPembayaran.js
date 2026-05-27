@@ -309,7 +309,7 @@ const ListManajemenPengajuanPembayaran = ({loader, setLoader, reload, setReload}
                     <Card.Header>
 
                         <div className="card-title">
-                            List Pengajuan Transaksi Pembayaran HO
+                            List Pengajuan Transaksi Pembayaran HO & Proyek
                         </div>
                     </Card.Header>
                     <Card.Body>

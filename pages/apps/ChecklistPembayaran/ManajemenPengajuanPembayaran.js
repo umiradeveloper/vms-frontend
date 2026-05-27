@@ -11,8 +11,8 @@ const ManajemenPengajuanPembayaran = () => {
     const [reload, setReload] = useState(false);
     return(
         <Fragment>
-            <Seo title={"Monitoring Dan Pengajuan transaksi"} />
-            <PageHeaderVms title='Checklist Pembayaran' item='Pengajuan Pembayaran' active_item='Pengajuan Pembayaran' />
+            <Seo title={"Monitoring Dan Pengajuan transaksi HO & Proyek"} />
+            <PageHeaderVms title='Checklist Pembayaran' item='Manajemen Pengajuan Pembayaran' active_item='Manajemen Pengajuan Pembayaran' />
             <LoadersSimUmira open={loader} />
           
             <Row className="d-flex gap-3">
