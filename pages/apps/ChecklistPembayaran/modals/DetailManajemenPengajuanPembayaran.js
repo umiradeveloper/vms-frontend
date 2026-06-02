@@ -39,7 +39,6 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
                 const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi?id=" + id + "&status_verified=verified", {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
                 if (resultApi.status == 200) {
@@ -57,7 +56,6 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/dokumen-file?id=" + id, {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }, responseType: "blob"
             });
             const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
@@ -73,7 +71,6 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
                 },
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }, responseType: "blob"
             });
             const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
@@ -99,8 +96,6 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
                     {
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization":
-                                "Bearer " + localStorage.getItem("token"),
                         },
                         responseType: "blob",
                     }
@@ -377,7 +372,6 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
                 const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi?id=" + id + "&catatan=" + resultConfirm.value + "&status_verified=not_verified", {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
                 // console.log("trx: " + resultApi)
@@ -406,8 +400,6 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization":
-                            "Bearer " + localStorage.getItem("token")
                     }
                 }
             );
@@ -593,10 +585,7 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
 
                     responseType: "blob",
 
-                    headers: {
-                        "Authorization":
-                            "Bearer " + localStorage.getItem("token")
-                    }
+                   
                 }
             );
 
@@ -719,7 +708,6 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
                 const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + idTransaksi + "&catatan_payment=" + result.value.catatan, fm, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
                 // console.log(resultApi);
@@ -828,7 +816,6 @@ const DetailManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, s
                 const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + idTransaksi + "&catatan_verified=" + resultConfirm.value, fm, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
                 // console.log(resultApi);

@@ -55,8 +55,7 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Rapa/get-rapa-proyek?id_proyek=" + openModal.id_proyek, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status == 200) {
@@ -87,8 +86,7 @@ const CreatePu = ({ openModal, setOpenModal }) => {
                 `${apiUrl}/master/get-week-by-project?id_project=${openModal.id_proyek}`,
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -114,8 +112,7 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek", {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
 
@@ -193,8 +190,7 @@ const CreatePu = ({ openModal, setOpenModal }) => {
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/PendapatanUsaha/create-pu", formData, {
                 headers: {
-                    "Content-Type": "multipart/form-data",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "multipart/form-data"
                 }
             });
             if (result.status == 200) {

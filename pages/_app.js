@@ -5,6 +5,7 @@ import Contentlayout from "../shared/layout-components/layout/content-layout";
 import ContentlayoutVms from "./apps/layout/ContentLayoutVms";
 import Authenticationlayout from "../shared/layout-components/layout/authentication-layout";
 import Landingpagelayout from "../shared/layout-components/layout/Landingpage-layout";
+import Providers from "./Providers";
 const layouts = {
 	Contentlayout: Contentlayout,
 	Landingpagelayout:Landingpagelayout,
@@ -12,11 +13,13 @@ const layouts = {
 	ContentlayoutVms: ContentlayoutVms,
 };
 function MyApp({ Component, pageProps }) {
-	const Layout = layouts[Component.layout] || ((pageProps) => <Component>{pageProps}</Component>);
+	const Layout = layouts[Component.layout] || (({ children }) => <>{children}</>);
 	return (
-		<Layout>
-			<Component {...pageProps} />
-		</Layout>
+		<Providers>
+			<Layout>
+				<Component {...pageProps} />
+			</Layout>
+		</Providers>
 	);
 }
 

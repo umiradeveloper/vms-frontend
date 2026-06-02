@@ -15,6 +15,7 @@ import { saveAs } from "file-saver";
 import { useRouter } from "next/router";
 import EditVendorMaster from "./EditModalVendorMaster";
 import EditModalVendorMaster from "./EditModalVendorMaster";
+import AxiosConfig from "@/utils/AxiosConfig";
 
 const ListVmsMaster = () => {
     const [datatable, setDatatable] = useState([]);
@@ -78,9 +79,7 @@ const ListVmsMaster = () => {
     ];
     useEffect(() => {
         getPengajuan();
-        if(!localStorage.getItem("token")){
-			router.push("/apps/LoginRegister");
-		}
+        
     }, [appStatus]);
 
     const ExportToExcel = (data, fileName) => {
@@ -107,10 +106,9 @@ const ListVmsMaster = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl + "/vms/list-vendor", {
+            const response = await AxiosConfig.get(apiUrl + "/vms/list-vendor", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             const data = response.data.data;
@@ -150,20 +148,22 @@ const ListVmsMaster = () => {
                 setDataxslx(xlsxArr);
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setLoader(false);
+                // setLoader(false);
             }
 
         } catch (error) {
             console.log(error);
             // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            // if(error.status == 401){
+            //     localStorage.removeItem("token");
+            //     localStorage.removeItem("menu");
+            //     localStorage.removeItem("user");
+            //     router.push("/apps/LoginRegister");
+            // }
+            // setLoader(false);
+            // swalAlert(error.message, error.status, "error");
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const handleEdit = (user) => {

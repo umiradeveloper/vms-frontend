@@ -16,8 +16,7 @@ const CostCodeProyek = ({openModal, setOpenModal, loader, setLoader}) => {
                     cost_code: openModal.cost_code,
                 },
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             // console.log(result);

@@ -98,7 +98,6 @@ const ApprovalChecklistPembayaran = () => {
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-transaksi-by-status?status=Pengajuan", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(result);

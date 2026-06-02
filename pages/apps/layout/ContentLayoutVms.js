@@ -22,9 +22,9 @@ const ContentlayoutVms = ({ children }) => {
 		setlateLoad(true);
 		// checkAccessMenu();
 		// console.log(localStorage)
-		if(!localStorage.getItem("token")){
-			router.push("/apps/LoginRegister");
-		}
+		// if(!localStorage.getItem("token")){
+		// 	router.push("/apps/LoginRegister");
+		// }
 	});
 	// const checkAccessMenu = () => {
 	// 	const allowedMenus = menus.filter(menus => menus.menu.path_menu?.includes(pathName));

@@ -17,6 +17,8 @@ import { useRouter } from "next/router";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
+import AxiosConfig from "@/utils/AxiosConfig";
+import { getSession } from "next-auth/react";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
@@ -69,12 +71,12 @@ const FormEditDraftVms = () => {
             // setSelectKualifikasiUsaha(select.value);
             setVendorData({...vendorData, id_kualifikasi_usaha: select.value});
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+           
             setLoader(true);
             try {
-                const response = await axios.get(apiUrl+"/access-document/all-id-kualifikasi", {
+                const response = await AxiosConfig.get(apiUrl+"/access-document/all-id-kualifikasi", {
                     headers:{
-                        "Content-Type":"application/json",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
+                        "Content-Type":"application/json"
                     },
                     params:{
                         id: select.value
@@ -82,24 +84,18 @@ const FormEditDraftVms = () => {
                 });
                 const data = response.data.data;
                 if(data){
-                    console.log(data);
+                    // console.log(data);
                     
                     setForm(data);
                     // setTableData(userArr);
-                    setLoader(false);
+                    // setLoader(false);
                 }
                 
             } catch (error) {
                 console.log(error);
-                // setError(error.message);
-                if(error.status == 401){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("menu");
-                    localStorage.removeItem("user");
-                    router.push("/apps/LoginRegister");
-                }
+               
+            }finally{
                 setLoader(false);
-                swalAlert(error.message, error.status, "error");
             }
 
         }
@@ -108,10 +104,9 @@ const FormEditDraftVms = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             setLoader(true);
             try {
-                const response = await axios.get(apiUrl+"/mst-kualifikasi/all", {
+                const response = await AxiosConfig.get(apiUrl+"/mst-kualifikasi/all", {
                     headers:{
                         "Content-Type":"application/json",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
                     }
                 });
                 const data = response.data.data;
@@ -128,31 +123,22 @@ const FormEditDraftVms = () => {
                     }
                     setSelectedOptions(kualifikasiArr);
                     // setTableData(userArr);
-                    setLoader(false);
+                    // setLoader(false);
                 }
                 
             } catch (error) {
                 console.log(error);
-                // setError(error.message);
-                if(error.status == 401){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("menu");
-                    localStorage.removeItem("user");
-                    router.push("/apps/LoginRegister");
-                }
-                setLoader(false);
-                swalAlert(error.message, error.status, "error");
-            }
+             
+            }finally{setLoader(false)}
         }
 
         const getVendorById = async (id) => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             setLoader(true);
             try {
-                const response = await axios.get(apiUrl+"/vms/draft-pengajuan-vendor-id", {
+                const response = await AxiosConfig.get(apiUrl+"/vms/draft-pengajuan-vendor-id", {
                     headers:{
-                        "Content-Type":"application/json",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
+                        "Content-Type":"application/json"
                     },
                     params:{
                         id: id
@@ -193,20 +179,14 @@ const FormEditDraftVms = () => {
                     if (data.vendorDetail) {
                         setFileBefore(data.vendorDetail);
                     }
-                    setLoader(false);
+                    // setLoader(false);
                 }
                 
             } catch (error) {
                 console.log(error);
-                // setError(error.message);
-                if(error.status == 401){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("menu");
-                    localStorage.removeItem("user");
-                    router.push("/apps/LoginRegister");
-                }
+                
+            }finally{
                 setLoader(false);
-                swalAlert(error.message, error.status, "error");
             }
         }
 
@@ -272,10 +252,9 @@ const FormEditDraftVms = () => {
                 
             });
             try {
-                const response = await axios.post(apiUrl+"/vms//update-vendor/update-bulk?id="+router.query.ref, formData,{
+                const response = await AxiosConfig.post(apiUrl+"/vms//update-vendor/update-bulk?id="+router.query.ref, formData,{
                     headers:{
-                        "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
+                        "Content-Type": "multipart/form-data"
                     }
                 });
                 const data = response.data;
@@ -288,7 +267,7 @@ const FormEditDraftVms = () => {
                     // swalAlert("Pengajuan Vendor Terkirim", "Register Vendor", "success");
                     // const upload = await uploadDaftarVendorNew(router.query.ref);
                     // if(upload){
-                        setLoader(false);
+                        // setLoader(false);
                         swalAlert("Edit data berhasil", "Register Vendor", "success");
                         setAppStatus(true);
                         router.push("/apps/DraftPengajuanVms");
@@ -298,20 +277,22 @@ const FormEditDraftVms = () => {
                 
             } catch (error) {
                 console.log(error);
-                // setError(error.message);
-                if(error.status == 401){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("menu");
-                    localStorage.removeItem("user");
-                    router.push("/apps/LoginRegister");
-                }
-                if(error.status == 400){
-					for(const a of error.response.data.violations){
-						swalAlert(a.message, error.status, "error");
-					}
-				}
+                // // setError(error.message);
+                // if(error.status == 401){
+                //     localStorage.removeItem("token");
+                //     localStorage.removeItem("menu");
+                //     localStorage.removeItem("user");
+                //     router.push("/apps/LoginRegister");
+                // }
+                // if(error.status == 400){
+				// 	for(const a of error.response.data.violations){
+				// 		swalAlert(a.message, error.status, "error");
+				// 	}
+				// }
+                // setLoader(false);
+                // swalAlert(error.message, error.status, "error");
+            }finally{
                 setLoader(false);
-                swalAlert(error.message, error.status, "error");
             }
         }
         const uploadDaftarVendor = async(idVendor) => {
@@ -417,11 +398,10 @@ const FormEditDraftVms = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             setLoader(true);
             try {
-                const response = await axios.get(apiUrl+"/vms/dokumen-file", {
+                const response = await AxiosConfig.get(apiUrl+"/vms/dokumen-file", {
                     responseType: "blob",
                     headers:{
-                        "Content-Type":"application/json",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
+                        "Content-Type":"application/json"
                     },
                     params:{
                         id: id
@@ -439,21 +419,13 @@ const FormEditDraftVms = () => {
                     setIdDetailDok(id);
                     // setSelectedOptions(kualifikasiArr);
                     // setTableData(userArr);
-                    setLoader(false);
+                    // setLoader(false);
                 }
                 
             } catch (error) {
                 console.log(error);
-                // setError(error.message);
-                if(error.status == 401){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("menu");
-                    localStorage.removeItem("user");
-                    router.push("/apps/LoginRegister");
-                }
-                setLoader(false);
-                swalAlert(error.message, error.status, "error");
-            }
+               
+            }finally{setLoader(false)}
         }
         const handleDownload = () => {
                 donwloadFile();
@@ -462,11 +434,10 @@ const FormEditDraftVms = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             setLoader(true);
             try {
-                const response = await axios.get(apiUrl+"/vms/dokumen-file", {
+                const response = await AxiosConfig.get(apiUrl+"/vms/dokumen-file", {
                     responseType: "blob",
                     headers:{
                         "Content-Type":"application/json",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
                     },
                     params:{
                         id: idDetailDok
@@ -490,21 +461,21 @@ const FormEditDraftVms = () => {
                     // setFrameSrc(fileURL)
                     // // setSelectedOptions(kualifikasiArr);
                     // // setTableData(userArr);
-                    setLoader(false);
+                    // setLoader(false);
                 }
                 
             } catch (error) {
                 console.log(error);
                 // setError(error.message);
-                if(error.status == 401){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("menu");
-                    localStorage.removeItem("user");
-                    router.push("/apps/LoginRegister");
-                }
-                setLoader(false);
-                swalAlert(error.message, error.status, "error");
-            }
+                // if(error.status == 401){
+                //     localStorage.removeItem("token");
+                //     localStorage.removeItem("menu");
+                //     localStorage.removeItem("user");
+                //     router.push("/apps/LoginRegister");
+                // }
+                // setLoader(false);
+                // swalAlert(error.message, error.status, "error");
+            }finally{setLoader(false)}
         }
         const handleOpen = (id) => {
                 // getFile(id);
@@ -539,9 +510,7 @@ const FormEditDraftVms = () => {
             )
         }
         useEffect(() => {
-            if(!localStorage.getItem("token")){
-				router.push("/apps/LoginRegister");
-			}
+            
             getKualifikasiUsaha();
             
             getVendorById(router.query.ref);

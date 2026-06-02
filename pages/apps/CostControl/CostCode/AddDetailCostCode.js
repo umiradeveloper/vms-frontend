@@ -30,8 +30,7 @@ const AddDetailCostCode = ({openModal, setOpenModal, loader, setLoader}) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Kategori/get-kategori", {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             console.log(result)

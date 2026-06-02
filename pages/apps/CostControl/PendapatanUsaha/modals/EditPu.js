@@ -25,14 +25,7 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
         try {
             setLoader(true);
 
-            const res = await apiConfig.get(
-                apiUrl + `/CostControl/PendapatanUsaha/get-pu-by-id?id=${id_pu}`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token")
-                    }
-                }
-            );
+            const res = await apiConfig.get(apiUrl + `/CostControl/PendapatanUsaha/get-pu-by-id?id=${id_pu}`);
 
             const data = res.data.data;
 
@@ -91,8 +84,7 @@ const EditPu = ({ openModal, setOpenModal, loader, setLoader, setReload, reload 
                 form,
                 {
                     headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "multipart/form-data"
                     }
                 }
             );

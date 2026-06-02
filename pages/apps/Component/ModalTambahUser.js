@@ -6,6 +6,7 @@ import "rodal/lib/rodal.css";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
 import axios from "axios";
+import AxiosConfig from "@/utils/AxiosConfig";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 
@@ -28,7 +29,7 @@ const CreateUser = ({open, setOpen, setOpenLoader}) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setOpenLoader(true);
         try {
-            const response = await axios.post(apiUrl+"/users/insert", {
+            const response = await AxiosConfig.post(apiUrl+"/users/insert", {
                 nama_perusahaan: dataUser.nama,
                 username: dataUser.username,
                 password: dataUser.password,
@@ -39,12 +40,11 @@ const CreateUser = ({open, setOpen, setOpenLoader}) => {
             } ,{
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data;
 			if(data.success){
-				setOpenLoader(false);
+				// setOpenLoader(false);
                 setOpen({...open, open_modal: false});
                 // console.log(error);
                 // setError(error.message);
@@ -62,22 +62,24 @@ const CreateUser = ({open, setOpen, setOpenLoader}) => {
         } catch (error) {
             console.log(error);
             // setError(error.message);
-			setOpenLoader(false);
-			swalAlert(error.message, error.status, "error");
+			// setOpenLoader(false);
+			// swalAlert(error.message, error.status, "error");
+        }finally{
+            setOpenLoader(false);
         }
      }
      const getBranch = async() => {
 		const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setOpenLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/master/get-branch", {
+            const response = await AxiosConfig.get(apiUrl+"/master/get-branch", {
                 headers:{
                     "Content-Type":"application/json"
                 }
             });
             const data = response.data.data;
 			if(data){
-				setOpenLoader(false);
+				// setOpenLoader(false);
 				const branchArr = [];
 				for await (const b of data){
 					branchArr.push({
@@ -91,23 +93,24 @@ const CreateUser = ({open, setOpen, setOpenLoader}) => {
         } catch (error) {
             console.log(error);
             // setError(error.message);
-			setOpenLoader(false);
-			swalAlert(error.message, error.status, "error");
+			// setOpenLoader(false);
+			// swalAlert(error.message, error.status, "error");
+        }finally{
+            setOpenLoader(false);
         }
 	}
      const getRole = async() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setOpenLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/role/get-role", {
+            const response = await AxiosConfig.get(apiUrl+"/role/get-role", {
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization":"Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data.data;
 			if(data){
-				setOpenLoader(false);
+				// setOpenLoader(false);
 				const roleArr = [];
 				for await (const b of data){
 					roleArr.push({
@@ -121,8 +124,10 @@ const CreateUser = ({open, setOpen, setOpenLoader}) => {
         } catch (error) {
             console.log(error);
             // setError(error.message);
-			setOpenLoader(false);
+			// setOpenLoader(false);
 			swalAlert(error.message, error.status, "error");
+        }finally{
+            setOpenLoader(false);
         }
      }
     const swalAlert = (message, title, icon) => {

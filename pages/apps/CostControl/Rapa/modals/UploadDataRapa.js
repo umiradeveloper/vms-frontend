@@ -64,8 +64,7 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id?id="+openModal.id_proyek, {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status){
@@ -117,8 +116,7 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/Rapa/create-rapa-bulk", dataSubmit,{
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status){
@@ -209,8 +207,7 @@ const UploadDataRapa = ({openModal, setOpenModal, reload, setReload}) => {
                 try {
                     const result = await apiConfig.post(apiUrl + "/CostControl/Rapa/get-cost-code-rapa", {CostCode: costCodeUpload},{
                         headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": "Bearer " + localStorage.getItem("token")
+                            "Content-Type": "application/json"
                         }
                     });
                     

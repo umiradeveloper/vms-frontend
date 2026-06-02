@@ -116,8 +116,7 @@ const DetailProyekPu = () => {
                 const response = await apiConfig.get(apiUrl+"/CostControl/PendapatanUsaha/dokumen-file", {
                     responseType: "blob",
                     headers:{
-                        "Content-Type":"application/json",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
+                        "Content-Type":"application/json"
                     },
                     params:{
                         id: id
@@ -153,8 +152,7 @@ const DetailProyekPu = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id=" + params.get("id"), {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             
@@ -193,8 +191,7 @@ const DetailProyekPu = () => {
                 apiUrl + "/CostControl/PendapatanUsaha/get-pu-by-proyek?id_proyek=" + params.get("id"),
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -274,14 +271,7 @@ const DetailProyekPu = () => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-            const response = await apiConfig.delete(
-                apiUrl + `/CostControl/PendapatanUsaha/delete-pu?id=${item}`,
-                {
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }
-                }
-            );
+            const response = await apiConfig.delete(apiUrl + `/CostControl/PendapatanUsaha/delete-pu?id=${item}`);
 
             Swal.fire({
                 title: "Berhasil!",

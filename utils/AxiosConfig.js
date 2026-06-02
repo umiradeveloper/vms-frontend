@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { getSession, signOut } from "next-auth/react";
 import Router from "next/router"; // untuk pages router
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
@@ -32,24 +33,38 @@ const swalAlert = (message, title, icon) => {
 			}
 		});
 }
+AxiosConfig.interceptors.request.use(
+  async (config) => {
+
+    const session = await getSession();
+
+    if (session?.accessToken) {
+
+      config.headers = config.headers || {};
+
+      config.headers.Authorization =
+        `Bearer ${session.accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 // Interceptor Response
 AxiosConfig.interceptors.response.use(
   (response) => response,
   (error) => {
+
     if (error.response?.status === 401) {
       // Hapus token (localStorage)
+      
       if (typeof window !== "undefined") {
-        // localStorage.removeItem("token");
-        localStorage.removeItem("token");
-        localStorage.removeItem("menu");
-        localStorage.removeItem("user");
-        Router.push("/apps/LoginRegister");
+        signOut();
+        localStorage.clear();
+       
       }
 
-      // Redirect ke login
-    //   if (typeof window !== "undefined") {
-    //     // window.location.href = "/login"; // universal, works both App/Pages router
-    //   }
+    
     }
     if (error.response?.status === 400) {
       console.log(error)

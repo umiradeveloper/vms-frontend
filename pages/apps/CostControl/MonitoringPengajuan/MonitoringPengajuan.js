@@ -78,8 +78,7 @@ const MonitoringPengajuan = () => {
                 apiUrl + "/CostControl/pengajuan/get-monitoring-pengajuan-bk",
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );

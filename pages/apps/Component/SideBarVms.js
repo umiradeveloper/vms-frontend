@@ -702,7 +702,7 @@ const SideBarVmsClient = ({ local_varaiable, ThemeChanger }) => {
         
 		<Fragment>
 			<div id="responsive-overlay" onClick={() => menuClose()}></div>
-			<aside className="app-sidebar sticky bg-primary" id="sidebar" onMouseEnter={() => Onhover()} onMouseLeave={() => Outhover()}>
+			<aside className="app-sidebar sticky bg-white" id="sidebar" onMouseEnter={() => Onhover()} onMouseLeave={() => Outhover()}>
 				<div className="main-sidebar-header">
 					<Link className="header-logo" href={"/apps/DashboardVms"}>
 						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira.png`} alt="logo" className="desktop-logo" />

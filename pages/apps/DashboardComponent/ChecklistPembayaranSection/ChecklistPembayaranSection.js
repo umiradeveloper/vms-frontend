@@ -1,7 +1,7 @@
 import { Card, Col, Row } from "react-bootstrap";
 import BasicTable from "@/pages/apps/DataTables/DataTablesVendor";
 import { useEffect, useState } from "react";
-import apiConfig from "@/utils/AxiosConfig";
+import AxiosConfig from "@/utils/AxiosConfig";
 
 const ChecklistPembayaranSection = ({loader, setLoader}) => {
      const [dataTablePengajuan, setDataTablePengajuan] = useState([]);
@@ -34,10 +34,10 @@ const ChecklistPembayaranSection = ({loader, setLoader}) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const result = await apiConfig.get(apiUrl + "/Dashboard/get-data/card-checklist-pembayaran", {
+            const result = await AxiosConfig.get(apiUrl + "/Dashboard/get-data/card-checklist-pembayaran", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    // "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(result);
@@ -57,10 +57,10 @@ const ChecklistPembayaranSection = ({loader, setLoader}) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const result = await apiConfig.get(apiUrl + "/Dashboard/get-data/get-pengajuan-checklist-pembayaran", {
+            const result = await AxiosConfig.get(apiUrl + "/Dashboard/get-data/get-pengajuan-checklist-pembayaran", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    // "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             console.log(result);

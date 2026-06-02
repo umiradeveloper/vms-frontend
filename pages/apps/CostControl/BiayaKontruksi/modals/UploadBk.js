@@ -75,8 +75,7 @@ const UploadBk = ({openModal, setOpenModal, reload, setReload}) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id?id="+openModal.id_proyek, {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status){
@@ -127,8 +126,7 @@ const UploadBk = ({openModal, setOpenModal, reload, setReload}) => {
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/BiayaKonstruksi/create-bk-bulk", dataSubmit,{
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status){
@@ -240,7 +238,6 @@ const UploadBk = ({openModal, setOpenModal, reload, setReload}) => {
                         },  
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": "Bearer " + localStorage.getItem("token")
                         }
                     });
                     

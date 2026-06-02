@@ -48,8 +48,7 @@ const DetailDashboardBkKategori = ({openModal, setOpenModal, loader, setLoader})
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-bk-kategori?id_proyek=" + openModal.data_proyek?.id_proyek, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status) {

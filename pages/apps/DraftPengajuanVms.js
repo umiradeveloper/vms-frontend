@@ -10,6 +10,9 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import DetailDraftPengajuanVms from "./DetailDraftPengajuanVms";
 import { useRouter } from "next/router";
+import apiConfig from "@/utils/AxiosConfig";
+import AxiosConfig from "@/utils/AxiosConfig";
+import { getSession } from "next-auth/react";
 
 const DraftPengajuanVms = () => {
      const [datatable, setDatatable] = useState([]);
@@ -72,9 +75,7 @@ const DraftPengajuanVms = () => {
         // },
     ];
     useEffect(() => {
-        if(!localStorage.getItem("token")){
-            router.push("/apps/LoginRegister");
-        }
+        
         getPengajuan();
     },[openDetail.open_modal, appStatus]);
 
@@ -107,10 +108,9 @@ const DraftPengajuanVms = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/draft-pengajuan-vendor", {
+            const response = await apiConfig.get(apiUrl+"/vms/draft-pengajuan-vendor", {
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data.data;
@@ -140,36 +140,29 @@ const DraftPengajuanVms = () => {
                 setDatatable(pengajuanArr)
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setLoader(false);
+                // setLoader(false);
             }
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const deleted = async(id) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.delete(apiUrl+"/vms/delete-pengajuan?id="+id,{
+            const response = await AxiosConfig.delete(apiUrl+"/vms/delete-pengajuan?id="+id,{
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data;
             if(data.success){
                 // console.log(data);
-                setLoader(false);
+                // setLoader(false);
                 swalAlert("Delete Pengajuan", "Berhasil", "success");
                 setAppStatus(true);
                 // router.reload("/apps/DraftPengajuanVms");
@@ -177,31 +170,24 @@ const DraftPengajuanVms = () => {
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
-            setLoader(false);
-            swalAlert(error.message, error.status, "error");
+            
+        }finally{
+            setLoader(false)
         }
     }
     const ajukan = async(id) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/draft-pengajuan-ajukan?id="+id,{
+            const response = await AxiosConfig.get(apiUrl+"/vms/draft-pengajuan-ajukan?id="+id,{
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data;
             if(data.success){
                 // console.log(data);
-                setLoader(false);
+                // setLoader(false);
                 swalAlert("Pengajuan Berhasil Di Ajukan", "Berhasil", "success");
                 setAppStatus(true);
                 // router.reload("/apps/DraftPengajuanVms");
@@ -209,15 +195,9 @@ const DraftPengajuanVms = () => {
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const swalAlert = (message, title, icon) => {

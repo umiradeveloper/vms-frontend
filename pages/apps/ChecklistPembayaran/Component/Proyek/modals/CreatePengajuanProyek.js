@@ -79,7 +79,6 @@ const CreatePengajuanProyek = ({ openModal, setOpenModal, loader, setLoader, rel
                 },
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(result);
@@ -111,11 +110,7 @@ const CreatePengajuanProyek = ({ openModal, setOpenModal, loader, setLoader, rel
     const getUserApprover = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const res = await apiConfig.get(apiUrl + "/users/all/staff", {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
+            const res = await apiConfig.get(apiUrl + "/users/all/staff");
             console.log(res);
             if (res.status === 200) {
                 const userArr = res.data.data.map(u => ({
@@ -131,11 +126,7 @@ const CreatePengajuanProyek = ({ openModal, setOpenModal, loader, setLoader, rel
     const getKategori = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const res = await apiConfig.get(apiUrl + "/master/kategori", {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
+            const res = await apiConfig.get(apiUrl + "/master/kategori");
             // console.log(res);
             if (res.status === 200) {
                 const kategoriArr = res.data.data.map(u => ({
@@ -151,11 +142,7 @@ const CreatePengajuanProyek = ({ openModal, setOpenModal, loader, setLoader, rel
     const getVendor = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const res = await apiConfig.get(apiUrl + "/master/all-vendor", {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
+            const res = await apiConfig.get(apiUrl + "/master/all-vendor");
             // console.log(res);
             if (res.status === 200) {
                 const vendorArr = res.data.data.map(u => ({
@@ -206,8 +193,7 @@ const CreatePengajuanProyek = ({ openModal, setOpenModal, loader, setLoader, rel
         try {
             const result = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/create-transaksi", fm, {
                 headers: {
-                    "Content-Type": "multipart/form-data",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "multipart/form-data"
                 }
             });
             // console.log(result);
@@ -273,7 +259,6 @@ const CreatePengajuanProyek = ({ openModal, setOpenModal, loader, setLoader, rel
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-dashboard", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
 
             });

@@ -59,8 +59,7 @@ const DetailBk = ({openModal, setOpenModal}) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Rapa/get-rapa-id?id_rapa="+openModal.id_rapa, {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status == 200){
@@ -100,8 +99,7 @@ const DetailBk = ({openModal, setOpenModal}) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/BiayaKonstruksi/get-bk-by-rapa?id_rapa="+openModal.id_rapa, {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             console.log(result);
@@ -146,8 +144,7 @@ const DetailBk = ({openModal, setOpenModal}) => {
             try {
                 const result = await apiConfig.delete(apiUrl + "/CostControl/BiayaKonstruksi/delete-bk?id="+id, {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 });
                 if(result.status == 200){

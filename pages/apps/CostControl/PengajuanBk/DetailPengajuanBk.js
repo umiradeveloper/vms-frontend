@@ -134,8 +134,7 @@ const DetailProyekBk = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id="+params.get("id"), {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status){
@@ -168,8 +167,7 @@ const DetailProyekBk = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/PendapatanUsaha/get-rapa-proyek?id_proyek="+params.get("id"), {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status){
@@ -208,8 +206,7 @@ const DetailProyekBk = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/BiayaKonstruksi/get-bk-by-proyek?id_proyek="+params.get("id"), {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status == 200){

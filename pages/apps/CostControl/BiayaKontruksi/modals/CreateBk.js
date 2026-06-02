@@ -29,7 +29,6 @@ const CreateBk = ({openModal, setOpenModal}) => {
             const result = await apiConfig.get(apiUrl + "/CostControl/Rapa/get-rapa-proyek?id_proyek="+openModal.id_proyek, {
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
 				}
 			});
             if(result.status == 200){

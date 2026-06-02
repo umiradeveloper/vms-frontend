@@ -56,14 +56,7 @@ const DaftarSatuan = () => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-            const response = await apiConfig.delete(
-                apiUrl + `/CostControl/Satuan/delete-satuan?id=${item.id_satuan}`,
-                {
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }
-                }
-            );
+            const response = await apiConfig.delete(apiUrl + `/CostControl/Satuan/delete-satuan?id=${item.id_satuan}`);
 
             Swal.fire({
                 title: "Berhasil!",
@@ -106,8 +99,7 @@ const DaftarSatuan = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Satuan/get-satuan", {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if(result.status == 200){

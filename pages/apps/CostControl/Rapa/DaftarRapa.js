@@ -53,12 +53,11 @@ const DaftarRapa = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-dashboard", {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 
 			});
-            console.log(result)
+            // console.log(result)
             if(result.status == 200){
                 const daftarArr = [];
                 

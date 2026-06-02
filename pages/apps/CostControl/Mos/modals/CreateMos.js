@@ -87,8 +87,7 @@ const CreateMos = ({ openModal, setOpenModal }) => {
                 `${apiUrl}/master/get-week-by-project?id_project=${openModal.id_proyek}`,
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -114,8 +113,7 @@ const CreateMos = ({ openModal, setOpenModal }) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek", {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
 
@@ -189,8 +187,7 @@ const CreateMos = ({ openModal, setOpenModal }) => {
                 formData,
                 {
                     headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: "Bearer " + localStorage.getItem("token"),
+                        "Content-Type": "multipart/form-data"
                     },
                 }
             );

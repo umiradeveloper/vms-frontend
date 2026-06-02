@@ -50,8 +50,7 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
             };
             const result = await apiConfig.patch(apiUrl + "/CostControl/Proyek/update-proyek?id="+openModal.id_proyek, dataSubmit,{
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             // console.log(result);
@@ -75,8 +74,7 @@ const EditProyek = ({openModal, setOpenModal, loader, setLoader}) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id?id="+openModal.id_proyek, {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status){

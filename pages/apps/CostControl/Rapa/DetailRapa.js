@@ -98,8 +98,7 @@ const DetailRapa = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id=" + params.get("id"), {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status) {
@@ -146,8 +145,7 @@ const DetailRapa = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Rapa/get-rapa-proyek?id_proyek=" + params.get("id"), {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status) {
@@ -197,8 +195,7 @@ const DetailRapa = () => {
             try {
                 const result = await apiConfig.delete(apiUrl + "/CostControl/Rapa/delete-rapa?id=" + id, {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 });
                 if (result.status == 200) {

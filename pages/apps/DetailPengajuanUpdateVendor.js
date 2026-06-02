@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Col } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
+import apiConfig from "@/utils/AxiosConfig";
+import { getSession } from "next-auth/react";
 
 
 const DetailPengajuanUpdateVendor = ({open, setOpen, openLoader, setOpenLoader}) => {
@@ -16,13 +18,14 @@ const DetailPengajuanUpdateVendor = ({open, setOpen, openLoader, setOpenLoader})
    const [frameSrc, setFrameSrc] = useState();
    const getFile = async(id) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    // const session = await getSession();
         setOpenLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/dokumen-file", {
+            const response = await apiConfig.get(apiUrl+"/vms/dokumen-file", {
                 responseType: "blob",
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
+                    // "Authorization": "Bearer "+session.accessToken
                 },
                 params:{
                     id: id
@@ -39,20 +42,16 @@ const DetailPengajuanUpdateVendor = ({open, setOpen, openLoader, setOpenLoader})
                 setFrameSrc(fileURL)
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setOpenLoader(false);
+                // setOpenLoader(false);
             }
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+            // setOpenLoader(false);
+            // swalAlert(error.message, error.status, "error");
+        }finally{
             setOpenLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
    }
    const handleOpen = (id) => {

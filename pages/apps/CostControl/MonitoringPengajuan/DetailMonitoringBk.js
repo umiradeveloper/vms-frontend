@@ -29,10 +29,6 @@ const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload
             accessor: "nama",
         },
 
-        // {
-        //     Header: "Spesifikasi",
-        //     accessor: "spesifikasi",
-        // },
         {
             Header: "satuan",
             accessor: "satuan",
@@ -195,8 +191,7 @@ const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id=" + openModal.id_proyek, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status) {

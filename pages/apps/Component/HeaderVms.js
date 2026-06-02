@@ -13,6 +13,7 @@ import { basePath } from "@/next.config";
 import { cartData, HeaderCart, HeaderSearchData } from "@/shared/data/header/headerdata";
 import dynamic from "next/dynamic";
 import { Router, useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 function HeaderVmsClient({ local_varaiable, ThemeChanger }) {
     //Dark mode
     const router = useRouter();
@@ -20,10 +21,13 @@ function HeaderVmsClient({ local_varaiable, ThemeChanger }) {
     const [role, setrole] = useState();
 
     const handleLogout = () => {
-        localStorage.removeItem("menu"); 
-        localStorage.removeItem("token"); 
-        localStorage.removeItem("user");
-        router.push("/apps/LoginRegister");
+        localStorage.clear();
+        signOut();
+        
+        // localStorage.removeItem("menu"); 
+        // localStorage.removeItem("token"); 
+        // localStorage.removeItem("user");
+        // router.push("/apps/LoginRegister");
     }
     const ToggleDark = () => {
         const theme = store.getState();
@@ -80,9 +84,9 @@ function HeaderVmsClient({ local_varaiable, ThemeChanger }) {
 
     useEffect(() => {
         // console.log(localStorage.getItem("user"));
-        if(!localStorage.getItem("token")){
-            router.push("/apps/LoginRegister");
-        }
+        // if(!localStorage.getItem("token")){
+        //     router.push("/apps/LoginRegister");
+        // }
         const userData = JSON.parse(localStorage.getItem("user"));
         setNamaUser(userData?.email);
         setrole(userData?.role);

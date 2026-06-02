@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import DetailPengajuanVms from "./DetailPengajuanVms";
 import { useRouter } from "next/router";
+import AxiosConfig from "@/utils/AxiosConfig";
 const ListPengajuanVms = () => {
     
     const [datatable, setDatatable] = useState([]);
@@ -62,26 +63,23 @@ const ListPengajuanVms = () => {
     ];
     useEffect(() => {
         getPengajuan()
-        if(!localStorage.getItem("token")){
-			router.push("/apps/LoginRegister");
-		}
+        
     },[idApproval]);
     const approval = async(id) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.patch(apiUrl+"/vms/pengajuan-vendor/approval?id="+id, {
+            const response = await AxiosConfig.patch(apiUrl+"/vms/pengajuan-vendor/approval?id="+id, {
                 isApproval: 1
             },{
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data;
             if(data.success){
                 // console.log(data);
-                setLoader(false);
+                // setLoader(false);
                 swalAlert("Approval Data Vendor", "Berhasil", "success");
                 setIdApproval("00");
                 // router.reload("/apps/ListPengajuanVms");
@@ -89,22 +87,16 @@ const ListPengajuanVms = () => {
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const reject = async(id, message) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.patch(apiUrl+"/vms/pengajuan-vendor/approval?id="+id, {
+            const response = await AxiosConfig.patch(apiUrl+"/vms/pengajuan-vendor/approval?id="+id, {
                 isApproval: 0,
                 catatan: message
             },{
@@ -116,23 +108,25 @@ const ListPengajuanVms = () => {
             const data = response.data;
             if(data.success){
                 // console.log(data);
-                setLoader(false);
+                // setLoader(false);
                 swalAlert(data.message, "Berhasil", "success");
                 setIdApproval("01");
                 // router.reload("/apps/ListPengajuanVms");
             }
             
         } catch (error) {
-            // console.log(error);
+            console.log(error);
             // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            // if(error.status == 401){
+            //     localStorage.removeItem("token");
+            //     localStorage.removeItem("menu");
+            //     localStorage.removeItem("user");
+            //     router.push("/apps/LoginRegister");
+            // }
+            // setLoader(false);
+            // swalAlert(error.message, error.status, "error");
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
 
@@ -162,10 +156,9 @@ const ListPengajuanVms = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/pengajuan-vendor", {
+            const response = await AxiosConfig.get(apiUrl+"/vms/pengajuan-vendor", {
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data.data;
@@ -193,20 +186,22 @@ const ListPengajuanVms = () => {
                 setDatatable(pengajuanArr)
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setLoader(false);
+                // setLoader(false);
             }
             
         } catch (error) {
             console.log(error);
             // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            // if(error.status == 401){
+            //     localStorage.removeItem("token");
+            //     localStorage.removeItem("menu");
+            //     localStorage.removeItem("user");
+            //     router.push("/apps/LoginRegister");
+            // }
+            // setLoader(false);
+            // swalAlert(error.message, error.status, "error");
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const swalAlert = (message, title, icon) => {

@@ -144,7 +144,6 @@ const DetailManajemenPembayaran = ({ loader, setLoader, openModal, setOpenModal,
                 const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + id + "&catatan_payment=" + result.value.catatan, fm, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
                 // console.log(resultApi);
@@ -261,7 +260,6 @@ const DetailManajemenPembayaran = ({ loader, setLoader, openModal, setOpenModal,
                 const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-bukti-bayar?id=" + id, fm, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
                 // console.log(resultApi);
@@ -284,7 +282,6 @@ const DetailManajemenPembayaran = ({ loader, setLoader, openModal, setOpenModal,
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/dokumen-bukti-bayar?id=" + id, {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }, responseType: "blob"
             });
             const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
@@ -359,7 +356,6 @@ const DetailManajemenPembayaran = ({ loader, setLoader, openModal, setOpenModal,
                 const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/delete-bukti-bayar?id=" + id, {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
                 if (result.status == 200) {

@@ -42,8 +42,7 @@ const DetailMaterialPu = ({openModal, setOpenModal, loader, setLoader}) => {
                     id: openModal.id_pu
                 },
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             // console.log(result);

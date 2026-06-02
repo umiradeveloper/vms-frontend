@@ -133,8 +133,7 @@ const CreatePengajuanBkBulk = ({ openModal, setOpenModal }) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Rapa/get-rapa-proyek?id_proyek=" + openModal.id_proyek, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status == 200) {
@@ -161,11 +160,7 @@ const CreatePengajuanBkBulk = ({ openModal, setOpenModal }) => {
     const getUserApprover = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const res = await apiConfig.get(apiUrl + "/users/all/staff", {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
+            const res = await apiConfig.get(apiUrl + "/users/all/staff");
             console.log(res);
             if (res.status === 200) {
                 const userArr = res.data.data.map(u => ({
@@ -225,8 +220,7 @@ const CreatePengajuanBkBulk = ({ openModal, setOpenModal }) => {
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/pengajuan/create-pengajuan-bk-bulk", dataSubmit, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status == 200) {
@@ -342,8 +336,7 @@ const CreatePengajuanBkBulk = ({ openModal, setOpenModal }) => {
                             id_proyek: openModal.id_proyek
                         },  
                         headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": "Bearer " + localStorage.getItem("token")
+                            "Content-Type": "application/json"
                         }
                     });
                     

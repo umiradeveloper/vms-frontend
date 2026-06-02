@@ -9,6 +9,8 @@ import dynamic from "next/dynamic";
 import { QRCodeCanvas } from "qrcode.react";
 import { useRouter } from "next/router";
 import DetailSuratSkt from './DetailSuratSkt';
+import apiConfig from "@/utils/AxiosConfig";
+import { getSession } from "next-auth/react";
 
 const DetailVendorVms = ({open, setOpen, openLoader, setOpenLoader}) => {
     const [modalDokumen, setModalDokumen] = useState();
@@ -25,13 +27,13 @@ const DetailVendorVms = ({open, setOpen, openLoader, setOpenLoader}) => {
     const router = useRouter();
     const getFile = async(id) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        // const session = await getSession();
         setOpenLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/dokumen-file", {
+            const response = await apiConfig.get(apiUrl+"/vms/dokumen-file", {
                 responseType: "blob",
                 headers:{
-                    "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
+                    "Content-Type":"application/json"
                 },
                 params:{
                     id: id
@@ -49,20 +51,13 @@ const DetailVendorVms = ({open, setOpen, openLoader, setOpenLoader}) => {
                 setIdDetailDok(id);
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setOpenLoader(false);
+                // setOpenLoader(false);
             }
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+        }finally{
             setOpenLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
    }
    const handleDownload = () => {
@@ -70,13 +65,14 @@ const DetailVendorVms = ({open, setOpen, openLoader, setOpenLoader}) => {
    }
    const donwloadFile = async() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const session = await getSession();
         setOpenLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/dokumen-file", {
+            const response = await apiConfig.get(apiUrl+"/vms/dokumen-file", {
                 responseType: "blob",
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
+                    "Authorization": "Bearer "+session.accessToken
                 },
                 params:{
                     id: idDetailDok
@@ -100,20 +96,14 @@ const DetailVendorVms = ({open, setOpen, openLoader, setOpenLoader}) => {
                 // setFrameSrc(fileURL)
                 // // setSelectedOptions(kualifikasiArr);
                 // // setTableData(userArr);
-                setOpenLoader(false);
+                // setOpenLoader(false);
             }
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+          
+        }finally{
             setOpenLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
    }
    const handleOpen = (id) => {

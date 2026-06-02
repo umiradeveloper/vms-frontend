@@ -49,7 +49,6 @@ const VendorManagementSystemSection = ({ loader, setLoader }) => {
             const result = await apiConfig.get(apiUrl + "/Dashboard/get-data/card-vendor", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(result);
@@ -71,7 +70,6 @@ const VendorManagementSystemSection = ({ loader, setLoader }) => {
             const result = await apiConfig.get(apiUrl + "/Dashboard/get-data/vendor-pengajuan", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(result);
@@ -130,7 +128,6 @@ const VendorManagementSystemSection = ({ loader, setLoader }) => {
             const result = await apiConfig.get(apiUrl + "/Dashboard/get-data/get-pengajuan-akun-vendor", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(result);

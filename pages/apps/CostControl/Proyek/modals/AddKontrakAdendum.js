@@ -35,8 +35,7 @@ const AddKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) => {
             
             const result = await apiConfig.post(apiUrl + "/CostControl/AdendumProyek/create-adendum", formData, {
 				headers: {
-					"Content-Type": "multipart/form-data",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "multipart/form-data"
 				}
 			});
 			if (result.status == 200) {

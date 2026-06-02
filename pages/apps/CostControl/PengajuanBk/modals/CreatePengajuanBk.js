@@ -32,8 +32,7 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Rapa/get-rapa-proyek?id_proyek=" + openModal.id_proyek, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status == 200) {
@@ -60,11 +59,7 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
     const getUserApprover = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const res = await apiConfig.get(apiUrl + "/users/all/staff", {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
+            const res = await apiConfig.get(apiUrl + "/users/all/staff");
             console.log(res);
             if (res.status === 200) {
                 const userArr = res.data.data.map(u => ({
@@ -103,8 +98,7 @@ const CreatePengajuanBk = ({ openModal, setOpenModal }) => {
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/pengajuan/create-pengajuan-bk", dataSubmit, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status == 200) {

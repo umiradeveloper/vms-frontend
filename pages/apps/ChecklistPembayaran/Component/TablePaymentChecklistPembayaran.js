@@ -89,7 +89,6 @@ const TablePaymentPembayaran = ({loader, setLoader}) => {
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-transaksi-by-status?status=verified", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             console.log(result);

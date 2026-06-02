@@ -55,7 +55,6 @@ const DaftarProyekBk = () => {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-dashboard", {
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
 				}
 			});
             if(result.status == 200){

@@ -57,8 +57,7 @@ const MonitoringPengajuanBk = () => {
                 apiUrl + "/CostControl/pengajuan/get-monitoring-pengajuan-bk",
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -128,8 +127,7 @@ const MonitoringPengajuanBk = () => {
                         catatan: ""
                     },
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -181,8 +179,7 @@ const MonitoringPengajuanBk = () => {
                         catatan: catatan
                     },
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );

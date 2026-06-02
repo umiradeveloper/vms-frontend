@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import CreateUser from "./Component/ModalTambahUser";
 import ModalUpdateUser from "./Component/ModalUpdateUser";
 import { useRouter } from "next/router";
+import AxiosConfig from "@/utils/AxiosConfig";
 const UserManagementVendor = () => {
     const [loader, setLoader] = useState(false);
     const [tableData, setTableData] = useState([]);
@@ -27,9 +28,7 @@ const UserManagementVendor = () => {
     useEffect(() => {
         // console.log(localStorage.getItem("token"))
         getUser();
-        if(!localStorage.getItem("token")){
-			router.push("/apps/LoginRegister");
-		}
+        
     },[userId, openTambahUser.open_modal, openUpdateUser.open_modal])
     
     const COLUMNS = [
@@ -67,10 +66,9 @@ const UserManagementVendor = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/users/all/vendor", {
+            const response = await AxiosConfig.get(apiUrl+"/users/all/vendor", {
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data.data;
@@ -101,121 +99,91 @@ const UserManagementVendor = () => {
                     })
                 }
                 setTableData(userArr);
-                setLoader(false);
 			}
 			
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
-			setLoader(false);
-			swalAlert(error.message, error.status, "error");
-        }
+            
+        }finally{setLoader(false)}
     }
     const ApproveUser = async (id_user) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.patch(apiUrl+"/users/update-approval", {
+            const response = await AxiosConfig.patch(apiUrl+"/users/update-approval", {
                 isApproval: 1
             } ,{
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 },
                 params:{
                     id: id_user
                 }
             });
             if(response.data.success){
-                setLoader(false);
+                // setLoader(false);
                 setUserId(null);
                 swalAlert(response.data.message, "Success", "success");
                 
             }
         }catch(error){
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const RejectUser = async (id_user, message) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.patch(apiUrl+"/users/update-approval", {
+            const response = await AxiosConfig.patch(apiUrl+"/users/update-approval", {
                 isApproval: 2,
                 catatan: message
             } ,{
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 },
                 params:{
                     id: id_user
                 }
             });
             if(response.data.success){
-                setLoader(false);
+                // setLoader(false);
                 setUserId(null);
                 swalAlert(response.data.message, "Success", "success");
                 
             }
         }catch(error){
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+           
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const HapusUser = async (id_user) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.delete(apiUrl+"/users/deleted", {
+            const response = await AxiosConfig.delete(apiUrl+"/users/deleted", {
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 },
                 params:{
                     id: id_user
                 }
             });
             if(response.data.success){
-                setLoader(false);
+                // setLoader(false);
                 setUserId(null);
                 swalAlert(response.data.message, "Success", "success");
                 
             }
         }catch(error){
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const handleApprove = async(user_id) => {

@@ -46,8 +46,7 @@ const AddDataRapa = ({ openModal, setOpenModal, loader, setLoader }) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Cost-Code/get-cost-code", {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status == 200){
@@ -102,8 +101,7 @@ const AddDataRapa = ({ openModal, setOpenModal, loader, setLoader }) => {
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/Rapa/create-rapa-bulk", dataSubmit,{
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
             if(result.status){

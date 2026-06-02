@@ -68,8 +68,7 @@ const DetailDashboardBiayaKonstruksi = ({ openModal, setOpenModal, loader, setLo
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-rapa-proyek-dashboard?id_proyek=" + openModal.data_proyek?.id_proyek+"&id_kategori="+openModal.id_kategori, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status) {

@@ -34,8 +34,7 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             try {
                 const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi?id=" + id + "&status_verified=verified", {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 });
                 if (resultApi.status == 200) {
@@ -55,7 +54,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/dokumen-file?id=" + id, {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }, responseType: "blob"
             });
             const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
@@ -69,7 +67,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/dokumen-bukti-bayar?id=" + id, {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }, responseType: "blob"
             });
             const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
@@ -93,8 +90,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
                     {
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization":
-                                "Bearer " + localStorage.getItem("token"),
                         },
                         responseType: "blob",
                     }
@@ -372,7 +367,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
                 const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/update-detail-transaksi?id=" + id + "&catatan=" + resultConfirm.value + "&status_verified=not_verified", {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
                 // console.log("trx: " + resultApi)
@@ -401,8 +395,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization":
-                            "Bearer " + localStorage.getItem("token")
                     }
                 }
             );
@@ -579,10 +571,7 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
 
                     responseType: "blob",
 
-                    headers: {
-                        "Authorization":
-                            "Bearer " + localStorage.getItem("token")
-                    }
+                    
                 }
             );
 
@@ -707,8 +696,7 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
         try {
             const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-master-status-approval", {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             // console.log(resultApi);
@@ -738,8 +726,7 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
         try {
             const resultApi = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-master-status-layak-bayar", {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             // console.log(resultApi);
@@ -832,7 +819,6 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + idTransaksi, fm, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(resultApi);
@@ -859,8 +845,7 @@ const DetailApprovalPengajuan = ({ openModal, setOpenModal, loader, setLoader })
             try {
                 const resultApi = await apiConfig.post(apiUrl + "/ChecklistTransaksi/transaksi/update-status-pengajuan?id=" + idTransaksi + "&catatan_verified=" + resultConfirm.value, fm, {
                     headers: {
-                        "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "multipart/form-data"
                     }
                 });
                 // console.log(resultApi);

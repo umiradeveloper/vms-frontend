@@ -43,7 +43,6 @@ const CreatePengajuan = ({ openModal, setOpenModal, loader, setLoader, reload, s
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/jenis-transaksi/get-jenis-transaksi", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             console.log(result);

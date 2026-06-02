@@ -92,7 +92,6 @@ const EditDetailCostCode = ({ openModal, setOpenModal, loader, setLoader, dataUp
             const result = await apiConfig.post(apiUrl + "/CostControl/Cost-Code/update-single-cost-code", dataSubmit, {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(result);
@@ -131,7 +130,7 @@ const EditDetailCostCode = ({ openModal, setOpenModal, loader, setLoader, dataUp
     }
 
     useEffect(() => {
-        console.log(dataUpdate)
+        // console.log(dataUpdate)
         setDataSubmit({
             id_cost_code: dataUpdate.id_cost_code,
             kode: dataUpdate.cost_code,
@@ -146,7 +145,7 @@ const EditDetailCostCode = ({ openModal, setOpenModal, loader, setLoader, dataUp
 
         })
         getKategori();
-        getSatuan()
+        getSatuan();
     }, [openModal.open])
 
     return (

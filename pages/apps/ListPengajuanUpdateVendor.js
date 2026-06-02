@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useRouter } from "next/router";
 import DetailPengajuanUpdateVendor from "./DetailPengajuanUpdateVendor";
+import AxiosConfig from "@/utils/AxiosConfig";
+import { getSession } from "next-auth/react";
 const ListPengajuanUpdateVendor = () => {
     
     const [datatable, setDatatable] = useState([]);
@@ -61,20 +63,17 @@ const ListPengajuanUpdateVendor = () => {
     ];
     useEffect(() => {
         getPengajuan()
-        if(!localStorage.getItem("token")){
-			router.push("/apps/LoginRegister");
-		}
+        
     },[idApproval]);
     const approval = async(id) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.patch(apiUrl+"/vms/pengajuan-vendor-update/approval?id="+id, {
+            const response = await AxiosConfig.patch(apiUrl+"/vms/pengajuan-vendor-update/approval?id="+id, {
                 isApproval: 1
             },{
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data;
@@ -88,34 +87,27 @@ const ListPengajuanUpdateVendor = () => {
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const reject = async(id, message) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.patch(apiUrl+"/vms/pengajuan-vendor-update/approval?id="+id, {
+            const response = await AxiosConfig.patch(apiUrl+"/vms/pengajuan-vendor-update/approval?id="+id, {
                 isApproval: 0,
                 catatan: message
             },{
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data;
             if(data.success){
                 // console.log(data);
-                setLoader(false);
+                // setLoader(false);
                 swalAlert("Reject update Data Vendor", "Berhasil", "success");
                 // router.reload("/apps/ListPengajuanUpdateVendor");
                 setIdApproval("01");
@@ -123,15 +115,8 @@ const ListPengajuanUpdateVendor = () => {
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
 
@@ -161,10 +146,9 @@ const ListPengajuanUpdateVendor = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/pengajuan-vendor-update", {
+            const response = await AxiosConfig.get(apiUrl+"/vms/pengajuan-vendor-update", {
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data.data;
@@ -192,20 +176,14 @@ const ListPengajuanUpdateVendor = () => {
                 setDatatable(pengajuanArr)
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setLoader(false);
+                // setLoader(false);
             }
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const swalAlert = (message, title, icon) => {

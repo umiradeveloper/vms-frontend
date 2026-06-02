@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Col } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import apiConfig from "@/utils/AxiosConfig";
 
 
 const DetailPengajuanVms = ({open, setOpen, openLoader, setOpenLoader}) => {
@@ -19,11 +21,10 @@ const DetailPengajuanVms = ({open, setOpen, openLoader, setOpenLoader}) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setOpenLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/dokumen-file", {
+            const response = await apiConfig.get(apiUrl+"/vms/dokumen-file", {
                 responseType: "blob",
                 headers:{
-                    "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
+                    "Content-Type":"application/json"
                 },
                 params:{
                     id: id
@@ -41,20 +42,17 @@ const DetailPengajuanVms = ({open, setOpen, openLoader, setOpenLoader}) => {
                 setIdDetailDok(id);
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setOpenLoader(false);
+                // setOpenLoader(false);
             }
             
         } catch (error) {
             console.log(error);
-            // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            // // setError(error.message);
+            
+            // setOpenLoader(false);
+            // swalAlert(error.message, error.status, "error");
+        }finally{
             setOpenLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
    }
    const handleDownload = () => {
@@ -64,11 +62,10 @@ const DetailPengajuanVms = ({open, setOpen, openLoader, setOpenLoader}) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setOpenLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/dokumen-file", {
+            const response = await apiConfig.get(apiUrl+"/vms/dokumen-file", {
                 responseType: "blob",
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 },
                 params:{
                     id: idDetailDok
@@ -92,20 +89,17 @@ const DetailPengajuanVms = ({open, setOpen, openLoader, setOpenLoader}) => {
                 // setFrameSrc(fileURL)
                 // // setSelectedOptions(kualifikasiArr);
                 // // setTableData(userArr);
-                setOpenLoader(false);
+                // setOpenLoader(false);
             }
             
         } catch (error) {
             console.log(error);
             // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            
+            // setOpenLoader(false);
+            // swalAlert(error.message, error.status, "error");
+        }finally{
             setOpenLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
    }
    const handleOpen = (id) => {

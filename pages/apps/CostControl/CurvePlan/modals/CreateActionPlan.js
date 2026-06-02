@@ -26,8 +26,7 @@ const CreateActionPlan = ({openModal, setOpenModal, loader, setLoader}) => {
                 `${apiUrl}/master/get-week-by-project?id_project=${openModal.id_proyek}`,
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -55,8 +54,7 @@ const CreateActionPlan = ({openModal, setOpenModal, loader, setLoader}) => {
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/ActionPlan/create-action-plan", formData, {
                 headers: {
-                    "Content-Type": "multipart/form-data",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "multipart/form-data"
                 }
             });
             if (result.status == 200) {

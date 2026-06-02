@@ -105,8 +105,7 @@ const DetailScurvePlan = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id=" + params.get("id"), {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             console.log(result);
@@ -143,8 +142,7 @@ const DetailScurvePlan = () => {
                 const response = await apiConfig.get(apiUrl+"/CostControl/Scurve/dokumen-file", {
                     responseType: "blob",
                     headers:{
-                        "Content-Type":"application/json",
-                        "Authorization": "Bearer "+localStorage.getItem("token")
+                        "Content-Type":"application/json"
                     },
                     params:{
                         id: id
@@ -181,8 +179,7 @@ const DetailScurvePlan = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Scurve/get-scurve-by-proyek?id_proyek=" + params.get("id"), {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if(result.status == 200){
@@ -236,8 +233,7 @@ const DetailScurvePlan = () => {
             try {
                 const result = await apiConfig.delete(apiUrl + "/CostControl/Scurve/delete-scurve-by-id?id="+id, {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 });
                 if(result.status == 200){

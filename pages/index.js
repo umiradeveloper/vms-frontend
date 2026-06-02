@@ -10,7 +10,7 @@ const Home = () => {
 	const router = useRouter();
 
   useEffect(() => {
-    router.push("/apps/LoginRegister");
+    router.push("/LoginRegister");
   }, [router]);
 
   return null;

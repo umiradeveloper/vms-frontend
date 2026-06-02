@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useRouter } from "next/router";
 import DetailPengajuanUpdateVendor from "./DetailPengajuanUpdateVendor";
+import { getSession } from "next-auth/react";
+import AxiosConfig from "@/utils/AxiosConfig";
 const ListMonitoringUpdateVendor = () => {
     
     const [datatable, setDatatable] = useState([]);
@@ -61,9 +63,9 @@ const ListMonitoringUpdateVendor = () => {
     ];
     useEffect(() => {
         getPengajuan()
-        if(!localStorage.getItem("token")){
-			router.push("/apps/LoginRegister");
-		}
+        // if(!localStorage.getItem("token")){
+		// 	router.push("/apps/LoginRegister");
+		// }
     },[idApproval]);
    
 
@@ -71,10 +73,9 @@ const ListMonitoringUpdateVendor = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/monitoring-pengajuan-update-vendor", {
+            const response = await AxiosConfig.get(apiUrl+"/vms/monitoring-pengajuan-update-vendor", {
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data.data;
@@ -102,20 +103,22 @@ const ListMonitoringUpdateVendor = () => {
                 setDatatable(pengajuanArr)
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setLoader(false);
+                // setLoader(false);
             }
             
         } catch (error) {
             console.log(error);
             // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+            // if(error.status == 401){
+            //     localStorage.removeItem("token");
+            //     localStorage.removeItem("menu");
+            //     localStorage.removeItem("user");
+            //     router.push("/apps/LoginRegister");
+            // }
+            // setLoader(false);
+            // swalAlert(error.message, error.status, "error");
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
     const swalAlert = (message, title, icon) => {

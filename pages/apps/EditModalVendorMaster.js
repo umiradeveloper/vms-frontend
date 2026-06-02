@@ -5,6 +5,8 @@ import { Button, Col, Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
 import LoadersSimUmira from "./Component/LoaderSimUmira";
+import AxiosConfig from "@/utils/AxiosConfig";
+import { getSession } from "next-auth/react";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 const EditModalVendorMaster = ({open, setOpen, loader, setLoader}) => {
@@ -145,10 +147,9 @@ const EditModalVendorMaster = ({open, setOpen, loader, setLoader}) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 			setLoader(true);
 			try {
-				const response = await axios.post(apiUrl+"/vms/create-vendor-update?id="+dataVendor.id_vendor, dataVendor,{
+				const response = await AxiosConfig.post(apiUrl+"/vms/create-vendor-update?id="+dataVendor.id_vendor, dataVendor,{
 					headers:{
 						"Content-Type":"application/json",
-						"Authorization": "Bearer "+localStorage.getItem("token")
 					}
 				});
 				const data = response.data.data;
@@ -160,7 +161,7 @@ const EditModalVendorMaster = ({open, setOpen, loader, setLoader}) => {
 					// swalAlert("Pengajuan Vendor Terkirim", "Register Vendor", "success");
 					// const upload = await uploadDaftarVendor(data.id_vendor);
 					// if(upload){
-						setLoader(false);
+						// setLoader(false);
 						swalAlert("Pengajuan Edit Vendor Terkirim", "Register Vendor", "success");
                         setOpen({...open, open_modal: false});
                         setAppStatus(true);
@@ -171,21 +172,23 @@ const EditModalVendorMaster = ({open, setOpen, loader, setLoader}) => {
 				
 			} catch (error) {
 				console.log(error);
-				// setError(error.message);
-				if(error.status == 401){
-					localStorage.removeItem("token");
-					localStorage.removeItem("menu");
-					localStorage.removeItem("user");
-					router.push("/apps/LoginRegister");
-				}
-				setLoader(false);
-				if(error.status == 400){
-					for(const a of error.response.data.violations){
-						swalAlert(a.message, error.status, "error");
-					}
-				}
+				// // setError(error.message);
+				// if(error.status == 401){
+				// 	localStorage.removeItem("token");
+				// 	localStorage.removeItem("menu");
+				// 	localStorage.removeItem("user");
+				// 	router.push("/apps/LoginRegister");
+				// }
+				// setLoader(false);
+				// if(error.status == 400){
+				// 	for(const a of error.response.data.violations){
+				// 		swalAlert(a.message, error.status, "error");
+				// 	}
+				// }
 				// swalAlert(error.message, error.status, "error");
-			}
+			}finally{
+                setLoader(false);
+            }
 
     }
     const swalAlert = (message, title, icon) => {

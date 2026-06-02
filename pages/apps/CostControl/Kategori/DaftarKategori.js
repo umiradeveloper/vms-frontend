@@ -50,13 +50,7 @@ const DaftarKategori = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
             const response = await apiConfig.delete(
-                apiUrl + `/CostControl/Kategori/delete-kategori?id=${item.id_kategori}`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                }
-            );
+                apiUrl + `/CostControl/Kategori/delete-kategori?id=${item.id_kategori}`);
 
             Swal.fire({
                 title: "Berhasil!",
@@ -83,8 +77,7 @@ const DaftarKategori = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Kategori/get-kategori", {
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json"
                 },
             });
 
@@ -118,8 +111,7 @@ const DaftarKategori = () => {
                 form,
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + localStorage.getItem("token"),
+                        "Content-Type": "application/json"
                     },
                 }
             );

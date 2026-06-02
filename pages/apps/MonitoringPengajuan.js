@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useRouter } from "next/router";
 import DetailMonitoringVms from "./DetailMonitoringVms";
+import AxiosConfig from "@/utils/AxiosConfig";
 
 const MonitoringPengajuan = () => {
 
@@ -59,9 +60,7 @@ const MonitoringPengajuan = () => {
     ];
     useEffect(() => {
         getPengajuan()
-        if(!localStorage.getItem("token")){
-			router.push("/apps/LoginRegister");
-		}
+        
     },[openDetail.open_modal]);
 
 
@@ -69,10 +68,9 @@ const MonitoringPengajuan = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/vms/monitoring-pengajuan", {
+            const response = await AxiosConfig.get(apiUrl+"/vms/monitoring-pengajuan", {
                 headers:{
                     "Content-Type":"application/json",
-                    "Authorization": "Bearer "+localStorage.getItem("token")
                 }
             });
             const data = response.data.data;
@@ -106,44 +104,18 @@ const MonitoringPengajuan = () => {
                 setDatatable(pengajuanArr)
                 // setSelectedOptions(kualifikasiArr);
                 // setTableData(userArr);
-                setLoader(false);
+                // setLoader(false);
             }
             
         } catch (error) {
             console.log(error);
             // setError(error.message);
-            if(error.status == 401){
-                localStorage.removeItem("token");
-                localStorage.removeItem("menu");
-                localStorage.removeItem("user");
-                router.push("/apps/LoginRegister");
-            }
+          
+        }finally{
             setLoader(false);
-            swalAlert(error.message, error.status, "error");
         }
     }
-    const swalAlert = (message, title, icon) => {
-        let timerInterval;
-
-        Swal.fire({
-            title: title,
-            html: message,
-            icon: icon,
-            timer: 5000,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-            },
-            willClose: () => {
-                clearInterval(timerInterval);
-            },
-        }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log("I was closed by the timer");
-            }
-        });
-    }
+   
     return (
         <Fragment>
             <Seo title={"Monitoring Pengajuan VMS"} />

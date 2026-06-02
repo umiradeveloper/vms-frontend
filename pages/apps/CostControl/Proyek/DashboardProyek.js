@@ -64,15 +64,7 @@ const DashboardProyek = () => {
 
   const getAllProyek = async () => {
     try {
-      const res = await apiConfig.get(
-        process.env.NEXT_PUBLIC_API_URL +
-          "/CostControl/Proyek/get-proyek-dashboard",
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
+      const res = await apiConfig.get(process.env.NEXT_PUBLIC_API_URL + "/CostControl/Proyek/get-proyek-dashboard");
       setData(res.data.data || []);
     } catch (err) {
       console.error(err);

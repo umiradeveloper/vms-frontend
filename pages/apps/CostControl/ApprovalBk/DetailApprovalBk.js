@@ -114,8 +114,7 @@ const DetailApprovalBk = ({ openModal, setOpenModal, loader, setLoader, reload, 
                         catatan: ""
                     },
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -168,8 +167,7 @@ const DetailApprovalBk = ({ openModal, setOpenModal, loader, setLoader, reload, 
                         catatan: catatan
                     },
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -194,8 +192,7 @@ const DetailApprovalBk = ({ openModal, setOpenModal, loader, setLoader, reload, 
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id=" + openModal.id_proyek, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status) {

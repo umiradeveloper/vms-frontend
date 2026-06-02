@@ -109,8 +109,7 @@ const DetailActionPlan = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id=" + params.get("id"), {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             console.log(result);
@@ -147,8 +146,7 @@ const DetailActionPlan = () => {
             const response = await apiConfig.get(apiUrl + "/CostControl/ActionPlan/dokumen-file", {
                 responseType: "blob",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 },
                 params: {
                     id: id
@@ -185,8 +183,7 @@ const DetailActionPlan = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/ActionPlan/get-action-plan-by-proyek?id_proyek=" + params.get("id"), {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status == 200) {
@@ -240,8 +237,7 @@ const DetailActionPlan = () => {
             try {
                 const result = await apiConfig.delete(apiUrl + "/CostControl/ActionPlan/delete-action-plan-by-id?id=" + id, {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 });
                 if (result.status == 200) {

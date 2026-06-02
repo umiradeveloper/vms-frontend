@@ -104,8 +104,7 @@ const DaftarCostCode = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Cost-Code/get-cost-code", {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             console.log(result);

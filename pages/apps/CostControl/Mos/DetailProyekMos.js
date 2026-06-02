@@ -69,8 +69,7 @@ const DetailProyekMos = () => {
             const response = await apiConfig.get(apiUrl + "/CostControl/MaterialOnSite/dokumen-file", {
                 responseType: "blob",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 },
                 params: {
                     id: id
@@ -155,8 +154,7 @@ const DetailProyekMos = () => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-proyek-id-bk-pu?id=" + params.get("id"), {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             console.log(result);
@@ -196,8 +194,7 @@ const DetailProyekMos = () => {
                 apiUrl + "/CostControl/MaterialOnSite/get-mos?id=" + params.get("id"),
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + localStorage.getItem("token")
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -280,13 +277,7 @@ const DetailProyekMos = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
             const response = await apiConfig.delete(
-                apiUrl + `/CostControl/MaterialOnSite/delete-mos?id=${item}`,
-                {
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }
-                }
-            );
+                apiUrl + `/CostControl/MaterialOnSite/delete-mos?id=${item}`);
 
             Swal.fire({
                 title: "Berhasil!",

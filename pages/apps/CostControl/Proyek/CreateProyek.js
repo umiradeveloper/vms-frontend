@@ -75,8 +75,7 @@ const CreateProyek = () => {
 		try {
 			const result = await apiConfig.post(apiUrl + "/CostControl/Proyek/create-proyek", dataSubmit, {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				}
 			});
 			if (result.status == 200) {

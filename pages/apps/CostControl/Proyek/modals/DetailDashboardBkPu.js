@@ -72,8 +72,7 @@ const DetailDashboardBkPu = ({openModal, setOpenModal, loader, setLoader}) => {
         try {
             const result = await apiConfig.get(apiUrl + "/CostControl/Proyek/get-bk-pu-by-week?id_project=" + openModal.data_proyek?.id_proyek, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status) {

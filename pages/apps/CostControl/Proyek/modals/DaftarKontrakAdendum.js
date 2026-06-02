@@ -44,8 +44,7 @@ const DaftarKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) =>
         try {
              const result = await apiConfig.get(apiUrl + "/CostControl/AdendumProyek/get-adendum", {
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				},
                 params:{
                     id_proyek: openModal.id_proyek
@@ -81,8 +80,7 @@ const DaftarKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) =>
              const response = await apiConfig.get(apiUrl + "/CostControl/AdendumProyek/dokumen-file", {
                 responseType: "blob",
 				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Content-Type": "application/json"
 				},
                 params:{
                     id: id
@@ -128,8 +126,7 @@ const DaftarKontrakAdendum = ({openModal, setOpenModal, loading, setLoading}) =>
                 try {
                     const result = await apiConfig.delete(apiUrl + "/CostControl/AdendumProyek/delete-adendum", {
                         headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": "Bearer " + localStorage.getItem("token")
+                            "Content-Type": "application/json"
                         },
                         params: {
                             id_adendum: id

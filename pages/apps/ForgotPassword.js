@@ -11,6 +11,7 @@ import LoadersSimUmira from "./Component/LoaderSimUmira";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
+import AxiosConfig from "@/utils/AxiosConfig";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 const ForgotPassword = () => {
@@ -39,9 +40,10 @@ const ForgotPassword = () => {
 
     const reset = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/auth/forgot-password?email="+email, {
+            const response = await AxiosConfig.get(apiUrl+"/auth/forgot-password?email="+email, {
                 headers:{
                     "Content-Type":"application/json"
                 }
@@ -50,7 +52,7 @@ const ForgotPassword = () => {
 			if(response.status){
                 // console.log(error);
                 // setErrorRegister(response.data.message);
-                setLoader(false);
+                // setLoader(false);
                 swalAlert(response.data.message, response.status, "success");
             }
 			
@@ -58,9 +60,11 @@ const ForgotPassword = () => {
         } catch (error) {
             console.log(error);
             // setErrorRegister(error.response.data.message);
-			setLoader(false);
-			swalAlert(error.response.data.message, error.status, "error");
-        }
+			// setLoader(false);
+			// swalAlert(error.response.data.message, error.status, "error");
+        }finally{
+			setLoader(false)
+		}
     }
 
 	

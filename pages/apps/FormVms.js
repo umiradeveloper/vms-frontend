@@ -16,6 +16,8 @@ import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import AxiosConfig from "@/utils/AxiosConfig";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 
@@ -61,12 +63,13 @@ const FormVms = () => {
 		// setSelectKualifikasiUsaha(select.value);
 		setVendorData({ ...vendorData, id_kualifikasi_usaha: select.value });
 		const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+		const session = await getSession();
 		setLoader(true);
 		try {
-			const response = await axios.get(apiUrl + "/access-document/all-id-kualifikasi", {
+			const response = await AxiosConfig.get(apiUrl + "/access-document/all-id-kualifikasi", {
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Authorization": "Bearer " + session.accessToken
 				},
 				params: {
 					id: select.value
@@ -78,32 +81,35 @@ const FormVms = () => {
 
 				setForm(data);
 				// setTableData(userArr);
-				setLoader(false);
+				// setLoader(false);
 			}
 
 		} catch (error) {
 			console.log(error);
-			// setError(error.message);
-			if (error.status == 401) {
-				localStorage.removeItem("token");
-				localStorage.removeItem("menu");
-				localStorage.removeItem("user");
-				router.push("/apps/LoginRegister");
-			}
+			// // setError(error.message);
+			// if (error.status == 401) {
+			// 	localStorage.removeItem("token");
+			// 	localStorage.removeItem("menu");
+			// 	localStorage.removeItem("user");
+			// 	router.push("/apps/LoginRegister");
+			// }
+			// setLoader(false);
+			// swalAlert(error.message, error.status, "error");
+		}finally{
 			setLoader(false);
-			swalAlert(error.message, error.status, "error");
 		}
 
 	}
 
 	const getKualifikasiUsaha = async () => {
 		const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+		const session = await getSession();
 		setLoader(true);
 		try {
-			const response = await axios.get(apiUrl + "/mst-kualifikasi/all", {
+			const response = await AxiosConfig.get(apiUrl + "/mst-kualifikasi/all", {
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
+					"Authorization": "Bearer " + session.accessToken
 				}
 			});
 			const data = response.data.data;
@@ -120,20 +126,22 @@ const FormVms = () => {
 				}
 				setSelectedOptions(kualifikasiArr);
 				// setTableData(userArr);
-				setLoader(false);
+				// setLoader(false);
 			}
 
 		} catch (error) {
 			console.log(error);
-			// setError(error.message);
-			if (error.status == 401) {
-				localStorage.removeItem("token");
-				localStorage.removeItem("menu");
-				localStorage.removeItem("user");
-				router.push("/apps/LoginRegister");
-			}
+			// // setError(error.message);
+			// if (error.status == 401) {
+			// 	localStorage.removeItem("token");
+			// 	localStorage.removeItem("menu");
+			// 	localStorage.removeItem("user");
+			// 	router.push("/apps/LoginRegister");
+			// }
+			// setLoader(false);
+			// swalAlert(error.message, error.status, "error");
+		}finally{
 			setLoader(false);
-			swalAlert(error.message, error.status, "error");
 		}
 	}
 
@@ -213,10 +221,9 @@ const FormVms = () => {
 			
 		});
 		try {
-			const response = await axios.post(apiUrl + "/vms/create-vendor/create-bulk", formData, {
+			const response = await AxiosConfig.post(apiUrl + "/vms/create-vendor/create-bulk", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
-					"Authorization": "Bearer " + localStorage.getItem("token")
 				}
 			});
 			const data = response.data;
@@ -237,23 +244,25 @@ const FormVms = () => {
 				// }
 
 			}
-			setLoader(false);
+			// setLoader(false);
 		} catch (error) {
 			console.log(error);
 			// setError(error.message);
-			if (error.status == 401) {
-				localStorage.removeItem("token");
-				localStorage.removeItem("menu");
-				localStorage.removeItem("user");
-				router.push("/apps/LoginRegister");
-			}
-			setLoader(false);
-			if (error.status == 400) {
-				for (const a of error.response.data.violations) {
-					swalAlert(a.message, error.status, "error");
-				}
-			}
+			// if (error.status == 401) {
+			// 	localStorage.removeItem("token");
+			// 	localStorage.removeItem("menu");
+			// 	localStorage.removeItem("user");
+			// 	router.push("/apps/LoginRegister");
+			// }
+			// setLoader(false);
+			// if (error.status == 400) {
+			// 	for (const a of error.response.data.violations) {
+			// 		swalAlert(a.message, error.status, "error");
+			// 	}
+			// }
 			// swalAlert(error.message, error.status, "error");
+		}finally{
+			setLoader(false);
 		}
 	}
 	const uploadDaftarVendor = async (idVendor) => {
@@ -409,9 +418,9 @@ const FormVms = () => {
 	}
 
 	useEffect(() => {
-		if (!localStorage.getItem("token")) {
-			router.push("/apps/LoginRegister");
-		}
+		// if (!localStorage.getItem("token")) {
+		// 	router.push("/apps/LoginRegister");
+		// }
 		getKualifikasiUsaha()
 
 	}, [selectKualifikasiUsaha, appStatus])

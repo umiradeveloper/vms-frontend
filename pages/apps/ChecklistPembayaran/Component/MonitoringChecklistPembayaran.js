@@ -113,7 +113,6 @@ const MonitoringChecklistPembayaran = ({loader, setLoader, reload, setReload}) =
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/get-transaksi", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             console.log(result);

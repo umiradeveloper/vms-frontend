@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { Alert, Button, Card, Col, Form, Nav, OverlayTrigger, Row, Tab, Tooltip } from "react-bootstrap";
-import ToastContainerVms from "./Component/ToastContainerVms";
+import ToastContainerVms from "./apps/Component/ToastContainerVms";
 import { basePath } from "@/next.config";
-import LoadersSimUmira from "./Component/LoaderSimUmira";
+import LoadersSimUmira from "./apps/Component/LoaderSimUmira";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
+import { getSession, signIn } from "next-auth/react";
+import apiConfig from "@/utils/AxiosConfig";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 const LoginRegister = () => {
@@ -56,7 +58,7 @@ const LoginRegister = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.post(apiUrl+"/auth/register-vendor", {nama_perusahaan: dataRegister.nama_perusahaan, email: dataRegister.email, password: dataRegister.password, kode_branch: dataRegister.branch, no_hp: dataRegister.no_hp}, {
+            const response = await apiConfig.post(apiUrl+"/auth/register-vendor", {nama_perusahaan: dataRegister.nama_perusahaan, email: dataRegister.email, password: dataRegister.password, kode_branch: dataRegister.branch, no_hp: dataRegister.no_hp}, {
                 headers:{
                     "Content-Type":"application/json"
                 }
@@ -80,51 +82,68 @@ const LoginRegister = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.post(apiUrl+"/auth/login", {email: dataParams.email, password: dataParams.password}, {
+            const responseMenu = await apiConfig.post(apiUrl+"/auth/login", {email: dataParams.email, password: dataParams.password}, {
                 headers:{
                     "Content-Type":"application/json"
                 }
             });
-            const token = response.data.data.token;
-			if(token){
-				setLoader(false);
+			const result = await signIn("credentials", {
+				email: dataParams.email,
+				password: dataParams.password,
+				redirect: false,
+			});
+			// console.log(result)
+			if(result.ok){
+				// navigate.push("/apps/DashboardVms");
+				const session = await getSession();
+				// console.log(session);
+				const response = session.user;
+
+				const dataSession = {
+					email: response.email,
+					role: response.role.nama_role,
+					user_id: response.id_user,
+					branch_id: response.branch.id_branch,
+					role_id: response.role.id_role
+				}
+				// console.log(dataSession)
+				if(response.role.kode_role == "01"){
+					let timerInterval;
+					Swal.fire({
+						title: "Forbidden",
+						html: "Aplikasi ini hanya bisa di akses oleh internal umira",
+						icon: "error",
+						timer: 5000,
+						timerProgressBar: true,
+						didOpen: () => {
+							Swal.showLoading();
+						},
+						willClose: () => {
+							clearInterval(timerInterval);
+							window.location.href = "https://vms.simumira.com";
+						},
+					}).then((result) => {
+						/* Read more about handling dismissals below */
+						if (result.dismiss === Swal.DismissReason.timer) {
+							console.log("I was closed by the timer");
+							window.location.href = "https://vms.simumira.com";
+						}
+					});
+					
+				}else{
+					// localStorage.setItem("token", session.accessToken);
+					localStorage.setItem("user", JSON.stringify(dataSession));
+					localStorage.setItem("menu", JSON.stringify(responseMenu.data.data.menu));
+					navigate.push("/apps/DashboardVms");
+				}
 			}
-			const dataSession = {
-				email: response.data.data.user.email,
-				role: response.data.data.user.role.nama_role,
-				user_id: response.data.data.user.id_user,
-				branch_id: response.data.data.user.branch.id_branch,
-				role_id: response.data.data.user.role.id_role
-			}
-			if(response.data.data.user.role.kode_role == "01"){
-				let timerInterval;
-				Swal.fire({
-					title: "Forbidden",
-					html: "Aplikasi ini hanya bisa di akses oleh internal umira",
-					icon: "error",
-					timer: 5000,
-					timerProgressBar: true,
-					didOpen: () => {
-						Swal.showLoading();
-					},
-					willClose: () => {
-						clearInterval(timerInterval);
-						 window.location.href = "https://vms.simumira.com";
-					},
-				}).then((result) => {
-					/* Read more about handling dismissals below */
-					if (result.dismiss === Swal.DismissReason.timer) {
-						console.log("I was closed by the timer");
-						 window.location.href = "https://vms.simumira.com";
-					}
-				});
-				
-			}else{
-				localStorage.setItem("token", token);
-				localStorage.setItem("user", JSON.stringify(dataSession));
-				localStorage.setItem("menu", JSON.stringify(response.data.data.menu));
-				navigate.push("/apps/DashboardVms");
-			}
+			// console.log(response)
+
+            // const token = response.data.data.token;
+			// if(token){
+			// 	setLoader(false);
+			// }
+			
             
         } catch (error) {
             console.log(error);
@@ -138,7 +157,7 @@ const LoginRegister = () => {
 		const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const response = await axios.get(apiUrl+"/master/get-branch", {
+            const response = await apiConfig.get(apiUrl+"/master/get-branch", {
                 headers:{
                     "Content-Type":"application/json"
                 }

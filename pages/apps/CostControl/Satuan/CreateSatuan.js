@@ -30,8 +30,7 @@ const CreateSatuan = () => {
         try {
             const result = await apiConfig.post(apiUrl + "/CostControl/Satuan/create-satuan", dataSubmit, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Content-Type": "application/json"
                 }
             });
             if (result.status == 200) {

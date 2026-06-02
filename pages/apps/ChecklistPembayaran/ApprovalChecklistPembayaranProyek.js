@@ -96,7 +96,6 @@ const ApprovalChecklistPembayaranProyek = () => {
             const result = await apiConfig.get(apiUrl + "/ChecklistTransaksi/transaksi/Proyek/get-transaksi-approval", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
             // console.log(result);
