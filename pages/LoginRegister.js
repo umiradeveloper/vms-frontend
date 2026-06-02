@@ -9,7 +9,7 @@ import { basePath } from "@/next.config";
 import LoadersSimUmira from "./apps/Component/LoaderSimUmira";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { getSession, signIn } from "next-auth/react";
 import apiConfig from "@/utils/AxiosConfig";
 const Select = dynamic(() => import("react-select"), { ssr: false });
@@ -22,11 +22,13 @@ const LoginRegister = () => {
     const [headerToast, setHeaderToast] = useState(null);
     const [colorToast, setColorToast] = useState(null);
 	const [branch, setBranch] = useState();
+	const searchParams = useSearchParams();
 
 	const [loader, setLoader] = useState(false);
 	const router = useRouter();
 	const [err, setError] = useState("");
 	const [errRegister, setErrorRegister] = useState("");
+	const callbackUrl = searchParams.get("callbackUrl") || "/apps/DashboardVms";
 	
     const [dataParams, setDataParams] = useState({
         email:"",
@@ -134,7 +136,7 @@ const LoginRegister = () => {
 					// localStorage.setItem("token", session.accessToken);
 					localStorage.setItem("user", JSON.stringify(dataSession));
 					localStorage.setItem("menu", JSON.stringify(responseMenu.data.data.menu));
-					navigate.push("/apps/DashboardVms");
+					navigate.push(callbackUrl);
 				}
 			}
 			// console.log(response)
