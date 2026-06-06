@@ -21,6 +21,8 @@ const EditExam = ({ openModal, setOpenModal, loader, setLoader, reload, setReloa
         date_exam: "",
         limit_score_exam: 0,
         status_exam: "",
+        take_question: 0,
+        count_user: 0,
         role_access: []
     })
     const [questions, setQuestions] = useState([
@@ -499,6 +501,37 @@ const EditExam = ({ openModal, setOpenModal, loader, setLoader, reload, setReloa
                                     }}
                                 />
 
+                            </Col>
+
+
+                            <Col xl={12}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Take Question
+                                    </Form.Label>
+
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Take Question"
+                                        value={exam.take_question}
+                                        onChange={(e) => setExam({ ...exam, take_question: e.target.value })}
+                                    />
+                                </Form.Group>
+                            </Col>
+
+                            <Col xl={12}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Count Challenge
+                                    </Form.Label>
+
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Count Challenge"
+                                        value={exam.count_user}
+                                        onChange={(e) => setExam({ ...exam, count_user: e.target.value })}
+                                    />
+                                </Form.Group>
                             </Col>
 
                             {/* QUESTIONS */}

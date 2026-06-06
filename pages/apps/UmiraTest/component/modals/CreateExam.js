@@ -19,6 +19,8 @@ const CreateExam = ({ openModal, setOpenModal, loader, setLoader, reload, setRel
         desc_exam: "",
         date_exam: "",
         limit_score_exam: 0,
+        take_question: 0,
+        count_user: 0,
         status_exam: "",
         role_access:[]
     })
@@ -406,6 +408,36 @@ const CreateExam = ({ openModal, setOpenModal, loader, setLoader, reload, setRel
                                     }}
                                 />
 
+                            </Col>
+
+                             <Col xl={12}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Take Question
+                                    </Form.Label>
+
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Take Question"
+                                        value={exam.take_question}
+                                        onChange={(e) => setExam({ ...exam, take_question: e.target.value })}
+                                    />
+                                </Form.Group>
+                            </Col>
+
+                            <Col xl={12}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Count Challenge
+                                    </Form.Label>
+
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Count Challenge"
+                                        value={exam.count_user}
+                                        onChange={(e) => setExam({ ...exam, count_user: e.target.value })}
+                                    />
+                                </Form.Group>
                             </Col>
 
                             {/* QUESTIONS */}
