@@ -4,7 +4,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axiosConfig from "@/utils/AxiosConfig";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export default NextAuth({
-    debug: true,
     providers: [
         CredentialsProvider({
             name: "credentials",
