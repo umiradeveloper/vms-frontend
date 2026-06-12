@@ -162,6 +162,9 @@ export const MENUITEMS = [
 		],
 	},
 	{
+		menutitle: "OTHER PAGES",
+	},
+	{
 		title: "Submenu", icon: "ti-menu", type: "sub", active: false, selected: false, dirchange: false, children: [
 			{ path: "#Submenu-01", type: "link", active: false, selected: false, dirchange: false, title: "Submenu-01" },
 			{

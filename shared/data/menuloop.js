@@ -61,7 +61,10 @@ const Menuloop = ({ MENUITEMS, toggleSidemenu, level }) => {
 
 						{firstlevel.type === "link" ? (
 							<Link href={firstlevel.path || "#!"} className={`side-menu__item ${firstlevel.selected ? "active" : ""}`}>
-								{firstlevel.icon} <span className="">{firstlevel.title}</span>
+								{firstlevel.icon && (
+									<i className={`${firstlevel.icon} side-menu__icon`}></i>
+								)}
+								<span className="">{firstlevel.title}</span>
 							</Link>
 						) : ""}
 

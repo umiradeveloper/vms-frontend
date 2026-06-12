@@ -14,9 +14,9 @@ import dynamic from "next/dynamic";
 
 
 const SideBarVmsClient = ({ local_varaiable, ThemeChanger }) => {
-	
-    const [menuitems, setMenuitems] = useState([]);
-	
+
+	const [menuitems, setMenuitems] = useState([]);
+
 	function closeMenuFn() {
 		const closeMenuRecursively = (items) => {
 			items?.forEach((item) => {
@@ -40,91 +40,164 @@ const SideBarVmsClient = ({ local_varaiable, ThemeChanger }) => {
 		return false; // default
 	}
 
-	const getMenu = async() => {
+	const getMenu = async () => {
 
-		try {
-			const menu = localStorage.getItem("menu");
-			const tempArr = [];
-			if (menu) {
-				const parsedMenu = JSON.parse(menu);
-				
-
-				await parsedMenu.forEach((element) => {
-				if (element.menu.menu_title) {
-					tempArr.push({
-					//   code_menu: element.menu.code_menu,
-					menutitle: element.menu.menu_title,
-					});
-				}
-
-				const codeArr = element.menu.code_menu.split("|");
-
-				if (codeArr.length === 2 && element.menu.type_menu === "link") {
-					tempArr.push({
-					//   code_menu: element.menu.code_menu,
-						path: element.menu.path_menu,
-						title: element.menu.nama_menu,
-						icon: element.menu.icon_menu,
-						type: element.menu.type_menu,
-						active: strToBool(element.menu.active_menu),
-						selected: strToBool(element.menu.selected_menu),
-						dirchange: strToBool(element.menu.dircange_menu),
-					});
-				}
-
-				if (element.menu.type_menu === "sub") {
-					
-					const child = [];
-					const codeMenu = element.menu.code_menu.split("|");
-					// console.log(codeMenu);
-					parsedMenu.forEach((el) => {
-						const codeMenuChild = el.menu.code_menu.split("|");
-						if(codeMenu[0] === codeMenuChild[0] && codeMenu[1] === codeMenuChild[1] && codeMenuChild.length === 3){
-							child.push({
-							//   code_menu: element.menu.code_menu,
-								path: el.menu.path_menu,
-								title: el.menu.nama_menu,
-								// icon: el.menu.icon_menu,
-								type: el.menu.type_menu,
-								active: false,
-								selected: false,
-								dirchange: false,
-							});
-						}
-					})
-					tempArr.push({
-					//   code_menu: element.menu.code_menu,
-					title: element.menu.nama_menu,
-					icon: element.menu.icon_menu,
-					type: element.menu.type_menu,
-					active: false,
-					selected: false,
-					dirchange: false,
-					children: child,
-					});
-				}
-				});
-
-				
-			}
-			setMenuitems(tempArr);
-		} catch (error) {
-			console.error(error);
+		const menu = localStorage.getItem("menu");
+		// const tempArr = [];
+		if (menu) {
+			const parsedMenu = JSON.parse(menu);
+			const result = buildMenu(parsedMenu);
+			// console.log(JSON.stringify(result));
+			setMenuitems(result);
 		}
+
+		// try {
+		// 	const menu = localStorage.getItem("menu");
+		// 	const tempArr = [];
+		// 	if (menu) {
+		// 		const parsedMenu = JSON.parse(menu);
+
+
+		// 		await parsedMenu.forEach((element) => {
+		// 			if (element.menu.menu_title) {
+		// 				tempArr.push({
+		// 					//   code_menu: element.menu.code_menu,
+		// 					menutitle: element.menu.menu_title,
+		// 				});
+		// 			}
+
+		// 			const codeArr = element.menu.code_menu.split("|");
+
+		// 			if (codeArr.length === 2 && element.menu.type_menu === "link") {
+		// 				tempArr.push({
+		// 					//   code_menu: element.menu.code_menu,
+		// 					path: element.menu.path_menu,
+		// 					title: element.menu.nama_menu,
+		// 					icon: element.menu.icon_menu,
+		// 					type: element.menu.type_menu,
+		// 					active: strToBool(element.menu.active_menu),
+		// 					selected: strToBool(element.menu.selected_menu),
+		// 					dirchange: strToBool(element.menu.dircange_menu),
+		// 				});
+		// 			}
+
+		// 			if (element.menu.type_menu === "sub") {
+
+		// 				const child = [];
+		// 				const codeMenu = element.menu.code_menu.split("|");
+		// 				parsedMenu.forEach((el) => {
+		// 					const codeMenuChild = el.menu.code_menu.split("|");
+		// 					if (codeMenu[0] === codeMenuChild[0] && codeMenu[1] === codeMenuChild[1] && codeMenuChild.length === 3) {
+
+		// 						child.push({
+		// 							//   code_menu: element.menu.code_menu,
+		// 							path: el.menu.path_menu,
+		// 							title: el.menu.nama_menu,
+		// 							// icon: el.menu.icon_menu,
+		// 							type: el.menu.type_menu,
+		// 							active: false,
+		// 							selected: false,
+		// 							dirchange: false,
+		// 						});
+		// 					}
+		// 				})
+		// 				tempArr.push({
+		// 					//   code_menu: element.menu.code_menu,
+		// 					title: element.menu.nama_menu,
+		// 					icon: element.menu.icon_menu,
+		// 					type: element.menu.type_menu,
+		// 					active: false,
+		// 					selected: false,
+		// 					dirchange: false,
+		// 					children: child,
+		// 				});
+		// 			}
+		// 		});
+
+
+		// 	}
+		// 	setMenuitems(tempArr);
+		// } catch (error) {
+		// 	console.error(error);
+		// }
 
 
 	}
+	function buildMenu(items) {
+		const result = [];
 
-	
+		const mains = items.filter(
+			x =>
+				x.menu.type_menu === "main" &&
+				x.menu.code_menu.split("|").length === 1
+		);
+
+		mains.forEach(main => {
+			result.push({
+				menutitle: main.menu.nama_menu.toUpperCase()
+			});
+
+			const children = buildTree(items, main.menu.code_menu);
+
+			result.push(...children);
+		});
+
+		return result;
+	}
+
+	function buildTree(items, parentCode = "") {
+		return items
+			.filter(item => {
+				const codes = item.menu.code_menu.split("|");
+
+				if (!parentCode) {
+					return codes.length === 1;
+				}
+
+				const parentCodes = parentCode.split("|");
+
+				return (
+					codes.length === parentCodes.length + 1 &&
+					item.menu.code_menu.startsWith(parentCode + "|")
+				);
+			})
+			.map(item => {
+				const m = item.menu;
+
+
+				const node = {
+					title: m.nama_menu,
+					icon: m.icon_menu,
+					type: m.type_menu,
+					active: false,
+					selected: false,
+					dirchange: false,
+				};
+
+				if (m.type_menu === "link") {
+					node.path = m.path_menu;
+				}
+
+				const children = buildTree(items, m.code_menu);
+
+				if (children.length > 0) {
+					node.children = children;
+				}
+
+				return node;
+			});
+	}
+
+
 
 
 	useEffect(() => {
-        
+
 		const mainContent = document.querySelector(".main-content");
 		mainContent.addEventListener("click", menuClose);
 		const Container = document.querySelector(".layout");
 		getMenu();
-		
+
 	}, []);
 
 	const location = useRouter();
@@ -699,7 +772,7 @@ const SideBarVmsClient = ({ local_varaiable, ThemeChanger }) => {
 	};
 	const localStorageDefined = typeof localStorage !== "undefined";
 	return (
-        
+
 		<Fragment>
 			<div id="responsive-overlay" onClick={() => menuClose()}></div>
 			<aside className="app-sidebar sticky bg-white" id="sidebar" onMouseEnter={() => Onhover()} onMouseLeave={() => Outhover()}>
@@ -741,7 +814,7 @@ const SideBarVmsClient = ({ local_varaiable, ThemeChanger }) => {
 													<i className={`${levelone.icon} side-menu__icon`}></i>
 												) : (
 													localStorageDefined.spruhaverticalstyles === "doublemenu" ? (
-													// If spruhaverticalstyles is 'doublemenu', show tooltip
+														// If spruhaverticalstyles is 'doublemenu', show tooltip
 
 														<>
 															<span className="shape1"></span>
