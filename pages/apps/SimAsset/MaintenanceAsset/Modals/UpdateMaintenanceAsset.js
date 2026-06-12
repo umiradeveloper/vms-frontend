@@ -396,4 +396,4 @@ const UpdateMaintenanceAsset = ({ openModal, setOpenModal, loader, setLoader, re
     )
 }
 
-export default UpdateMaintenanceAsset;
+export default dynamic(() => Promise.resolve(UpdateMaintenanceAsset), { ssr: false });

@@ -260,4 +260,4 @@ const CreateMaintenanceAsset = ({ openModal, setOpenModal, loader, setLoader, re
     )
 }
 
-export default CreateMaintenanceAsset;
+export default dynamic(() => Promise.resolve(CreateMaintenanceAsset), { ssr: false });

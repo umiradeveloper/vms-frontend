@@ -218,4 +218,4 @@ const AjukanMutasiAsset = ({ openModal, setOpenModal, reload, setReload, loader,
     )
 }
 
-export default AjukanMutasiAsset;
+export default dynamic(() => Promise.resolve(AjukanMutasiAsset), { ssr: false });

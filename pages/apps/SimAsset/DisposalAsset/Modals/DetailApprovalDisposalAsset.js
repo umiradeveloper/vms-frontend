@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Badge, Card, Col, Modal, Row } from "react-bootstrap";
 
@@ -199,4 +200,4 @@ const DetailApprovalDisposalAsset = ({ openModal, setOpenModal }) => {
     )
 }
 
-export default DetailApprovalDisposalAsset;
+export default dynamic(() => Promise.resolve(DetailApprovalDisposalAsset), { ssr: false });

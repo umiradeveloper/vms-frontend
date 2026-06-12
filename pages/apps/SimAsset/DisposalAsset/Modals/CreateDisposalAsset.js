@@ -306,4 +306,4 @@ const CreateDisposalAsset = ({ openModal, setOpenModal, reload, setReload, loade
     )
 }
 
-export default CreateDisposalAsset;
+export default dynamic(() => Promise.resolve(CreateDisposalAsset), { ssr: false });

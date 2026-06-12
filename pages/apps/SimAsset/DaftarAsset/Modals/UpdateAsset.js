@@ -421,4 +421,4 @@ const UpdateAsset = ({openModal, setOpenModal, reload, setReload, loader, setLoa
     )
 }
 
-export default UpdateAsset;
+export default dynamic(() => Promise.resolve(UpdateAsset), { ssr: false });

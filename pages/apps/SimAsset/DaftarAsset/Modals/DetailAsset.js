@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Card, Col, Modal, Row } from "react-bootstrap"
 import Swal from "sweetalert2";
 import api from "@/utils/AxiosConfig";
+import dynamic from "next/dynamic";
 
 
 
@@ -253,4 +254,4 @@ const DetailAsset = ({ openModal, setOpenModal }) => {
     )
 }
 
-export default DetailAsset;
+export default dynamic(() => Promise.resolve(DetailAsset), { ssr: false });

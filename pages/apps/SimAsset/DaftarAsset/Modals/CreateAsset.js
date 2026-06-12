@@ -409,4 +409,4 @@ const CreateAsset = ({openModal, setOpenModal, reload, setReload, loader, setLoa
     )
 }
 
-export default CreateAsset;
+export default dynamic(() => Promise.resolve(CreateAsset), { ssr: false });
