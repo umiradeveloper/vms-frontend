@@ -294,18 +294,7 @@ const CreatePengajuanAbsensi = ({ openModal, setOpenModal, loader, setLoader }) 
                                         key={i}
                                         className="d-flex gap-2 align-items-center mb-2"
                                     >
-                                        {/* Select */}
-                                        {/* <select
-                                    className="form-select"
-                                    name="category"
-                                    value={row.category}
-                                    onChange={(e) => handleChange(i, e)}
-                                    style={{ maxWidth: "200px" }}
-                                >
-                                    <option value="">-- Select --</option>
-                                    <option value="A">Category A</option>
-                                    <option value="B">Category B</option>
-                                </select> */}
+                                        
 
                                         <Col xl={5}>
                                             {/* <label htmlFor="nama-proyek" className="form-label ">RAPA <span style={{ color: "red" }}>*</span> :</label> */}

@@ -254,12 +254,12 @@ const Announcement = () => {
             );
 
             if (result.status === 200) {
-                console.log(result);
+                // console.log(result);
                 const arr = result.data.data.map((d) => ({
                     id_announcement: d.id_announcement,
                     judul_announcement: d.judulAnnouncement,
                     isi_announcement: d.isiAnnouncement,
-                    created_by: d.userBy.username,
+                    created_by: d.userBy?.username ?? "",
                     created_at: formatdate(d.created_at),
                 }));
 

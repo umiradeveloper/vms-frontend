@@ -14,6 +14,7 @@ const EditEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
     const [optionJenisKelamin, setOptionJenisKelamin] = useState([]);
     const [optionMaritalStatus, setOptionMaritalStatus] = useState([]);
     const [optionPtkp, setOptionPtkp] = useState([]);
+    const [optionKlasifikasiWorks, setOptionKlasifikasiWorks] = useState([]);
     const [optionStatusKaryawan, setOptionStatusKaryawan] = useState([]);
     const [dataEmployee, setDataEmployee] = useState({
         id_employee:"",
@@ -40,7 +41,8 @@ const EditEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
         npwp:"",
         ptkp_status:"",
         bank_account:"",
-        bpjs_kesehatan:""
+        bpjs_kesehatan:"",
+        klasifikasi_works: "",
     })
 
     const getUser = async () => {
@@ -140,6 +142,44 @@ const EditEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
                     
                 }
                 setOptionJenisKelamin(jenisKelaminArr);
+                // setLoader(false);
+                // setLoader(false);
+
+                // swalAlert(result.data.message, result.statusText, "success");
+                // setOpenModal({...openModal, open: false})
+            }
+        }catch (error) {
+            // setLoader(false);
+            console.log(error);
+        }finally{
+            setLoader(false);
+        }
+    }
+     const getJenisWorks = async () => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        setLoader(true);
+        // console.log(dataSubmit)
+        try {
+            const result = await apiConfig.get(apiUrl + "/master/get-klasifikasi-works", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            // console.log(result);
+            if(result.status == 200){
+                const dataArr = [];
+                 if(result.data.data.length > 0){
+                    
+                    for(const res of result.data.data){
+                        dataArr.push({
+                            value: res.klasifikasi_works,
+                            label: res.nama_klasifikasi_works
+                        })
+                    }
+                    
+                }
+                setOptionKlasifikasiWorks(dataArr);
                 // setLoader(false);
                 // setLoader(false);
 
@@ -346,7 +386,8 @@ const EditEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
                 npwp:datas?.npwp,
                 ptkp_status:datas?.ptkp_status,
                 bank_account:datas?.bank_account,
-                bpjs_kesehatan:datas?.bpjs_kesehatan
+                bpjs_kesehatan:datas?.bpjs_kesehatan,
+                klasifikasi_works: datas?.klasifikasi_works?.klasifikasi_works
             })
         }
         getGradeKelas();
@@ -354,6 +395,7 @@ const EditEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
         getMaritalStatus();
         getPtkp();
         getStatusKaryawan();
+        getJenisWorks();
     },[openModal.open])
 
     return(
@@ -495,6 +537,17 @@ const EditEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
                             <Col xl={12}>
                                  <label htmlFor="nama-proyek" className="form-label ">Bpjs Kesehatan<span style={{ color: "red" }}>*</span> :</label>
                                 <input type="text" value={dataEmployee.bpjs_kesehatan} className={`form-control`} id="bpjs_kesehatan" placeholder="Bpjs Kesehatan" onChange={(e) => setDataEmployee({...dataEmployee, bpjs_kesehatan: e.target.value})}/>
+                            </Col>
+                            <Col xl={12}>
+                                 <label htmlFor="nama-proyek" className="form-label ">Klasifikasi Works<span style={{ color: "red" }}>*</span> :</label>
+                                {/* <input type="text" value={dataEmployee.grade} className={`form-control`} id="grade" placeholder="Grade" onChange={(e) => setDataEmployee({...dataEmployee, grade: e.target.value})}/> */}
+                                    <Select name="state"  className="basic-multi-select " options={optionKlasifikasiWorks} isSearchable value={optionKlasifikasiWorks.find(u => u.value === dataEmployee.klasifikasi_works) || null}
+                                        menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Grade" onChange={(e) =>  {
+                                            // const splitData = e.value.split("|");
+                                            setDataEmployee({...dataEmployee, klasifikasi_works: e.value})
+                                        }}
+                                    />
+                                
                             </Col>
                         </div>
                     </Col>

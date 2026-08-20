@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import CreateEmployee from "../Employee/modals/CreateEmployee";
 import EditEmployee from "../Employee/modals/EditEmployee";
+import DetailEmployee from "../Employee/modals/DetailEmployee";
 import Swal from "sweetalert2";
 import apiConfig from "@/utils/AxiosConfig";
 
@@ -47,6 +48,10 @@ const Employee = ({loader, setLoader}) => {
     const [datatable, setDatatable] = useState([]);
     const [detailAdd, setDetailAdd] = useState({
         open: false
+    });
+    const [detailData, setDetailData] = useState({
+        open: false,
+        datas:{}
     });
     const [detailEdit, setDetailEdit] = useState({
         open: false,
@@ -105,6 +110,7 @@ const Employee = ({loader, setLoader}) => {
                             grade: res.grade,
                             // class: res.kelas,
                                 aksi:<div className="d-flex flex-row gap-2">
+                                     <button className="btn btn-info" onClick={() => handlerViewEmployee(res) } >Detail</button>
                                     <button className="btn btn-warning" onClick={() => handlerEditEmployee(res) } >Edit</button>
                                     <button className="btn btn-danger" onClick={() => {deleteEmployee(res.id_employee)}} >Hapus</button>
                                 </div>
@@ -131,6 +137,12 @@ const Employee = ({loader, setLoader}) => {
 
     const handlerEditEmployee = (datas) => {
         setDetailEdit({...detailEdit, open: true, data_edit: datas})
+    
+    }
+
+    const handlerViewEmployee = (datas) => {
+        console.log(datas);
+        setDetailData({ open: true, datas: datas});
     
     }
 
@@ -219,12 +231,13 @@ const Employee = ({loader, setLoader}) => {
 
     useEffect(() => {
         getEmployee();
-    },[detailAdd.open, reload, detailEdit.open])
+    },[detailAdd.open, reload, detailEdit.open, detailData.open])
 
     return(
         <Row>
             <CreateEmployee openModal={detailAdd} setOpenModal={setDetailAdd} loader={loader} setLoader={setLoader} />
             <EditEmployee openModal={detailEdit} setOpenModal={setDetailEdit} loader={loader} setLoader={setLoader} />
+            <DetailEmployee openModal={detailData} setOpenModal={setDetailData} />
             <Col xl={12}>
                 <Card className="custom-card">
                     <Card.Header>
