@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Col, Modal, Row } from "react-bootstrap";
 import { Button, Divider } from "@mui/material";
+import {format} from "date-fns";
 
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
@@ -191,7 +192,12 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
                             </Col> */}
                             <Col xl={12}>
                                  <label htmlFor="nama-proyek" className="form-label ">Tanggal<span style={{ color: "red" }}>*</span> :</label>
-                                 <DatePicker selected={dataSubmit.tanggal} className={`form-control`} id="Tanggal" placeholder="Tanggal" onChange={(date) => setDataSubmit({...dataSubmit, tanggal: date})} />
+                                 <DatePicker selected={dataSubmit.tanggal} className={`form-control`} id="Tanggal" placeholder="Tanggal" onChange={(date) =>
+            setDataSubmit({
+                ...dataSubmit,
+                tanggal: date ? format(date, "yyyy-MM-dd") : null
+            })
+        }  />
                             </Col>
                              <Col xl={12}>
                                  <label htmlFor="nama-proyek" className="form-label ">Jam Mulai<span style={{ color: "red" }}>*</span> :</label>

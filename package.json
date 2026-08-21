@@ -23,6 +23,7 @@
     "@reduxjs/toolkit": "^2.2.5",
     "apexcharts": "^3.52.0",
     "axios": "^1.11.0",
+    "date-fns": "^4.4.0",
     "dayjs": "^1.11.11",
     "dragula": "^3.7.3",
     "echarts": "^5.5.0",
