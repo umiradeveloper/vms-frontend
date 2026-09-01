@@ -5,17 +5,17 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Col, Modal, Row } from "react-bootstrap";
 import { Button, Divider } from "@mui/material";
-import {format} from "date-fns";
+import { format } from "date-fns";
 
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 
-const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) => {
+const CreatePengajuanOvertime = ({ loader, setLoader, openModal, setOpenModal }) => {
     const [dataSubmit, setDataSubmit] = useState({
         tanggal: "",
-        jam_mulai:"",
-        jam_selesai:"",
-        alasan:""
+        jam_mulai: "",
+        jam_selesai: "",
+        alasan: ""
     })
     const [employee, setEmployee] = useState([]);
     const [levelApproval, setLevelApproval] = useState([]);
@@ -31,7 +31,7 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
         setRows(updated);
     };
 
-     const getLevelApproval = async () => {
+    const getLevelApproval = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
@@ -45,14 +45,14 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
             if (result.status == 200) {
                 const levelApprovalArr = [];
                 if (result.data.data?.length > 0) {
-                    
+
                     for (const datas of result.data.data) {
                         levelApprovalArr.push({
                             value: datas,
                             label: datas
                         })
                     }
-                    
+
                 }
                 setLevelApproval(levelApprovalArr);
             }
@@ -102,13 +102,13 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
         setRows(updated);
     };
 
-    const submitPengajuan = async() =>{
-         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const submitPengajuan = async () => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         const id_employee_approval = [];
         const level_approval = [];
         const urutan = [];
-        for(const datasApproval of rows){
+        for (const datasApproval of rows) {
             id_employee_approval.push(datasApproval.id_employee_approval);
             const splitLevelApproval = datasApproval.level_approval.split("|");
             level_approval.push(splitLevelApproval[1]);
@@ -120,7 +120,7 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
             jam_selesai: dataSubmit.jam_selesai ? dataSubmit.jam_selesai.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : null,
             alasan: dataSubmit.alasan,
             id_employee_approval,
-            level_approval, 
+            level_approval,
             urutan
         }
         try {
@@ -143,7 +143,7 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
         }
     }
 
-     const swalAlert = (message, title, icon) => {
+    const swalAlert = (message, title, icon) => {
         let timerInterval;
 
         Swal.fire({
@@ -169,19 +169,19 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
     useEffect(() => {
         getLevelApproval();
         getEmployee();
-    },[openModal.open])
+    }, [openModal.open])
 
-    return(
-         <Modal size="md" show={openModal.open} onHide={() => {setOpenModal({...openModal, open: false})}}> 
+    return (
+        <Modal size="md" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }}>
             <Modal.Header>
                 <h6 className="modal-title" id="exampleModalLabel">Tambah Pengajuan Overtime</h6>
             </Modal.Header>
             <Modal.Body>
-                 <Row>
-                   
+                <Row>
+
                     <Col xl={12} className="rounded-3">
                         <div className="row gy-2 pb-3">
-                            
+
                             {/* <Col xl={12}>
                                 <div className="row gy-2 pb-3">
                                 <label htmlFor="nama-proyek" className="form-label ">Employee<span style={{ color: "red" }}>*</span> :</label>
@@ -191,21 +191,21 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
                                 </div>
                             </Col> */}
                             <Col xl={12}>
-                                 <label htmlFor="nama-proyek" className="form-label ">Tanggal<span style={{ color: "red" }}>*</span> :</label>
-                                 <DatePicker selected={dataSubmit.tanggal} className={`form-control`} id="Tanggal" placeholder="Tanggal" onChange={(date) =>
-            setDataSubmit({
-                ...dataSubmit,
-                tanggal: date ? format(date, "yyyy-MM-dd") : null
-            })
-        }  />
+                                <label htmlFor="nama-proyek" className="form-label ">Tanggal<span style={{ color: "red" }}>*</span> :</label>
+                                <DatePicker selected={dataSubmit.tanggal} className={`form-control`} id="Tanggal" placeholder="Tanggal" onChange={(date) =>
+                                    setDataSubmit({
+                                        ...dataSubmit,
+                                        tanggal: date ? format(date, "yyyy-MM-dd") : null
+                                    })
+                                } />
                             </Col>
-                             <Col xl={12}>
-                                 <label htmlFor="nama-proyek" className="form-label ">Jam Mulai<span style={{ color: "red" }}>*</span> :</label>
+                            <Col xl={12}>
+                                <label htmlFor="nama-proyek" className="form-label ">Jam Mulai<span style={{ color: "red" }}>*</span> :</label>
                                 <DatePicker
                                     selected={dataSubmit.jam_mulai}
                                     onChange={(time) => {
                                         // const formatted_time = time ? time.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : null ;
-                                        setDataSubmit({...dataSubmit, jam_mulai: time})
+                                        setDataSubmit({ ...dataSubmit, jam_mulai: time })
                                     }}
                                     className="form-control"
                                     showTimeSelect
@@ -214,15 +214,15 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
                                     timeCaption={"Time"}
                                     dateFormat={"HH:mm"}
                                     placeholderText={"Select a time"}
-                                 />
+                                />
                             </Col>
                             <Col xl={12}>
-                                 <label htmlFor="nama-proyek" className="form-label ">Jam Selesai<span style={{ color: "red" }}>*</span> :</label>
+                                <label htmlFor="nama-proyek" className="form-label ">Jam Selesai<span style={{ color: "red" }}>*</span> :</label>
                                 <DatePicker
                                     selected={dataSubmit.jam_selesai}
                                     onChange={(time) => {
                                         // const formatted_time = time ? time.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : null ;
-                                        setDataSubmit({...dataSubmit, jam_selesai: time})
+                                        setDataSubmit({ ...dataSubmit, jam_selesai: time })
                                     }}
                                     className="form-control"
                                     showTimeSelect
@@ -231,7 +231,7 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
                                     timeCaption={"Time"}
                                     dateFormat={"HH:mm"}
                                     placeholderText={"Select a time"}
-                                 />
+                                />
                             </Col>
                             {/* <Col xl={12}>
                                 <div className="row gy-2 pb-3">
@@ -242,10 +242,10 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
                                 </div>
                             </Col> */}
                             <Col xl={12}>
-                                 <label htmlFor="nama-proyek" className="form-label ">Alasan :</label>
-                                <textarea type="text" value={dataSubmit.alasan} className={`form-control`} id="keterangan" placeholder="Keterangan" rows={3} onChange={(e) =>  setDataSubmit({...dataSubmit, alasan: e.target.value})}/>
+                                <label htmlFor="nama-proyek" className="form-label ">Alasan :</label>
+                                <textarea type="text" value={dataSubmit.alasan} className={`form-control`} id="keterangan" placeholder="Keterangan" rows={3} onChange={(e) => setDataSubmit({ ...dataSubmit, alasan: e.target.value })} />
                             </Col>
-                           
+
                             <Divider className="mb-3 mt-3" />
                             <Col xl={12}>
                                 <label htmlFor="nama-proyek" className="form-label ">Approval: </label>
@@ -277,7 +277,7 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
 
                                         {/* Input */}
                                         <Col xl={5}>
-                                             <Select name="id_cost_code" options={levelApproval} className="basic-multi-select " isSearchable
+                                            <Select name="id_cost_code" options={levelApproval} className="basic-multi-select " isSearchable
                                                 menuPlacement='auto' classNamePrefix="Select2" placeholder="Level Approval" onChange={(option) => handleChangeSelect(i, option, "level_approval")}
                                             />
                                         </Col>
@@ -306,10 +306,10 @@ const CreatePengajuanOvertime = ({loader, setLoader, openModal, setOpenModal}) =
                                     Close
                                 </button> */}
                             </div>
-                            
+
                         </div>
                     </Col>
-                    
+
                 </Row>
             </Modal.Body>
             <Modal.Footer className="d-flex gap-2">

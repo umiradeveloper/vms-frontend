@@ -203,7 +203,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
 
     const totalTunjangan = (p.tunjangan_transport || 0) + (p.tunjangan_makan || 0) +
         (p.tunjangan_lembur || 0) + (p.tunjangan_lainnya || 0)+ (p.tunjangan_jabatan || 0);
-    const totalPotongan = (ded.kasbon || 0) + (ded.pinjaman || 0) + (p.bpjs_kesehatan || 0) +
+    const totalPotongan = (ded.potongan_kehadiran || 0) + (ded.pinjaman || 0) + (p.bpjs_kesehatan || 0) +
         (p.bpjs_ketenagakerjaan || 0);
     const pendapatanBruto = (p.gaji_pokok || 0) + totalTunjangan + (p.bpjs_kesehatan || 0)+ (p.bpjs_ketenagakerjaan || 0);
     const takeHomePay = pendapatanBruto - totalPotongan;
@@ -332,7 +332,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                             </p>
                             <table style={{ fontSize: "13px", width: "100%" }}>
                                 <tbody>
-                                    <tr><td>Kasbon</td><td className="text-end">{toCurrency(ded.kasbon)}</td></tr>
+                                    <tr><td>Potongan Kehadiran</td><td className="text-end">{toCurrency(ded.potongan_kehadiran)}</td></tr>
                                     <tr><td>Pinjaman</td><td className="text-end">{toCurrency(ded.pinjaman)}</td></tr>
                                     <tr><td>BPJS Kesehatan</td><td className="text-end">{toCurrency(p.bpjs_kesehatan)}</td></tr>
                                     <tr><td>BPJS Ketenagakerjaan</td><td className="text-end">{toCurrency(p.bpjs_ketenagakerjaan)}</td></tr>

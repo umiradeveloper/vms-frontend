@@ -16,6 +16,8 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
     const [optionPtkp, setOptionPtkp] = useState([]);
     const [optionKlasifikasiWorks, setOptionKlasifikasiWorks] = useState([]);
     const [optionStatusKaryawan, setOptionStatusKaryawan] = useState([]);
+    const [employeeApproval, setEmployeeApproval] = useState([]);
+    const [masterProject, setMasterProject] = useState([]);
     const [dataEmployee, setDataEmployee] = useState({
         id_user: "",
         nip: "",
@@ -28,6 +30,7 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
         email:"",
         no_hp:"",
         tmt:new Date(),
+        tmt_akhir: new Date(),
         bank_name:"",
         bpjs_ketenagakerjaan:"",
         status_karyawan:"",
@@ -41,8 +44,92 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
         ptkp_status:"",
         bank_account:"",
         bpjs_kesehatan:"",
-        klasifikasi_works: ""
+        klasifikasi_works: "",
+        bank_account_holder:"",
+        pendidikan_terakhir:"",
+        religion:"",
+        id_project: "",
+        id_employee_checker:"",
+        id_employee_signer:"",
+        pkwt_ke:"",
+        emergency_call:""
     })
+
+     const getEmployeeApproval = async() => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        setLoader(true);
+        try {
+            const result = await apiConfig.get(apiUrl + "/HR-Employee/get-employee", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            // console.log(result);
+            if(result.status == 200){
+                const dataEmp = [];
+                 if(result.data.data.length > 0){
+
+                    for(const res of result.data.data){
+                      dataEmp.push({
+                        value: res.id_employee,
+                        label: res.nip+"|"+res.nama+"|"+res.jabatan
+                      })
+                    }
+                    
+                    // setKategori(kategoriArr);
+                    
+                }
+               setEmployeeApproval(dataEmp)
+                // setLoader(false);
+                // setReload(prev => !prev);
+            }
+            // console.log(result)
+        } catch (error) {
+            // setLoader(false);
+            console.log(error);
+        } finally{
+            setLoader(false);
+        }
+    }
+
+     const getProjectMaster = async() => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        setLoader(true);
+        try {
+            const result = await apiConfig.get(apiUrl + "/master/get-master-project", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            // console.log(result);
+            if(result.status == 200){
+                const dataEmp = [];
+                 if(result.data.data.length > 0){
+
+                    for(const res of result.data.data){
+                      dataEmp.push({
+                        value: res.id_project,
+                        label: res.project_name
+                      })
+                    }
+                    
+                    // setKategori(kategoriArr);
+                    
+                }
+               setMasterProject(dataEmp)
+                // setLoader(false);
+                // setReload(prev => !prev);
+            }
+            // console.log(result)
+        } catch (error) {
+            // setLoader(false);
+            console.log(error);
+        } finally{
+            setLoader(false);
+        }
+    }
 
     const getUser = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -365,6 +452,8 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
         getPtkp();
         getStatusKaryawan();
         getJenisWorks();
+        getEmployeeApproval();
+        getProjectMaster();
     },[openModal.open])
 
     return(
@@ -433,13 +522,39 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
                                 <DatePicker selected={dataEmployee.tmt} className={`form-control`} id="tmt" placeholder="TMT (Terhitung Mulai Tanggal)" onChange={(date) => setDataEmployee({...dataEmployee, tmt: (date)?date:new Date()})} />
                             </Col>
                             <Col xl={12}>
+                                 <label htmlFor="nama-proyek" className="form-label ">Tanggal Berakhir :</label>
+                                <DatePicker selected={dataEmployee.tmt_akhir} className={`form-control`} id="tmt" placeholder="Tanggal Berakhir" onChange={(date) => setDataEmployee({...dataEmployee, tmt_akhir: (date)?date:new Date()})} />
+                            </Col>
+                            <Col xl={12}>
+                                 <label htmlFor="nama-proyek" className="form-label ">Pendidikan Terkahir<span style={{ color: "red" }}>*</span> :</label>
+                                <input type="text" value={dataEmployee.pendidikan_terakhir} className={`form-control`} id="golongan_darah" placeholder="Pendidikan Terakhir" onChange={(e) => setDataEmployee({...dataEmployee, pendidikan_terakhir: e.target.value})}/>
+                            </Col>
+                            
+                            <Col xl={12}>
                                  <label htmlFor="nama-proyek" className="form-label ">Nama Bank<span style={{ color: "red" }}>*</span> :</label>
                                 <input type="text" value={dataEmployee.bank_name} className={`form-control`} id="nama_bank" placeholder="Nama Bank" onChange={(e) => setDataEmployee({...dataEmployee, bank_name: e.target.value})}/>
+                            </Col>
+                            <Col xl={12}>
+                                 <label htmlFor="nama-proyek" className="form-label ">Nama Pemilik Bank<span style={{ color: "red" }}>*</span> :</label>
+                                <input type="text" value={dataEmployee.bank_account_holder} className={`form-control`} id="golongan_darah" placeholder="Nama Pemilik Bank" onChange={(e) => setDataEmployee({...dataEmployee, bank_account_holder: e.target.value})}/>
                             </Col>
                              <Col xl={12}>
                                  <label htmlFor="nama-proyek" className="form-label ">Bpjs Ketenagakerjaan<span style={{ color: "red" }}>*</span> :</label>
                                 <input type="text" value={dataEmployee.bpjs_ketenagakerjaan} className={`form-control`} id="bpjs_ketenagakerjaan" placeholder="Bpjs Ketenagakerjaan" onChange={(e) => setDataEmployee({...dataEmployee, bpjs_ketenagakerjaan: e.target.value})}/>
                             </Col>
+
+                            <Col xl={12}>
+                                    <label htmlFor="nama-proyek" className="form-label ">Lokasi<span style={{ color: "red" }}>*</span> :</label>
+                                {/* <input type="text" value={dataEmployee.grade} className={`form-control`} id="grade" placeholder="Grade" onChange={(e) => setDataEmployee({...dataEmployee, grade: e.target.value})}/> */}
+                                    <Select name="state"  className="basic-multi-select " options={masterProject} isSearchable
+                                        menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Project" onChange={(e) =>  {
+                                            // const splitData = e.value.split("|");
+                                            setDataEmployee({...dataEmployee, id_project: e.value})
+                                        }}
+                                    />
+                                
+                            </Col>
+                           
 
                             
                         </div>
@@ -452,6 +567,10 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
                                 <Select name="state"  className="basic-multi-select " options={optionStatusKaryawan} isSearchable
                             menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Status Karyawan" onChange={(e) =>  setDataEmployee({...dataEmployee, status_karyawan: e.value})}
                         />
+                         <Col xl={12}>
+                                 <label htmlFor="nama-proyek" className="form-label ">PKWT Ke :</label>
+                                <input type="number" value={dataEmployee.pkwt_ke} className={`form-control`} id="kelas" placeholder="PKWT Ke" onChange={(e) =>  setDataEmployee({...dataEmployee, pkwt_ke: e.target.value})}/>
+                            </Col>
                             </Col>
                             <Col xl={12}>
                                  <label htmlFor="nama-proyek" className="form-label ">Jenis Kelamin<span style={{ color: "red" }}>*</span> :</label>
@@ -467,6 +586,10 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
                                 <Select name="state"  className="basic-multi-select " options={optionMaritalStatus} isSearchable
                                         menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Status Pernikahan" onChange={(e) =>  setDataEmployee({...dataEmployee, marital_status: e.value})}
                                     />
+                            </Col>
+                            <Col xl={12}>
+                                 <label htmlFor="nama-proyek" className="form-label ">Agama<span style={{ color: "red" }}>*</span> :</label>
+                                <input type="text" value={dataEmployee.religion} className={`form-control`} id="golongan_darah" placeholder="Agama" onChange={(e) => setDataEmployee({...dataEmployee, religion: e.target.value})}/>
                             </Col>
                             <Col xl={12}>
                                  <label htmlFor="nama-proyek" className="form-label ">Class<span style={{ color: "red" }}>*</span> :</label>
@@ -506,6 +629,10 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
                                  <label htmlFor="nama-proyek" className="form-label ">Bpjs Kesehatan<span style={{ color: "red" }}>*</span> :</label>
                                 <input type="text" value={dataEmployee.bpjs_kesehatan} className={`form-control`} id="bpjs_kesehatan" placeholder="Bpjs Kesehatan" onChange={(e) => setDataEmployee({...dataEmployee, bpjs_kesehatan: e.target.value})}/>
                             </Col>
+                             <Col xl={12}>
+                                 <label htmlFor="nama-proyek" className="form-label ">Kontak Darurat<span style={{ color: "red" }}>*</span> :</label>
+                                <input type="text" value={dataEmployee.emergency_call} className={`form-control`} id="golongan_darah" placeholder="Agama" onChange={(e) => setDataEmployee({...dataEmployee, emergency_call: e.target.value})}/>
+                            </Col>
                             <Col xl={12}>
                                     <label htmlFor="nama-proyek" className="form-label ">Klasifikasi Works<span style={{ color: "red" }}>*</span> :</label>
                                 {/* <input type="text" value={dataEmployee.grade} className={`form-control`} id="grade" placeholder="Grade" onChange={(e) => setDataEmployee({...dataEmployee, grade: e.target.value})}/> */}
@@ -517,6 +644,23 @@ const CreateEmployee = ({openModal, setOpenModal, loader, setLoader}) => {
                                     />
                                 
                             </Col>
+                        </div>
+                    </Col>
+                    <Col xl={12}>
+                        <div className="row gy-2 pb-3">
+                        <label htmlFor="nama-proyek" className="form-label ">Approval Line<span style={{ color: "red" }}>*</span> :</label>
+                        <Select name="state"  className="basic-multi-select " options={employeeApproval} isSearchable
+                            menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Approval Line" onChange={(e) =>  setDataEmployee({...dataEmployee, id_employee_checker: e.value})}
+                        />
+                        </div>
+                    </Col>
+
+                    <Col xl={12}>
+                        <div className="row gy-2 pb-3">
+                        <label htmlFor="nama-proyek" className="form-label ">Manager<span style={{ color: "red" }}>*</span> :</label>
+                        <Select name="state"  className="basic-multi-select " options={employeeApproval} isSearchable
+                            menuPlacement='auto' classNamePrefix="Select2" placeholder="Pilih Manager" onChange={(e) =>  setDataEmployee({...dataEmployee, id_employee_signer: e.value})}
+                        />
                         </div>
                     </Col>
                 </Row>
