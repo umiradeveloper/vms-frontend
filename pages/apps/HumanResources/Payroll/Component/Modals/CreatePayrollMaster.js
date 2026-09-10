@@ -19,19 +19,17 @@ const emptyForm = {
     gaji_pokok:               "",
     tunjangan_jabatan:        "",
     tunjangan_transport:      "",
+    tunjangan_operasional:        "",
     tunjangan_makan:          "",
     tunjangan_lembur:         "",
     tunjangan_lainnya:        "",
     bpjs_kesehatan:           "",
     bpjs_ketenagakerjaan:     "",
+    tarif_bpjs_kesehatan:           null,
+    tarif_bpjs_ketenagakerjaan:     null,
     // deductions
-    kasbon:                   "",
-    pinjaman:                 "",
-    thr_paid:                 "",
-    jaminan_pensiun:          "",
-    bpjs_kesehatan_deduction: "",
-    bpjs_kesehatan_family:    "",
-    jht_employee:             "",
+    tarif_bpjskes:            null,
+    tarif_bpjstk:            null,
     pph21:                    "",
 };
 
@@ -94,18 +92,16 @@ const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuc
             gaji_pokok:               cleanNum(form.gaji_pokok),
             tunjangan_transport:      cleanNum(form.tunjangan_transport),
             tunjangan_jabatan:        cleanNum(form.tunjangan_jabatan),
+            tunjangan_operasional:        cleanNum(form.tunjangan_operasional),
             tunjangan_makan:          cleanNum(form.tunjangan_makan),
-            // tunjangan_lembur:         cleanNum(form.tunjangan_lembur),
+            tunjangan_lembur:         form.tunjangan_lembur,
             tunjangan_lainnya:        cleanNum(form.tunjangan_lainnya),
             bpjs_kesehatan:           cleanNum(form.bpjs_kesehatan),
             bpjs_ketenagakerjaan:     cleanNum(form.bpjs_ketenagakerjaan),
-            kasbon:                   cleanNum(form.kasbon),
-            pinjaman:                 cleanNum(form.pinjaman),
-            thr_paid:                 cleanNum(form.thr_paid),
-            jaminan_pensiun:          cleanNum(form.jaminan_pensiun),
-            bpjs_kesehatan_deduction: cleanNum(form.bpjs_kesehatan_deduction),
-            bpjs_kesehatan_family:    cleanNum(form.bpjs_kesehatan_family),
-            jht_employee:             cleanNum(form.jht_employee),
+            tarif_bpjs_kesehatan:           form.tarif_bpjs_kesehatan,
+            tarif_bpjs_ketenagakerjaan:     form.tarif_bpjs_ketenagakerjaan,
+            tarif_bpjstk: form.tarif_bpjstk,
+            tarif_bpjskes: form.tarif_bpjskes,
             pph21:                    cleanNum(form.pph21),
         };
 
@@ -150,6 +146,24 @@ const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuc
                     placeholder="0"
                     value={form[key]}
                     onChange={(e) => setForm({ ...form, [key]: formatNum(e.target.value) })}
+                />
+            </div>
+        </Col>
+    );
+
+    const textField = (key, label, required = false) => (
+        <Col xl={6} key={key}>
+            <label className="form-label">
+                {label} {required && <span style={{ color: "red" }}>*</span>} :
+            </label>
+            <div className="input-group">
+                <span className="input-group-text">-</span>
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="0"
+                    value={form[key]}
+                    onChange={(e) => setForm({ ...form, [key]: e.target.value })}
                 />
             </div>
         </Col>
@@ -239,11 +253,14 @@ const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuc
                     {numField("tunjangan_transport",  "Tunjangan Transport")}
                     {numField("tunjangan_makan",      "Tunjangan Makan")}
                     {numField("tunjangan_jabatan",      "Tunjangan Jabatan")}
+                    {numField("tunjangan_operasional",      "Tunjangan Operasional")}
                     {/* {numField("tunjangan_lembur",     "Tunjangan Lembur")} */}
                     {selectedField("tunjangan_lembur", "Tunjangan Lembur", false, daftarLembur)}
                     {numField("tunjangan_lainnya",    "Tunjangan Lainnya")}
-                    {numField("bpjs_kesehatan",       "BPJS Kesehatan (Employer)")}
-                    {numField("bpjs_ketenagakerjaan", "BPJS Ketenagakerjaan (Employer)")}
+                    {numField("bpjs_kesehatan",       "BPJS Kesehatan")}
+                    {numField("bpjs_ketenagakerjaan", "BPJS Ketenagakerjaan")}
+                    {textField("tarif_bpjs_kesehatan",       "Tarif BPJS Kesehatan")}
+                    {textField("tarif_bpjs_ketenagakerjaan", "Tarif BPJS Ketenagakerjaan")}
                 </Row>
 
                 {/* Potongan */}
@@ -251,13 +268,8 @@ const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuc
                     <i className="ri-subtract-line me-1" /> Potongan
                 </p>
                 <Row className="gy-3">
-                    {numField("kasbon",                   "Kasbon")}
-                    {numField("pinjaman",                 "Pinjaman")}
-                    {numField("thr_paid",                 "THR Paid")}
-                    {numField("jaminan_pensiun",          "Jaminan Pensiun")}
-                    {numField("bpjs_kesehatan_deduction", "BPJS Kesehatan (Employee)")}
-                    {numField("bpjs_kesehatan_family",    "BPJS Kesehatan Family")}
-                    {numField("jht_employee",             "JHT Employee")}
+                    {textField("tarif_bpjskes",       "Tarif BPJS Kesehatan")}
+                    {textField("tarif_bpjstk",         "Tarif BPJS Ketenagakerjaan")}
                     {numField("pph21",                    "PPh21")}
                 </Row>
             </Modal.Body>

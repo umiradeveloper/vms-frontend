@@ -21,6 +21,10 @@ const PengajuanOvertime = ({loader, setLoader, detailOvertime, setDetailOvertime
             accessor: "jabatan",
         },
         {
+            Header: "Tanggal",
+            accessor: "tanggal",
+        },
+        {
             Header: "Jam Mulai",
             accessor: "jam_mulai",
         },
@@ -62,6 +66,7 @@ const PengajuanOvertime = ({loader, setLoader, detailOvertime, setDetailOvertime
 							nip: datas.employee?.nip,
                             nama: datas.employee?.nama,
                             jabatan: datas.employee?.jabatan,
+                            tanggal: datas.tanggal,
                             jam_mulai: datas.jam_mulai,
                             jam_selesai: datas.jam_selesai,
                             durasi: datas.durasi + " Menit",

@@ -1,7 +1,7 @@
 import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, Col, Form, Row } from "react-bootstrap";
 import CreateEmployee from "../Employee/modals/CreateEmployee";
 import EditEmployee from "../Employee/modals/EditEmployee";
 import DetailEmployee from "../Employee/modals/DetailEmployee";
@@ -38,6 +38,10 @@ const Employee = ({loader, setLoader}) => {
         {
             Header: "Grade",
             accessor: "grade",
+        },
+        {
+            Header: "Status",
+            accessor: "status_",
         },
         //  
         {
@@ -82,6 +86,33 @@ const Employee = ({loader, setLoader}) => {
         });
     }
 
+    const changeStatusEmployee = async(id, status) => {
+         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        setLoader(true);
+        status = (status == 1)? 0:1;
+        try {
+            const result = await apiConfig.get(apiUrl + "/HR-Employee/change-status-employee", {
+                params:{
+                    status: status,
+                    id: id
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            if(result.status == 200){
+                setReload(prev => !prev);
+                swalAlert(result.data.message, result.statusText, "success");
+            }
+        } catch (error) {
+            // setLoader(false);
+            console.log(error);
+        } finally{
+            setLoader(false);
+        }
+    }
+
     const getEmployee = async() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
@@ -108,6 +139,11 @@ const Employee = ({loader, setLoader}) => {
                             status_karyawan: res.status_karyawan,
                             email: res.email,
                             grade: res.grade,
+                            status_: <Col xl={4}>
+                                <div className={`toggle mb-3  toggle-success ${(res.status_employee == 1) ? "on" : "off"}`} onClick={() => {changeStatusEmployee(res.id_employee, res.status_employee)}} >
+                                    <span></span>
+                                </div>
+                            </Col>,
                             // class: res.kelas,
                                 aksi:<div className="d-flex flex-row gap-2">
                                      <button className="btn btn-info" onClick={() => handlerViewEmployee(res) } >Detail</button>

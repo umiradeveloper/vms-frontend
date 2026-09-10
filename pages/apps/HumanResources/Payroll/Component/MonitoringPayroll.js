@@ -28,7 +28,7 @@ const PayrollMaster = ({ loader, setLoader, reload }) => {
                 <div className="d-flex gap-2">
                     <button
                         className="btn btn-sm btn-primary"
-                        onClick={() => { setSelectedData(row.original.rawData); setShowDetail(true); }}>
+                        onClick={() => { setSelectedData(row.original.rawData); setShowDetail(true); console.log(row.original.rawData); }}>
                         <i className="ri-eye-line" />
                     </button>
                     <button
@@ -146,18 +146,16 @@ const PayrollMaster = ({ loader, setLoader, reload }) => {
                                 <tbody>
                                     <tr><td>Gaji Pokok</td><td className="text-end">{toCurrency(m.gaji_pokok)}</td></tr>
                                     <tr><td>Tj. Jabatan</td><td className="text-end">{toCurrency(m.tunjangan_jabatan)}</td></tr>
+                                    <tr><td>Tj. Operasional</td><td className="text-end">{toCurrency(m.tunjangan_operasional)}</td></tr>
                                     <tr><td>Tj. Transport</td><td className="text-end">{toCurrency(m.tunjangan_transport)}</td></tr>
                                     <tr><td>Tj. Makan</td><td className="text-end">{toCurrency(m.tunjangan_makan)}</td></tr>
                                     <tr><td>Tj. Lembur</td><td className="text-end">{toCurrency(m.tunjangan_lembur)}</td></tr>
                                     <tr><td>Tj. Lainnya</td><td className="text-end">{toCurrency(m.tunjangan_lainnya)}</td></tr>
-                                    <tr><td>BPJS Kesehatan (Employer)</td><td className="text-end">{toCurrency(m.bpjs_kesehatan)}</td></tr>
-                                    <tr><td>BPJS Naker (Employer)</td><td className="text-end">{toCurrency(m.bpjs_ketenagakerjaan)}</td></tr>
-                                    {/* <tr style={{ borderTop: "1px solid #e2e8f0", fontWeight: 600 }}>
-                                        <td className="pt-2">Total</td>
-                                        <td className="text-end pt-2">{toCurrency(
-                                            (m.gaji_pokok || 0) + (m.tunjangan_jabatan || 0) 
-                                        )}</td>
-                                    </tr> */}
+                                    <tr><td>BPJS Kesehatan</td><td className="text-end">{toCurrency(m.bpjs_kesehatan)}</td></tr>
+                                    <tr><td>BPJS Ketenagakerjaan</td><td className="text-end">{toCurrency(m.bpjs_ketenagakerjaan)}</td></tr>
+                                    <tr><td>Tarif BPJS Kesehatan</td><td className="text-end">{m.tarif_bpjs_kesehatan}</td></tr>
+                                    <tr><td>Tarif BPJS Ketenagakerjaan</td><td className="text-end">{m.tarif_bpjs_ketenagakerjaan}</td></tr>
+                                    
                                 </tbody>
                             </table>
                         </Col>
@@ -165,26 +163,16 @@ const PayrollMaster = ({ loader, setLoader, reload }) => {
                         {/* Potongan */}
                         <Col md={6}>
                             <p className="fw-bold mb-2" style={{ fontSize: "13px", color: "#ef4444" }}>
-                                <i className="ri-subtract-line me-1" /> Potongan
+                                <i className="ri-subtract-line me-1" /> Tarif 
                             </p>
                             <table style={{ fontSize: "13px", width: "100%" }}>
                                 <tbody>
-                                    <tr><td>Kasbon</td><td className="text-end">{toCurrency(ded.kasbon)}</td></tr>
-                                    <tr><td>Pinjaman</td><td className="text-end">{toCurrency(ded.pinjaman)}</td></tr>
-                                    <tr><td>THR Paid</td><td className="text-end">{toCurrency(ded.thr_paid)}</td></tr>
-                                    <tr><td>Jaminan Pensiun</td><td className="text-end">{toCurrency(ded.jaminan_pensiun)}</td></tr>
-                                    <tr><td>BPJS Kesehatan (Employee)</td><td className="text-end">{toCurrency(ded.bpjs_kesehatan)}</td></tr>
-                                    <tr><td>BPJS Kes. Family</td><td className="text-end">{toCurrency(ded.bpjs_kesehatan_family)}</td></tr>
-                                    <tr><td>JHT Employee</td><td className="text-end">{toCurrency(ded.jht_employee)}</td></tr>
-                                    <tr><td>PPh21</td><td className="text-end">{toCurrency(ded.pph21)}</td></tr>
-                                    <tr style={{ borderTop: "1px solid #e2e8f0", fontWeight: 600 }}>
-                                        <td className="pt-2">Total</td>
-                                        <td className="text-end pt-2">{toCurrency(
-                                            (ded.kasbon || 0) + (ded.pinjaman || 0) + (ded.thr_paid || 0) +
-                                            (ded.jaminan_pensiun || 0) + (ded.bpjs_kesehatan || 0) +
-                                            (ded.bpjs_kesehatan_family || 0) + (ded.jht_employee || 0) + (ded.pph21 || 0)
-                                        )}</td>
-                                    </tr>
+                                
+                                    <tr><td>BPJS Ketenagakerjaan</td><td className="text-end">{ded.tarif_bpjstk}</td></tr>
+                                    <tr><td>BPJS Kesehatan</td><td className="text-end">{ded.tarif_bpjskes}</td></tr>
+                                    <tr><td>PPH21</td><td className="text-end">{toCurrency(ded.pph21)}</td></tr>
+                        
+                                   
                                 </tbody>
                             </table>
                         </Col>

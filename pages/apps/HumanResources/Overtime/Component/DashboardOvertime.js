@@ -1,4 +1,4 @@
-import { Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl";
 import { useEffect, useState } from "react";
 import apiConfig from "@/utils/AxiosConfig";
@@ -7,6 +7,9 @@ import Swal from "sweetalert2";
 const DashboardOvertime = ({ loader, setLoader }) => {
     const [datatable, setDatatable] = useState([]);
     const [reload, setReload] = useState(false);
+     const [dataFilter, setDataFilter] = useState({
+            tanggal: "",
+        });
     const COLUMNS = [
         {
             Header: "NIP",
@@ -19,6 +22,10 @@ const DashboardOvertime = ({ loader, setLoader }) => {
         {
             Header: "Jabatan",
             accessor: "jabatan",
+        },
+        {
+            Header: "Tanggal",
+            accessor: "tanggal",
         },
         {
             Header: "Jam Mulai",
@@ -45,9 +52,11 @@ const DashboardOvertime = ({ loader, setLoader }) => {
 
     const getOvertime = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+         const date = new Date();
+        const formattedDate = (dataFilter.tanggal != null && dataFilter.tanggal != "") ? dataFilter.tanggal : date.toLocaleDateString("en-CA");
         setLoader(true);
         try {
-            const result = await apiConfig.get(apiUrl + "/HR-Overtime/get-overtime", {
+            const result = await apiConfig.get(apiUrl + "/HR-Overtime/get-overtime-monitor?tanggal="+formattedDate, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -60,9 +69,10 @@ const DashboardOvertime = ({ loader, setLoader }) => {
 
                     for (const datas of result.data.data) {
                         overtimeArr.push({
-                            nip: datas.employee?.nip,
-                            nama: datas.employee?.nama,
-                            jabatan: datas.employee?.jabatan,
+                            nip: datas.emp?.nip,
+                            nama: datas.emp?.nama,
+                            jabatan: datas.emp?.jabatan,
+                            tanggal: datas.tanggal,
                             jam_mulai: datas.jam_mulai ?? "",
                             jam_selesai: datas.jam_selesai ?? "",
                             durasi: datas.durasi + " Menit" ?? "",
@@ -194,13 +204,61 @@ const DashboardOvertime = ({ loader, setLoader }) => {
 
     useEffect(() => {
         getOvertime()
-    }, [loader])
+    }, [reload])
     return (
         <Row>
 
             <Col xl={12}>
                 <Card className="custom-card">
+                    <Card.Header>
+                        <Row className="w-100 align-items-end">
 
+                            {/* FILTER TANGGAL */}
+                            <Col xl={3} lg={4} md={6} className="mb-3">
+                                <Form.Label className="fw-semibold">
+                                    Tanggal
+                                </Form.Label>
+
+                                <Form.Control
+                                    type="date"
+                                    value={dataFilter.tanggal || ""}
+                                    onChange={(e) => {
+                                        setDataFilter({
+                                            ...dataFilter,
+                                            tanggal: e.target.value,
+                                        });
+                                    }}
+                                />
+                            </Col>
+
+                            {/* BUTTON FILTER */}
+                            <Col xl={2} lg={3} md={6} className="mb-3">
+                                <Button
+                                    variant="primary"
+                                    onClick={() => setReload(prev => !prev)}
+                                >
+                                    <i className="ri-search-line me-1"></i>
+                                    Filter
+                                </Button>
+
+                                <Button
+                                    variant="light"
+                                    className="ms-2"
+                                    onClick={() => {
+                                        const now = new Date();
+
+                                        setDataFilter({
+                                            tanggal:
+                                                now.toLocaleDateString("en-CA"),
+                                        });
+                                    }}
+                                >
+                                    Reset
+                                </Button>
+                            </Col>
+
+                        </Row>
+                    </Card.Header>
                     <Card.Body>
 
                         <div className="table-responsive">

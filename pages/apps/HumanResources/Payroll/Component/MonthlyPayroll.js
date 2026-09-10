@@ -202,9 +202,9 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
     const emp = p.employee || {};
 
     const totalTunjangan = (p.tunjangan_transport || 0) + (p.tunjangan_makan || 0) +
-        (p.tunjangan_lembur || 0) + (p.tunjangan_lainnya || 0)+ (p.tunjangan_jabatan || 0);
-    const totalPotongan = (ded.potongan_kehadiran || 0) + (ded.pinjaman || 0) + (p.bpjs_kesehatan || 0) +
-        (p.bpjs_ketenagakerjaan || 0);
+        (p.tunjangan_lembur || 0) + (p.tunjangan_lainnya || 0)+ (p.tunjangan_jabatan || 0) + (p.tunjangan_operasional || 0);
+    const totalPotongan = (ded.potongan_kehadiran || 0) + (ded.pinjaman || 0) + (ded.bpjskes || 0) +
+        (ded.bpjstk || 0);
     const pendapatanBruto = (p.gaji_pokok || 0) + totalTunjangan + (p.bpjs_kesehatan || 0)+ (p.bpjs_ketenagakerjaan || 0);
     const takeHomePay = pendapatanBruto - totalPotongan;
 
@@ -311,6 +311,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                                 <tbody>
                                     <tr><td>Gaji Pokok</td><td className="text-end">{toCurrency(p.gaji_pokok)}</td></tr>
                                     <tr><td>Tj. Jabatan</td><td className="text-end">{toCurrency(p.tunjangan_jabatan)}</td></tr>
+                                    <tr><td>Tj. Operasional</td><td className="text-end">{toCurrency(p.tunjangan_operasional)}</td></tr>
                                     <tr><td>Tj. Transport</td><td className="text-end">{toCurrency(p.tunjangan_transport)}</td></tr>
                                     <tr><td>Tj. Makan</td><td className="text-end">{toCurrency(p.tunjangan_makan)}</td></tr>
                                     <tr><td>Tj. Lembur</td><td className="text-end">{toCurrency(p.tunjangan_lembur)}</td></tr>
@@ -334,8 +335,8 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                                 <tbody>
                                     <tr><td>Potongan Kehadiran</td><td className="text-end">{toCurrency(ded.potongan_kehadiran)}</td></tr>
                                     <tr><td>Pinjaman</td><td className="text-end">{toCurrency(ded.pinjaman)}</td></tr>
-                                    <tr><td>BPJS Kesehatan</td><td className="text-end">{toCurrency(p.bpjs_kesehatan)}</td></tr>
-                                    <tr><td>BPJS Ketenagakerjaan</td><td className="text-end">{toCurrency(p.bpjs_ketenagakerjaan)}</td></tr>
+                                    <tr><td>BPJS Kesehatan</td><td className="text-end">{toCurrency(ded.bpjskes)}</td></tr>
+                                    <tr><td>BPJS Ketenagakerjaan</td><td className="text-end">{toCurrency(ded.bpjstk)}</td></tr>
                                     <tr><td>PPh21</td><td className="text-end">{toCurrency(ded.pph21)}</td></tr>
                                     <tr style={{ borderTop: "1px solid #e2e8f0", fontWeight: 600 }}>
                                         <td className="pt-2">Total Potongan</td>

@@ -1,4 +1,4 @@
-import { Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -21,6 +21,10 @@ const DashboardAttendance = ({ loader, setLoader }) => {
             Header: "Jabatan",
             accessor: "jabatan",
         },
+         {
+            Header: "Tanggal",
+            accessor: "tanggal",
+        },
         {
             Header: "Jam Masuk",
             accessor: "jam_masuk",
@@ -37,63 +41,65 @@ const DashboardAttendance = ({ loader, setLoader }) => {
             Header: "Keterangan",
             accessor: "keterangan",
         },
-        //  
-        {
-            Header: "Aksi",
-            accessor: "aksi",
-        },
+
     ];
     const [datatable, setDatatable] = useState([]);
     const [reload, setReload] = useState(false);
+    const [dataFilter, setDataFilter] = useState({
+        tanggal: "",
+    });
 
 
-    const getAbsensi = async() => {
+    const getAbsensi = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const date = new Date();
+        const formattedDate = (dataFilter.tanggal != null && dataFilter.tanggal != "") ? dataFilter.tanggal : date.toLocaleDateString("en-CA");
+        // console.log("tanggal",formattedDate);
         setLoader(true);
         try {
-            const result = await apiConfig.get(apiUrl + "/HR-Attendance/get-attendance", {
+            const result = await apiConfig.get(apiUrl + "/HR-Attendance/get-attendance-monitor?tanggal=" + formattedDate, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
-            // console.log(result);
-            if(result.status == 200){
+            // console.log("test",result.data.data);
+            if (result.status == 200) {
                 const attendanceArr = [];
-                if(result.data.data?.length > 0){
-                    
-                    for(const datas of result.data.data){
+                if (result.data.data?.length > 0) {
+
+                    for (const datas of result.data.data) {
                         attendanceArr.push({
-                            nip: datas.employee?.nip,
-                            nama: datas.employee?.nama,
-                            jabatan: datas.employee?.jabatan,
+                            nip: datas.emp?.nip,
+                            nama: datas.emp?.nama,
+                            jabatan: datas.emp?.jabatan,
+                            tanggal: datas.tanggal,
                             jam_masuk: datas.jam_masuk,
                             jam_keluar: datas.jam_keluar,
                             status_absensi: datas.status,
                             keterangan: datas.keterangan,
-                            aksi:<div className="d-flex flex-row gap-2">
-                                    <button className="btn btn-danger" onClick={() => {deleteAttendance(datas.id_absensi)}} >Hapus</button>
-                                </div>
+                            aksi: <div className="d-flex flex-row gap-2">
+                                <button className="btn btn-danger" onClick={() => { deleteAttendance(datas.id_absensi) }} >Hapus</button>
+                            </div>
                         })
                     }
-                    // setEmployee(dataEmployeeArr);
                 }
                 setDatatable(attendanceArr);
             }
-        }catch (error) {
+        } catch (error) {
             // setLoader(false);
             console.log(error);
-        }finally{
+        } finally {
             setLoader(false);
         }
-     }
-     const deleteAttendance = async(id) => {
+    }
+    const deleteAttendance = async (id) => {
         const resultConfirm = await AlertConfirm("Apakah anda yakin ingin menghapus data ini ? ", "warning", "Hapus", false, "Data berhasil di hapus");
         // console.log(idDelete)
-         if (resultConfirm.status) {
+        if (resultConfirm.status) {
             setLoader(true);
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            
+
             try {
                 const result = await apiConfig.delete(apiUrl + "/HR-Attendance/delete-attendance?id=" + id, {
                     headers: {
@@ -104,7 +110,7 @@ const DashboardAttendance = ({ loader, setLoader }) => {
                 if (result.status == 200) {
                     setReload(prev => !prev);
                     // setIdDelete(id);
-                    
+
                     // setLoader(false);
                     swalAlert(result.data.message, result.statusText, "success");
                     // getEmployee();
@@ -114,7 +120,7 @@ const DashboardAttendance = ({ loader, setLoader }) => {
                 console.log(error);
                 // setLoader(false);
                 swalAlert(error.message, error.code, "error");
-            }finally{
+            } finally {
                 setLoader(false);
             }
 
@@ -148,7 +154,7 @@ const DashboardAttendance = ({ loader, setLoader }) => {
         }
         const result = await swalWithBootstrapButtons.fire(objSwall);
         if (result.isConfirmed) {
-            
+
             return {
                 status: true,
                 value: result.value
@@ -192,52 +198,135 @@ const DashboardAttendance = ({ loader, setLoader }) => {
         });
     }
 
-     useEffect(() => {
+    useEffect(() => {
         getAbsensi()
-     },[loader])
+    }, [reload])
 
     return (
         <Row>
-            
             <Col xl={12}>
                 <Card className="custom-card">
-                    <Card.Header>
-                        <Col xl={12} className="d-flex gap-2">
-                            {[
-                                { label: "Hadir", color: "card-bg-success", val: datatable.filter(r => r.status_absensi === "Hadir").length },
-                                { label: "Izin", color: "card-bg-primary", val: datatable.filter(r => r.status_absensi === "Izin").length},
-                                { label: "Sakit", color: "card-bg-warning", val: datatable.filter(r => r.status_absensi === "Sakit").length },
-                                { label: "Alpha", color: "card-bg-danger", val: datatable.filter(r => r.status_absensi === "Aplha").length },
-                            ].map(s => (
-                                <Col xl={3} key={s.label}>
-                                    <Card className={`custom-card ${s.color}`}>
-                                        <Card.Body >
-                                            <div className="d-flex align-items-center w-100">
-                                                {/* <div className="me-2">
-                                                    <span className="avatar avatar-rounded">
-                                                        <img src="../../../assets/images/faces/11.jpg" alt="img" />
-                                                    </span>
-                                                </div> */}
-                                                <div className="">
-                                                    <div className="fs-15 fw-semibold">{s.label}</div>
-                                                    <p className="mb-0 text-fixed-white op-7 fs-12">{s.val}</p>
-                                                </div>
-                                                {/* <div className="ms-auto">
-                                                    <Link href="#!" className="text-fixed-white"><i className="bi bi-three-dots-vertical"></i></Link>
-                                                </div> */}
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Col>
-                    </Card.Header>
-                    <Card.Body>
 
+                    <Card.Header>
+                        <Row className="w-100 align-items-end">
+
+                            {/* FILTER TANGGAL */}
+                            <Col xl={3} lg={4} md={6} className="mb-3">
+                                <Form.Label className="fw-semibold">
+                                    Tanggal
+                                </Form.Label>
+
+                                <Form.Control
+                                    type="date"
+                                    value={dataFilter.tanggal || ""}
+                                    onChange={(e) => {
+                                        setDataFilter({
+                                            ...dataFilter,
+                                            tanggal: e.target.value,
+                                        });
+                                    }}
+                                />
+                            </Col>
+
+                            {/* BUTTON FILTER */}
+                            <Col xl={2} lg={3} md={6} className="mb-3">
+                                <Button
+                                    variant="primary"
+                                    onClick={() => setReload(prev => !prev)}
+                                >
+                                    <i className="ri-search-line me-1"></i>
+                                    Filter
+                                </Button>
+
+                                <Button
+                                    variant="light"
+                                    className="ms-2"
+                                    onClick={() => {
+                                        const now = new Date();
+
+                                        setDataFilter({
+                                            tanggal:
+                                                now.toLocaleDateString("en-CA"),
+                                        });
+                                    }}
+                                >
+                                    Reset
+                                </Button>
+                            </Col>
+
+                        </Row>
+
+                        {/* SUMMARY */}
+                        <Row className="w-100 mt-2">
+                            <Col xl={12} className="d-flex gap-2">
+
+                                {[
+                                    {
+                                        label: "Hadir",
+                                        color: "card-bg-success",
+                                        val: datatable.filter(
+                                            r => r.status_absensi === "Hadir"
+                                        ).length
+                                    },
+                                    {
+                                        label: "Izin",
+                                        color: "card-bg-primary",
+                                        val: datatable.filter(
+                                            r => r.status_absensi === "Izin"
+                                        ).length
+                                    },
+                                    {
+                                        label: "Sakit",
+                                        color: "card-bg-warning",
+                                        val: datatable.filter(
+                                            r => r.status_absensi === "Sakit"
+                                        ).length
+                                    },
+                                    {
+                                        label: "Alpha",
+                                        color: "card-bg-danger",
+                                        val: datatable.filter(
+                                            r => r.status_absensi === "Alpha"
+                                        ).length
+                                    },
+                                ].map(s => (
+                                    <Col xl={3} key={s.label}>
+
+                                        <Card
+                                            className={`custom-card ${s.color}`}
+                                        >
+                                            <Card.Body>
+                                                <div className="d-flex align-items-center w-100">
+                                                    <div>
+                                                        <div className="fs-15 fw-semibold">
+                                                            {s.label}
+                                                        </div>
+
+                                                        <p className="mb-0 text-fixed-white op-7 fs-12">
+                                                            {s.val}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Card.Body>
+                                        </Card>
+
+                                    </Col>
+                                ))}
+
+                            </Col>
+                        </Row>
+
+                    </Card.Header>
+
+                    <Card.Body>
                         <div className="table-responsive">
-                            <BasicTableCostControl column={COLUMNS} datatable={datatable} />
+                            <BasicTableCostControl
+                                column={COLUMNS}
+                                datatable={datatable}
+                            />
                         </div>
                     </Card.Body>
+
                 </Card>
             </Col>
         </Row>
