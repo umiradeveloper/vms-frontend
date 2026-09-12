@@ -281,7 +281,7 @@ const LoginRegister = () => {
                                                                     </Button>
 																</div>
 																<Link
-																	href="/apps/ForgotPassword"
+																	href="/ForgotPassword"
 																	className="small text-muted text-decoration-none"
 																	>
 																	Forgot Password?

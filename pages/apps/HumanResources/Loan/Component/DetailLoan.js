@@ -2,9 +2,10 @@ import { useEffect, useState } from "react"
 import { Card, Col, Modal, Row } from "react-bootstrap";
 import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl";
 import dynamic from "next/dynamic";
+import UpdateDetailLoan from "./UpdateDetailLoan";
 
 
-const DetailLoan = ({ openModal, setOpenModal }) => {
+const DetailLoan = ({ openModal, setOpenModal, reload, setReload, loader, setLoader }) => {
     const COLUMNS = [
         {
             Header: "Bulan",
@@ -25,9 +26,17 @@ const DetailLoan = ({ openModal, setOpenModal }) => {
         {
             Header: "Status Cicilan",
             accessor: "status_paid",
+        },
+        {
+            Header: "Adjust",
+            accessor: "aksi",
         }
     ]
     const [dataTable, setDataTable] = useState([]);
+    const [openUpdateDetailLoan, setOpenUpdateDetilLoan] = useState({
+        datas: {},
+        open: false
+    })
     const [loanInfo, setLoanInfo] = useState({
         nip:"",
         nama:"",
@@ -36,8 +45,11 @@ const DetailLoan = ({ openModal, setOpenModal }) => {
     })
     useEffect(() => {
         if (openModal.open) {
-            // console.log(openModal.datas);
+            console.log(openModal.datas);
             const DataArr = [];
+             if(openModal.loanInfo){
+                setLoanInfo(openModal.loanInfo);
+            }
             if (openModal.datas.length > 0) {
 
                 for (const datas of openModal.datas) {
@@ -46,18 +58,19 @@ const DetailLoan = ({ openModal, setOpenModal }) => {
                         tahun: datas.tahun,
                         cicilan_ke: datas.cicilan_ke,
                         nominal_cicilan: formatCurrency(datas.nominal_cicilan),
-                        status_paid: datas.status
+                        status_paid: datas.status,
+                        aksi: <div className="d-flex flex-row gap-2">
+                                <button className="btn btn-info label-btn" onClick={() => {setOpenUpdateDetilLoan({open: true, datas:{nama: openModal.loanInfo.nama, jabatan: openModal.loanInfo.jabatan, id_detail_loan: datas.id_detail_pinjaman, bulan: datas.bulan, cicilan_ke: datas.cicilan_ke, nominal: datas.nominal_cicilan}}); setOpenModal({...openModal, open: false})}}><i className="ri-chat-smile-line label-btn-icon me-2"></i> Adjust</button>
+                            </div>
                     })
                 }
 
             }
-            if(openModal.loanInfo){
-                setLoanInfo(openModal.loanInfo);
-            }
+           
             setDataTable(DataArr);
 
         }
-    }, [openModal.open]);
+    }, [openModal.open, openModal.loanInfo]);
     const formatCurrency = (value) => {
         if (value === null || value === undefined || value === "") {
             return "Rp 0";
@@ -78,7 +91,9 @@ const DetailLoan = ({ openModal, setOpenModal }) => {
         }).format(number);
     };
     return (
-        <Modal size="xl" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }}>
+        <>
+        <UpdateDetailLoan  openModal={openUpdateDetailLoan} setOpenModal={setOpenUpdateDetilLoan} openModalDetailLoan={openModal} setOpenModalDetailLoan={setOpenModal} reload={reload} setReload={setReload} loader={loader} setLoader={setLoader} />
+        <Modal size="xl" show={openModal.open} onHide={() => { setOpenModal({ ...openModal, open: false }) }} className="modal-level-1" >
             <Modal.Header>
                 <h6 className="modal-title" id="exampleModalLabel">Detail Pinjaman</h6>
             </Modal.Header>
@@ -167,6 +182,7 @@ const DetailLoan = ({ openModal, setOpenModal }) => {
                 </Row>
             </Modal.Body>
         </Modal>
+        </>
     )
 }
 

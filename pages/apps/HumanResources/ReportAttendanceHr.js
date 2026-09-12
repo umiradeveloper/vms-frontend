@@ -1,5 +1,5 @@
 
-import { Card, Col, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import Seo from "@/shared/layout-components/seo/seo";
 import PageHeaderVms from "../Component/PageHeaderVms";
 import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl";
@@ -9,43 +9,10 @@ import apiConfig from "@/utils/AxiosConfig";
 import LoadersSimUmira from "../Component/LoaderSimUmira";
 
 import Link from "next/link";
+import CreateBulkAttendance from "./modals/CreateBulkAttendance";
 
 const ReportAttendanceHr = () => {
-    //    const COLUMNS = [
-    //     {
-    //         Header: "NIP",
-    //         accessor: "nip",
-    //     },
-    //     {
-    //         Header: "Nama",
-    //         accessor: "nama",
-    //     },
-    //     {
-    //         Header: "Jabatan",
-    //         accessor: "jabatan",
-    //     },
-    //     {
-    //         Header: "Jam Masuk",
-    //         accessor: "jam_masuk",
-    //     },
-    //     {
-    //         Header: "Jam Keluar",
-    //         accessor: "jam_keluar",
-    //     },
-    //     {
-    //         Header: "Status",
-    //         accessor: "status_absensi",
-    //     },
-    //     {
-    //         Header: "Keterangan",
-    //         accessor: "keterangan",
-    //     },
-    //     //  
-    //     {
-    //         Header: "Aksi",
-    //         accessor: "aksi",
-    //     },
-    // ];
+   
     const [datatable, setDatatable] = useState([]);
     const [reload, setReload] = useState(false);
     const [loader, setLoader] = useState(false);
@@ -54,6 +21,8 @@ const ReportAttendanceHr = () => {
         month: "",
         year: ""
     });
+
+    const [modalAdd, setModalAdd] = useState({open: false});
     const [cardDashboard, setCardDashboard] = useState({
         allTotalAlfa: 0,
         allTotalIzin: 0,
@@ -171,8 +140,9 @@ const ReportAttendanceHr = () => {
                         const status = employee.attendance[date] || "-";
 
                         row[date] = status;
+                        const statusSplit = status.split(" ");
 
-                        switch (status) {
+                        switch (statusSplit[0]) {
 
                             case "H":
                                 totalHadir++;
@@ -306,13 +276,14 @@ const ReportAttendanceHr = () => {
 
     useEffect(() => {
         getAbsensi()
-    }, [dataFilter])
+    }, [dataFilter, reload])
 
     return (
          <Fragment>
             <Seo title={"Attendance Report"} />
             <PageHeaderVms title='Human Resources' item='Human Resources' active_item='HR System' />
             <LoadersSimUmira open={loader} />
+            <CreateBulkAttendance openModal={modalAdd} setOpenModal={setModalAdd} reload={reload} setReload={setReload} loader={loader} setLoader={setLoader}  />
         <Row>
 
             <Col xl={12}>
@@ -478,6 +449,19 @@ const ReportAttendanceHr = () => {
                                     <option value="2027">2027</option>
                                     <option value="2028">2028</option>
                                 </Form.Select>
+                            </Col>
+                             <Col xl={2} lg={3} md={6} className="mb-3 mb-3 d-flex justify-content-end">
+                                <Button
+                                    variant="primary"
+                                    className="w-100"
+                                    onClick={() => {
+                                        // console.log("Filter:", dataFilter);
+                                        setModalAdd({open: true})
+                                    }}
+                                >
+                                    <i className="ri-add-line me-1"></i>
+                                    Tambah Absensi
+                                </Button>
                             </Col>
                         </Row>
 

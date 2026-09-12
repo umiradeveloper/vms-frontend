@@ -184,7 +184,7 @@ const Loan = ({ loader, setLoader }) => {
     return (
         <Row>
             <CreateLoan openModal={openModal} setOpenModal={setOpenModal} loader={loader} setLoader={setLoader} reload={reload} setReload={setReload} />
-            <DetailLoan openModal={openModalDetail} setOpenModal={setOpenModalDetail} />
+            <DetailLoan openModal={openModalDetail} setOpenModal={setOpenModalDetail} reload={reload} setReload={setReload} loader={loader} setLoader={setLoader} />
             <Col xl={12}>
                 <Card className="custom-card">
 
