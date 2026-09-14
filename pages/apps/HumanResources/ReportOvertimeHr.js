@@ -9,8 +9,11 @@ import apiConfig from "@/utils/AxiosConfig";
 import LoadersSimUmira from "../Component/LoaderSimUmira";
 
 import Link from "next/link";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
-const ReportAttendanceHr = () => {
+const ReportOvertimeHr = () => {
     //    const COLUMNS = [
     //     {
     //         Header: "NIP",
@@ -54,7 +57,7 @@ const ReportAttendanceHr = () => {
         month: "",
         year: ""
     });
-  
+
 
 
 
@@ -125,7 +128,7 @@ const ReportAttendanceHr = () => {
                 // DATATABLE
                 // =========================
 
-               
+
                 let allTotalLembur = 0;
 
                 const rows = employees.map((employee) => {
@@ -138,7 +141,7 @@ const ReportAttendanceHr = () => {
 
                     dates.forEach((date) => {
                         // console.log(employee.overtime?.[date] ?? "-");
-                        
+
                         const lembur = employee.overtime?.[date];
                         const totalMinutes = parseInt(lembur?.durasi ?? "0", 10);
 
@@ -147,29 +150,29 @@ const ReportAttendanceHr = () => {
 
                         const result = `${hours} jam ${remainingMinutes} menit`;
                         let field = "-";
-                        if(lembur != null){
-                            field = result+"\n"+lembur?.jam_mulai+"-"+lembur?.jam_selesai
+                        if (lembur != null) {
+                            field = result + "\n" + lembur?.jam_mulai + "-" + lembur?.jam_selesai
                         }
                         row[date] = field;
                         totalLembur += parseInt(lembur?.durasi ?? "0", 10);
                         // employee.overtime?.[date] || "-";
-                        
+
                     });
 
-                     const minutesTotal = parseInt(totalLembur ?? 0, 10);
+                    const minutesTotal = parseInt(totalLembur ?? 0, 10);
 
-                        const hoursTotal = Math.floor(minutesTotal / 60);
-                        const remainingMinutesTotal = minutesTotal % 60;
+                    const hoursTotal = Math.floor(minutesTotal / 60);
+                    const remainingMinutesTotal = minutesTotal % 60;
 
-                        const resultTotal = `${hoursTotal} jam ${remainingMinutesTotal} menit`;
+                    const resultTotal = `${hoursTotal} jam ${remainingMinutesTotal} menit`;
                     // console.log(totalLembur);
                     row.totalLembur = resultTotal;
-                    
-                   
+
+
 
                     return row;
                 });
-                
+
                 setDatatable(rows);
             }
         } catch (error) {
@@ -251,21 +254,254 @@ const ReportAttendanceHr = () => {
         });
     }
 
+    const exportExcel = () => {
+        if (!datatable || datatable.length === 0) {
+            swalAlert(
+                "Tidak ada data lembur yang dapat di-export.",
+                "Informasi",
+                "info"
+            );
+            return;
+        }
+
+        const exportData = datatable.map((row) => {
+            const data = {};
+
+            columns.forEach((column) => {
+                data[column.Header] = row[column.accessor] ?? "-";
+            });
+
+            return data;
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+        // Auto width
+        const columnWidths = columns.map((column) => {
+            const headerLength = String(column.Header).length;
+
+            const maxDataLength = Math.max(
+                ...datatable.map((row) =>
+                    String(row[column.accessor] ?? "-").length
+                )
+            );
+
+            return {
+                wch: Math.min(
+                    Math.max(headerLength, maxDataLength) + 2,
+                    35
+                ),
+            };
+        });
+
+        worksheet["!cols"] = columnWidths;
+
+        const workbook = XLSX.utils.book_new();
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Report Lembur"
+        );
+
+        const month = dataFilter.month || new Date().getMonth() + 1;
+        const year = dataFilter.year || new Date().getFullYear();
+
+        XLSX.writeFile(
+            workbook,
+            `Report-Lembur-${month}-${year}.xlsx`
+        );
+    };
+
+    const exportPDF = () => {
+        if (!datatable || datatable.length === 0) {
+            swalAlert(
+                "Tidak ada data lembur yang dapat di-export.",
+                "Informasi",
+                "info"
+            );
+            return;
+        }
+
+        const month = dataFilter.month || new Date().getMonth() + 1;
+        const year = dataFilter.year || new Date().getFullYear();
+
+        const monthNames = [
+            "Januari",
+            "Februari",
+            "Maret",
+            "April",
+            "Mei",
+            "Juni",
+            "Juli",
+            "Agustus",
+            "September",
+            "Oktober",
+            "November",
+            "Desember"
+        ];
+
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a3",
+        });
+
+        // =========================
+        // TITLE
+        // =========================
+
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+
+        doc.text(
+            "REPORT LEMBUR KARYAWAN",
+            210,
+            15,
+            {
+                align: "center",
+            }
+        );
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+
+        doc.text(
+            `Periode: ${monthNames[Number(month) - 1]} ${year}`,
+            210,
+            21,
+            {
+                align: "center",
+            }
+        );
+
+        // =========================
+        // HEADER
+        // =========================
+
+        const headers = columns.map(
+            (column) => column.Header
+        );
+
+        // =========================
+        // BODY
+        // =========================
+
+        const body = datatable.map((row) => {
+            return columns.map((column) => {
+                return row[column.accessor] ?? "-";
+            });
+        });
+
+        // =========================
+        // TABLE
+        // =========================
+
+        autoTable(doc, {
+            head: [headers],
+            body: body,
+
+            startY: 28,
+
+            theme: "grid",
+
+            styles: {
+                fontSize: 5,
+                cellPadding: 1,
+                valign: "middle",
+                overflow: "linebreak",
+            },
+
+            headStyles: {
+                fontSize: 5.5,
+                fontStyle: "bold",
+                halign: "center",
+                valign: "middle",
+            },
+
+            columnStyles: {
+                0: {
+                    cellWidth: 25,
+                },
+                1: {
+                    cellWidth: 35,
+                },
+            },
+
+            didParseCell: function (data) {
+                if (data.section === "body") {
+
+                    // NIP
+                    if (data.column.index === 0) {
+                        data.cell.styles.halign = "left";
+                    }
+
+                    // Nama
+                    if (data.column.index === 1) {
+                        data.cell.styles.halign = "left";
+                    }
+
+                    // Tanggal dan Total
+                    if (data.column.index >= 2) {
+                        data.cell.styles.halign = "center";
+                    }
+                }
+            },
+
+            margin: {
+                left: 5,
+                right: 5,
+            },
+        });
+
+        // =========================
+        // FOOTER
+        // =========================
+
+        const pageCount = doc.internal.getNumberOfPages();
+
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+
+            doc.setFontSize(7);
+            doc.setFont("helvetica", "normal");
+
+            doc.text(
+                `Report Lembur - ${monthNames[Number(month) - 1]} ${year}`,
+                5,
+                290
+            );
+
+            doc.text(
+                `Halaman ${i} dari ${pageCount}`,
+                415,
+                290,
+                {
+                    align: "right",
+                }
+            );
+        }
+
+        doc.save(
+            `Report-Lembur-${month}-${year}.pdf`
+        );
+    };
+
     useEffect(() => {
         getOvertime()
     }, [dataFilter])
 
     return (
-         <Fragment>
+        <Fragment>
             <Seo title={"Attendance Report"} />
             <PageHeaderVms title='Human Resources' item='Human Resources' active_item='HR System' />
             <LoadersSimUmira open={loader} />
-        <Row>
+            <Row>
 
-            <Col xl={12}>
-                <Card className="custom-card">
-                    <Card.Header>
-                        <Col xl={12} className="d-flex gap-2">
+                <Col xl={12}>
+                    <Card className="custom-card">
+                        <Card.Header>
+                            {/* <Col xl={12} className="d-flex gap-2">
                            
                             <Col xl={12} >
                                 <Card className={`custom-card card-bg-success`}>
@@ -283,75 +519,100 @@ const ReportAttendanceHr = () => {
                             </Col>
                             
                             
-                        </Col>
-                        <Row className="w-100 align-items-end">
+                        </Col> */}
+                            <Row className="w-100 align-items-end">
 
-                            {/* Filter Bulan */}
-                            <Col xl={3} lg={4} md={6} className="mb-3">
-                                <Form.Label className="fw-semibold">
-                                    Bulan
-                                </Form.Label>
+                                {/* Filter Bulan */}
+                                <Col xl={3} lg={4} md={6} className="mb-3">
+                                    <Form.Label className="fw-semibold">
+                                        Bulan
+                                    </Form.Label>
 
-                                <Form.Select
-                                    value={dataFilter.month}
-                                    onChange={(e) => {
-                                        setDataFilter({
-                                            ...dataFilter,
-                                            month: e.target.value,
-                                        });
-                                    }}
+                                    <Form.Select
+                                        value={dataFilter.month}
+                                        onChange={(e) => {
+                                            setDataFilter({
+                                                ...dataFilter,
+                                                month: e.target.value,
+                                            });
+                                        }}
+                                    >
+                                        <option value="1">Januari</option>
+                                        <option value="2">Februari</option>
+                                        <option value="3">Maret</option>
+                                        <option value="4">April</option>
+                                        <option value="5">Mei</option>
+                                        <option value="6">Juni</option>
+                                        <option value="7">Juli</option>
+                                        <option value="8">Agustus</option>
+                                        <option value="9">September</option>
+                                        <option value="10">Oktober</option>
+                                        <option value="11">November</option>
+                                        <option value="12">Desember</option>
+                                    </Form.Select>
+                                </Col>
+
+                                {/* Filter Tahun */}
+                                <Col xl={2} lg={3} md={6} className="mb-3">
+                                    <Form.Label className="fw-semibold">
+                                        Tahun
+                                    </Form.Label>
+
+                                    <Form.Select
+                                        value={dataFilter.year}
+                                        onChange={(e) => {
+                                            setDataFilter({
+                                                ...dataFilter,
+                                                year: e.target.value,
+                                            });
+                                        }}
+                                    >
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                    </Form.Select>
+                                </Col>
+                                {/* Export */}
+                                <Col
+                                    xl={5}
+                                    lg={5}
+                                    md={12}
+                                    className="mb-3 d-flex align-items-end gap-2"
                                 >
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
-                                </Form.Select>
-                            </Col>
+                                    <button
+                                        type="button"
+                                        className="btn btn-success"
+                                        onClick={exportExcel}
+                                    >
+                                        <i className="ri-file-excel-2-line me-1"></i>
+                                        Export Excel
+                                    </button>
 
-                            {/* Filter Tahun */}
-                            <Col xl={2} lg={3} md={6} className="mb-3">
-                                <Form.Label className="fw-semibold">
-                                    Tahun
-                                </Form.Label>
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        onClick={exportPDF}
+                                    >
+                                        <i className="ri-file-pdf-2-line me-1"></i>
+                                        Export PDF
+                                    </button>
+                                </Col>
+                            </Row>
 
-                                <Form.Select
-                                    value={dataFilter.year}
-                                    onChange={(e) => {
-                                        setDataFilter({
-                                            ...dataFilter,
-                                            year: e.target.value,
-                                        });
-                                    }}
-                                >
-                                    <option value="2026">2026</option>
-                                    <option value="2027">2027</option>
-                                    <option value="2028">2028</option>
-                                </Form.Select>
-                            </Col>
-                        </Row>
+                        </Card.Header>
+                        <Card.Body>
 
-                    </Card.Header>
-                    <Card.Body>
-
-                        <div className="table-responsive">
-                            <BasicTableCostControl column={columns} datatable={datatable} />
-                        </div>
-                    </Card.Body>
-                </Card>
-            </Col>
-        </Row>
+                            <div className="table-responsive">
+                                <BasicTableCostControl column={columns} datatable={datatable} />
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
         </Fragment>
     )
 }
 
 
-ReportAttendanceHr.layout = "ContentlayoutVms";
-export default ReportAttendanceHr;
+ReportOvertimeHr.layout = "ContentlayoutVms";
+export default ReportOvertimeHr;

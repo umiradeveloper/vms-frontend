@@ -10,6 +10,10 @@ import LoadersSimUmira from "../Component/LoaderSimUmira";
 
 import Link from "next/link";
 
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
 const ReportPayrollHr = () => {
     const COLUMNS = [
         {
@@ -276,6 +280,356 @@ const ReportPayrollHr = () => {
         });
     }
 
+    const exportExcel = () => {
+        if (!datatable || datatable.length === 0) {
+            swalAlert(
+                "Tidak ada data payroll yang dapat di-export.",
+                "Informasi",
+                "info"
+            );
+            return;
+        }
+
+        const exportData = datatable.map((row) => ({
+            NIP: row.nip,
+            "Nama Karyawan": row.nama_karyawan,
+            "Status TK": row.status_tk,
+            Project: row.project,
+            Jabatan: row.jabatan_karyawan,
+            "Status Pajak": row.status_pajak,
+
+            "Gaji Pokok": row.gaji_pokok,
+            "Tunjangan Jabatan": row.tunjangan_jabatan,
+            "Tunjangan Operasional": row.tunjangan_operasional,
+            "Tunjangan Transport": row.tunjangan_transport,
+            "Tunjangan Makan": row.tunjangan_makan,
+            "Tunjangan Lembur": row.tunjangan_lembur,
+            "Tunjangan Lainnya": row.tunjangan_lainnya,
+
+            "BPJS Kesehatan": row.bpjs_kesehatan,
+            "BPJS Ketenagakerjaan": row.bpjs_ketenagakerjaan,
+
+            "Total Pendapatan": row.total_pendapatan,
+
+            "Potongan Kehadiran": row.potongan_kehadiran,
+            Pinjaman: row.pinjaman,
+            "Potongan BPJS Kesehatan": row.potongan_bpjskes,
+            "Potongan BPJS Ketenagakerjaan": row.potongan_bpjstk,
+            "Potongan PPH 21": row.potongan_pph21,
+
+            "Total Potongan": row.total_potongan,
+            "Gaji Bersih": row.gaji_bersih,
+
+            Bank: row.bank,
+            "Akun Bank": row.akun_bank,
+            "Nama Pemilik Bank": row.nama_pemilik_bank,
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+        // Auto width
+        const columnWidths = Object.keys(exportData[0]).map((key) => {
+            const maxLength = Math.max(
+                key.length,
+                ...exportData.map((row) =>
+                    String(row[key] ?? "").length
+                )
+            );
+
+            return {
+                wch: Math.min(maxLength + 2, 35),
+            };
+        });
+
+        worksheet["!cols"] = columnWidths;
+
+        const workbook = XLSX.utils.book_new();
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Report Payroll"
+        );
+
+        const month = dataFilter.month || new Date().getMonth() + 1;
+        const year = dataFilter.year || new Date().getFullYear();
+
+        XLSX.writeFile(
+            workbook,
+            `Report-Payroll-${month}-${year}.xlsx`
+        );
+    };
+
+
+    const exportPDF = () => {
+        if (!datatable || datatable.length === 0) {
+            swalAlert(
+                "Tidak ada data payroll yang dapat di-export.",
+                "Informasi",
+                "info"
+            );
+            return;
+        }
+
+        const month = dataFilter.month || new Date().getMonth() + 1;
+        const year = dataFilter.year || new Date().getFullYear();
+
+        const monthNames = [
+            "Januari",
+            "Februari",
+            "Maret",
+            "April",
+            "Mei",
+            "Juni",
+            "Juli",
+            "Agustus",
+            "September",
+            "Oktober",
+            "November",
+            "Desember",
+        ];
+
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a3",
+        });
+
+        // =========================
+        // TITLE
+        // =========================
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+
+        doc.text(
+            "REPORT PAYROLL KARYAWAN",
+            210,
+            15,
+            {
+                align: "center",
+            }
+        );
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+
+        doc.text(
+            `Periode: ${monthNames[Number(month) - 1]} ${year}`,
+            210,
+            21,
+            {
+                align: "center",
+            }
+        );
+
+        // =========================
+        // HEADER
+        // =========================
+
+        const headers = [
+            "NIP",
+            "Nama",
+            "Status TK",
+            "Project",
+            "Jabatan",
+            "Status Pajak",
+            "Gaji Pokok",
+            "Tunj. Jabatan",
+            "Tunj. Operasional",
+            "Tunj. Transport",
+            "Tunj. Makan",
+            "Tunj. Lembur",
+            "Tunj. Lainnya",
+            "BPJS Kesehatan",
+            "BPJS TK",
+            "Total Pendapatan",
+            "Pot. Kehadiran",
+            "Pinjaman",
+            "Pot. BPJS Kes",
+            "Pot. BPJS TK",
+            "Pot. PPH 21",
+            "Total Potongan",
+            "Gaji Bersih",
+            "Bank",
+            "Akun Bank",
+            "Pemilik Bank",
+        ];
+
+        // =========================
+        // BODY
+        // =========================
+
+        const body = datatable.map((row) => [
+            row.nip,
+            row.nama_karyawan,
+            row.status_tk,
+            row.project,
+            row.jabatan_karyawan,
+            row.status_pajak,
+
+            row.gaji_pokok,
+            row.tunjangan_jabatan,
+            row.tunjangan_operasional,
+            row.tunjangan_transport,
+            row.tunjangan_makan,
+            row.tunjangan_lembur,
+            row.tunjangan_lainnya,
+
+            row.bpjs_kesehatan,
+            row.bpjs_ketenagakerjaan,
+
+            row.total_pendapatan,
+
+            row.potongan_kehadiran,
+            row.pinjaman,
+            row.potongan_bpjskes,
+            row.potongan_bpjstk,
+            row.potongan_pph21,
+
+            row.total_potongan,
+            row.gaji_bersih,
+
+            row.bank,
+            row.akun_bank,
+            row.nama_pemilik_bank,
+        ]);
+
+        // =========================
+        // TABLE
+        // =========================
+
+        autoTable(doc, {
+            head: [headers],
+            body: body,
+
+            startY: 28,
+
+            theme: "grid",
+
+            styles: {
+                fontSize: 4.5,
+                cellPadding: 1,
+                valign: "middle",
+                overflow: "linebreak",
+            },
+
+            headStyles: {
+                fontSize: 4.8,
+                fontStyle: "bold",
+                halign: "center",
+                valign: "middle",
+            },
+
+            columnStyles: {
+                // NIP
+                0: {
+                    cellWidth: 20,
+                },
+
+                // Nama
+                1: {
+                    cellWidth: 28,
+                },
+
+                // Status TK
+                2: {
+                    cellWidth: 15,
+                },
+
+                // Project
+                3: {
+                    cellWidth: 22,
+                },
+
+                // Jabatan
+                4: {
+                    cellWidth: 25,
+                },
+
+                // Status Pajak
+                5: {
+                    cellWidth: 18,
+                },
+
+                // Bank
+                23: {
+                    cellWidth: 18,
+                },
+
+                // Akun Bank
+                24: {
+                    cellWidth: 25,
+                },
+
+                // Pemilik Bank
+                25: {
+                    cellWidth: 28,
+                },
+            },
+
+            didParseCell: function (data) {
+                if (data.section === "body") {
+
+                    // Informasi karyawan
+                    if (data.column.index <= 5) {
+                        data.cell.styles.halign = "left";
+                    }
+
+                    // Nominal
+                    if (
+                        data.column.index >= 6 &&
+                        data.column.index <= 22
+                    ) {
+                        data.cell.styles.halign = "right";
+                    }
+
+                    // Bank
+                    if (data.column.index >= 23) {
+                        data.cell.styles.halign = "left";
+                    }
+                }
+            },
+
+            margin: {
+                left: 5,
+                right: 5,
+            },
+        });
+
+        // =========================
+        // FOOTER
+        // =========================
+
+        const pageCount = doc.internal.getNumberOfPages();
+
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+
+            doc.setFontSize(7);
+            doc.setFont("helvetica", "normal");
+
+            doc.text(
+                `Report Payroll - ${monthNames[Number(month) - 1]} ${year}`,
+                5,
+                290
+            );
+
+            doc.text(
+                `Halaman ${i} dari ${pageCount}`,
+                415,
+                290,
+                {
+                    align: "right",
+                }
+            );
+        }
+
+        doc.save(
+            `Report-Payroll-${month}-${year}.pdf`
+        );
+    };
+
     useEffect(() => {
         getPayroll()
     }, [dataFilter])
@@ -362,7 +716,30 @@ const ReportPayrollHr = () => {
                                     </Form.Select>
                                 </Col>
                                 {/* Button */}
-                               
+                                <Col
+                                    xl={5}
+                                    lg={5}
+                                    md={12}
+                                    className="mb-3 d-flex align-items-end gap-2"
+                                >
+                                    <button
+                                        type="button"
+                                        className="btn btn-success"
+                                        onClick={exportExcel}
+                                    >
+                                        <i className="ri-file-excel-2-line me-1"></i>
+                                        Export Excel
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        onClick={exportPDF}
+                                    >
+                                        <i className="ri-file-pdf-2-line me-1"></i>
+                                        Export PDF
+                                    </button>
+                                </Col>
                             </Row>
 
                         </Card.Header>
