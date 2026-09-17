@@ -229,7 +229,7 @@ const ApprovalOvertime = ({loader, setLoader}) => {
 
     useEffect(() => {
         getApprovalOvertime();
-    },[loader, reload])
+    },[reload])
 
     return(
          <Row>

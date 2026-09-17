@@ -599,7 +599,7 @@ const ReportAttendanceHr = () => {
                             <Row className="w-100 align-items-end">
 
                                 {/* Filter Bulan */}
-                                
+
                                 <Col xl={3} lg={4} md={6} className="mb-3">
                                     <Form.Label className="fw-semibold">
                                         Bulan
@@ -650,21 +650,7 @@ const ReportAttendanceHr = () => {
                                     </Form.Select>
                                 </Col>
                                 <Col xl={2} lg={3} md={6} className="mb-3 mb-3 d-flex justify-content-end gap-2">
-                                    <Button
-                                        variant="success"
-                                        onClick={exportExcel}
-                                    >
-                                        <i className="ri-file-excel-2-line me-1"></i>
-                                        Export Excel
-                                    </Button>
 
-                                    <Button
-                                        variant="danger"
-                                        onClick={exportPDF}
-                                    >
-                                        <i className="ri-file-pdf-2-line me-1"></i>
-                                        Export PDF
-                                    </Button>
                                     <Button
                                         variant="primary"
                                         className="w-100"
@@ -676,6 +662,30 @@ const ReportAttendanceHr = () => {
                                         <i className="ri-add-line me-1"></i>
                                         Tambah Absensi
                                     </Button>
+                                </Col>
+                                <Col
+                                    xl={6}
+                                    lg={7}
+                                    md={12}
+                                    className="mb-3 d-flex align-items-end gap-2"
+                                >
+                                    <button
+                                        type="button"
+                                        className="btn btn-success"
+                                        onClick={exportExcel}
+                                    >
+                                        <i className="ri-file-excel-2-line me-1"></i>
+                                        Export Excel
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        onClick={exportPDF}
+                                    >
+                                        <i className="ri-file-pdf-2-line me-1"></i>
+                                        Export PDF
+                                    </button>
                                 </Col>
                             </Row>
 

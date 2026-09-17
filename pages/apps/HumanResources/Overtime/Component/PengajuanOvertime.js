@@ -90,7 +90,7 @@ const PengajuanOvertime = ({loader, setLoader, detailOvertime, setDetailOvertime
 	}
     useEffect(() => {
         getMonitoringPengajuanOvertime();
-    }, [loader])
+    }, [])
 
     return(
         <Row>

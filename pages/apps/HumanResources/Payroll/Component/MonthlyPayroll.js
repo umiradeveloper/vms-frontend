@@ -202,7 +202,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
     const emp = p.employee || {};
 
     const totalTunjangan = (p.tunjangan_transport || 0) + (p.tunjangan_makan || 0) +
-        (p.tunjangan_lembur || 0) + (p.tunjangan_lainnya || 0)+ (p.tunjangan_jabatan || 0) + (p.tunjangan_operasional || 0);
+        (p.tunjangan_lembur || 0) + (p.tunjangan_lainnya || 0)+ (p.tunjangan_jabatan || 0) + (p.tunjangan_operasional || 0) + (p.tunjangan_pulsa || 0);
     const totalPotongan = (ded.potongan_kehadiran || 0) + (ded.pinjaman || 0) + (ded.bpjskes || 0) +
         (ded.bpjstk || 0);
     const pendapatanBruto = (p.gaji_pokok || 0) + totalTunjangan + (p.bpjs_kesehatan || 0)+ (p.bpjs_ketenagakerjaan || 0);
@@ -313,6 +313,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                                     <tr><td>Tj. Jabatan</td><td className="text-end">{toCurrency(p.tunjangan_jabatan)}</td></tr>
                                     <tr><td>Tj. Operasional</td><td className="text-end">{toCurrency(p.tunjangan_operasional)}</td></tr>
                                     <tr><td>Tj. Transport</td><td className="text-end">{toCurrency(p.tunjangan_transport)}</td></tr>
+                                    <tr><td>Tj. Pulsa</td><td className="text-end">{toCurrency(p.tunjangan_pulsa)}</td></tr>
                                     <tr><td>Tj. Makan</td><td className="text-end">{toCurrency(p.tunjangan_makan)}</td></tr>
                                     <tr><td>Tj. Lembur</td><td className="text-end">{toCurrency(p.tunjangan_lembur)}</td></tr>
                                     <tr><td>Tj. Lainnya</td><td className="text-end">{toCurrency(p.tunjangan_lainnya)}</td></tr>

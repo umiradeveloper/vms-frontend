@@ -55,7 +55,9 @@ const Employee = ({loader, setLoader}) => {
     });
     const [detailData, setDetailData] = useState({
         open: false,
-        datas:{}
+        datas:{},
+        checker:{},
+        signer: {}
     });
     const [detailEdit, setDetailEdit] = useState({
         open: false,
@@ -117,7 +119,7 @@ const Employee = ({loader, setLoader}) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
         try {
-            const result = await apiConfig.get(apiUrl + "/HR-Employee/get-employee", {
+            const result = await apiConfig.get(apiUrl + "/HR-Employee/get-employee-data", {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -130,7 +132,8 @@ const Employee = ({loader, setLoader}) => {
 
                     
 
-                    for(const res of result.data.data){
+                    for(const resultData of result.data.data){
+                        const res = resultData.employee
                         dataTableArr.push({
                             nip: res.nip,
                             nama: res.nama,
@@ -146,7 +149,7 @@ const Employee = ({loader, setLoader}) => {
                             </Col>,
                             // class: res.kelas,
                                 aksi:<div className="d-flex flex-row gap-2">
-                                     <button className="btn btn-info" onClick={() => handlerViewEmployee(res) } >Detail</button>
+                                     <button className="btn btn-info" onClick={() => handlerViewEmployee(res, resultData.employeeChecker, resultData.employeeSigner) } >Detail</button>
                                     <button className="btn btn-warning" onClick={() => handlerEditEmployee(res) } >Edit</button>
                                     <button className="btn btn-danger" onClick={() => {deleteEmployee(res.id_employee)}} >Hapus</button>
                                 </div>
@@ -176,9 +179,9 @@ const Employee = ({loader, setLoader}) => {
     
     }
 
-    const handlerViewEmployee = (datas) => {
+    const handlerViewEmployee = (datas, checker, signer) => {
         console.log(datas);
-        setDetailData({ open: true, datas: datas});
+        setDetailData({ open: true, datas: datas, checker, signer});
     
     }
 

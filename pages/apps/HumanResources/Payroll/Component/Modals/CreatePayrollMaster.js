@@ -21,6 +21,7 @@ const emptyForm = {
     tunjangan_transport:      "",
     tunjangan_operasional:        "",
     tunjangan_makan:          "",
+    tunjangan_pulsa:          "",
     tunjangan_lembur:         "",
     tunjangan_lainnya:        "",
     bpjs_kesehatan:           "",
@@ -94,6 +95,7 @@ const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuc
             tunjangan_jabatan:        cleanNum(form.tunjangan_jabatan),
             tunjangan_operasional:        cleanNum(form.tunjangan_operasional),
             tunjangan_makan:          cleanNum(form.tunjangan_makan),
+            tunjangan_pulsa:          cleanNum(form.tunjangan_pulsa),
             tunjangan_lembur:         form.tunjangan_lembur,
             tunjangan_lainnya:        cleanNum(form.tunjangan_lainnya),
             bpjs_kesehatan:           cleanNum(form.bpjs_kesehatan),
@@ -254,6 +256,7 @@ const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuc
                     {numField("tunjangan_makan",      "Tunjangan Makan")}
                     {numField("tunjangan_jabatan",      "Tunjangan Jabatan")}
                     {numField("tunjangan_operasional",      "Tunjangan Operasional")}
+                    {numField("tunjangan_pulsa",      "Tunjangan Pulsa")}
                     {/* {numField("tunjangan_lembur",     "Tunjangan Lembur")} */}
                     {selectedField("tunjangan_lembur", "Tunjangan Lembur", false, daftarLembur)}
                     {numField("tunjangan_lainnya",    "Tunjangan Lainnya")}
