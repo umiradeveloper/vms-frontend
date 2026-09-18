@@ -173,7 +173,7 @@ const ReportPayrollHr = () => {
                             nip: datas.master?.employee?.nip ?? "",
                             nama_karyawan: datas.master?.employee?.nama ?? "",
                             status_tk: (datas.payroll?.employee?.status_employee == 1) ? "Aktif" : "Non Aktif" ?? "",
-                            project: datas.payroll?.employee?.project?.project_name ?? "",
+                            project: datas.master?.employee?.project?.project_name ?? "",
                             jabatan_karyawan: datas.payroll?.employee?.jabatan ?? "",
                             status_pajak: datas.payroll?.employee?.ptkp_status ?? "",
                             gaji_pokok: toCurrency(datas.payroll?.gaji_pokok) ?? "",
