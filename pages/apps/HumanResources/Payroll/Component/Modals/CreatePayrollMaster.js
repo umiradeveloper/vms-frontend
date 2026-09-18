@@ -32,6 +32,7 @@ const emptyForm = {
     tarif_bpjskes:            null,
     tarif_bpjstk:            null,
     pph21:                    "",
+    potongan_lainnya:                    "",
 };
 
 const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuccess, reload, setReload }) => {
@@ -105,6 +106,7 @@ const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuc
             tarif_bpjstk: form.tarif_bpjstk,
             tarif_bpjskes: form.tarif_bpjskes,
             pph21:                    cleanNum(form.pph21),
+            potongan_lainnya: cleanNum(form.potongan_lainnya)
         };
 
         try {
@@ -274,6 +276,7 @@ const CreatePayrollMaster = ({ loader, setLoader, openModal, setOpenModal, onSuc
                     {textField("tarif_bpjskes",       "Tarif BPJS Kesehatan")}
                     {textField("tarif_bpjstk",         "Tarif BPJS Ketenagakerjaan")}
                     {numField("pph21",                    "PPh21")}
+                    {numField("potongan_lainnya",                    "Potongan Lainnya")}
                 </Row>
             </Modal.Body>
             <Modal.Footer>

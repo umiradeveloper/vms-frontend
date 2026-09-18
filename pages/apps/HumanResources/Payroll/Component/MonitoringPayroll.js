@@ -360,6 +360,7 @@ const PayrollMaster = ({ loader, setLoader, reload }) => {
                                     <tr><td>BPJS Ketenagakerjaan</td><td className="text-end">{ded.tarif_bpjstk}</td></tr>
                                     <tr><td>BPJS Kesehatan</td><td className="text-end">{ded.tarif_bpjskes}</td></tr>
                                     <tr><td>PPH21</td><td className="text-end">{toCurrency(ded.pph21)}</td></tr>
+                                    <tr><td>Potongan Lainnya</td><td className="text-end">{toCurrency(ded.potongan_lainnya)}</td></tr>
 
 
                                 </tbody>
