@@ -24,6 +24,10 @@ const Employee = ({loader, setLoader}) => {
             accessor: "jabatan",
         },
         {
+            Header: "Project",
+            accessor: "project",
+        },
+        {
             Header: "Jenis Kelamin",
             accessor: "jenis_kelamin",
         },
@@ -137,6 +141,7 @@ const Employee = ({loader, setLoader}) => {
                         dataTableArr.push({
                             nip: res.nip,
                             nama: res.nama,
+                            project: res.project?.project_name ?? "-",
                             jabatan: res.jabatan,
                             jenis_kelamin: res.jenis_kelamin,
                             status_karyawan: res.status_karyawan,
