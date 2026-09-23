@@ -12,19 +12,19 @@ import "filepond/dist/filepond.min.css";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
-const jenisOptions = [
-    { value: "ANNUAL_LEAVE",        label: "Cuti Tahunan" },
-    { value: "IZIN",                label: "Izin" },
-    { value: "ROSTER_LEAVE",        label: "Cuti Roster" },
-    { value: "SICK_LEAVE",          label: "Cuti Sakit" },
-    { value: "MATERNITY_LEAVE",     label: "Cuti Melahirkan" },
-    { value: "BAPTISM_LEAVE",       label: "Cuti Baptis Anak" },
-    { value: "MARRIAGE_LEAVE",      label: "Cuti Menikah" },
-    { value: "CHILD_WEDDING_LEAVE", label: "Cuti Menikahkan Anak" },
-    { value: "BEREAVEMENT_LEAVE",   label: "Cuti Keluarga Meninggal" },
-    { value: "BREAVEMENT1_LEAVE",   label: "Cuti Anggota Keluarga Dalam Satu Rumah Meninggal" },
-    { value: "HAJJ_LEAVE",          label: "Cuti Haji" },
-];
+// const jenisOptions = [
+//     { value: "ANNUAL_LEAVE",        label: "Cuti Tahunan" },
+//     { value: "IZIN",                label: "Izin" },
+//     { value: "ROSTER_LEAVE",        label: "Cuti Roster" },
+//     { value: "SICK_LEAVE",          label: "Cuti Sakit" },
+//     { value: "MATERNITY_LEAVE",     label: "Cuti Melahirkan" },
+//     { value: "BAPTISM_LEAVE",       label: "Cuti Baptis Anak" },
+//     { value: "MARRIAGE_LEAVE",      label: "Cuti Menikah" },
+//     { value: "CHILD_WEDDING_LEAVE", label: "Cuti Menikahkan Anak" },
+//     { value: "BEREAVEMENT_LEAVE",   label: "Cuti Keluarga Meninggal" },
+//     { value: "BREAVEMENT1_LEAVE",   label: "Cuti Anggota Keluarga Dalam Satu Rumah Meninggal" },
+//     { value: "HAJJ_LEAVE",          label: "Cuti Haji" },
+// ];
 
 const jenisCutiLabel = {
     ANNUAL_LEAVE:        "Cuti Tahunan",
@@ -51,13 +51,21 @@ const bottomTabStyle = (active, key) => ({
 
 const Cuti = ({ loader, setLoader }) => {
     const [activeTab, setActiveTab]   = useState("pengajuan");
+    const [jenisOptions, setJenisCutiOptions] = useState([]);
     const [reload, setReload]         = useState(false);
     const [daftarUser, setDaftarUser] = useState([]);
+    const [employeeUser, setEmployeeUser] = useState([]);
     const [balance, setBalance]       = useState({ sisa_cuti: 12, used_cuti: 0 });
     const [dokumenFiles, setDokumenFiles] = useState([]);
     const [formData, setFormData] = useState({
         jenis_cuti: "", tanggal_mulai: "", tanggal_selesai: "",
         alasan_cuti: "", id_delegasi: "", id_approver: "",
+    });
+
+     const [formDataAdjust, setFormDataAdjust] = useState({
+        jenis_cuti: "", tanggal_mulai: "", tanggal_selesai: "",
+        alasan_cuti: "", id_delegasi: "", id_employee: [],
+        kode_cuti: ""
     });
     const [datatableMonitoring, setDatatableMonitoring] = useState([]);
     const [datatableApproval, setDatatableApproval]     = useState([]);
@@ -116,6 +124,14 @@ const Cuti = ({ loader, setLoader }) => {
         } catch (e) { console.log(e); }
         return [];
     };
+    const getJenisCutiOptions = async () => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            const res = await apiConfig.get(apiUrl + "/Cuti/jenis-cuti", { headers: authHeader() });
+            if (res.status === 200) { setJenisCutiOptions(res.data.data); return res.data.data; }
+        } catch (e) { console.log(e); }
+        return [];
+    };
 
     const getCutiBalance = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -132,6 +148,36 @@ const Cuti = ({ loader, setLoader }) => {
         });
         return result.data.data;
     };
+    const getEmployee = async () => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        setLoader(true);
+        try {
+            const result = await apiConfig.get(apiUrl + "/HR-Employee/get-employee", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            console.log(result);
+            if (result.status == 200) {
+                if (result.data.data?.length > 0) {
+                    const dataEmployeeArr = [];
+                    for (const datas of result.data.data) {
+                        dataEmployeeArr.push({
+                            value: datas.id_employee,
+                            label: datas.nip + "|" + datas.nama + "|" + datas.jabatan
+                        })
+                    }
+                    setEmployeeUser(dataEmployeeArr);
+                }
+            }
+        } catch (error) {
+            // setLoader(false);
+            console.log(error);
+        } finally {
+            setLoader(false);
+        }
+    }
 
     const getMonitoringCuti = async (userList = []) => {
         setLoader(true);
@@ -227,9 +273,56 @@ const Cuti = ({ loader, setLoader }) => {
         }
     };
 
+    const submitAdjust = async () => {
+        // if (!validateForm()) return;
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        setLoader(true);
+        // const fd = new FormData();
+        const id_ = [];
+        
+        for(const emp of formDataAdjust.id_employee){
+            id_.push(emp.value ?? "");
+            // fd.append("id_employee", emp.value ?? "");
+        }
+
+        const fd = {
+            id_employee: id_,
+            jenis_cuti: formDataAdjust.jenis_cuti,
+            tanggal_mulai: formDataAdjust.tanggal_mulai,
+            tanggal_selesai: formDataAdjust.tanggal_selesai,
+            kode_cuti: formDataAdjust.kode_cuti
+        };
+        
+        // fd.append("jenis_cuti",      formDataAdjust.jenis_cuti);
+        // fd.append("tanggal_mulai",   formDataAdjust.tanggal_mulai);
+        // fd.append("tanggal_selesai", formDataAdjust.tanggal_selesai);
+        // fd.append("alasan_cuti",     formData.alasan_cuti);
+        // fd.append("id_approver",     formData.id_approver);
+        // if (formData.id_delegasi) fd.append("id_delegasi", formData.id_delegasi);
+        // if (dokumenFiles.length > 0) fd.append("dokumen_upload", dokumenFiles[0].file);
+        try {
+            const result = await apiConfig.post(apiUrl + "/Cuti/create-cuti-bulk", fd, {
+                headers: { "Content-Type": "application/json", ...authHeader() },
+            });
+            if (result.status === 200) {
+                setLoader(false);
+                Swal.fire({ title: "Berhasil", html: result.data.message, icon: "success", timer: 3000, timerProgressBar: true, didOpen: () => Swal.showLoading() })
+                    .then(() => { resetFormAdjust(); getCutiBalance(); setReload(p => !p); });
+            }
+        } catch (error) {
+            setLoader(false);
+            Swal.fire("Error", error.response?.data?.message || "Gagal mengajukan cuti", "error");
+        }
+    };
+
     const resetForm = () => {
         setFormData({ jenis_cuti: "", tanggal_mulai: "", tanggal_selesai: "", alasan_cuti: "", id_delegasi: "", id_approver: "" });
         setDokumenFiles([]);
+    };
+     const resetFormAdjust = () => {
+        setFormDataAdjust({ jenis_cuti: "", tanggal_mulai: "", tanggal_selesai: "",
+        alasan_cuti: "", id_delegasi: "", id_employee: []});
+        // setDokumenFiles([]);
     };
 
     const handleApprove = async (id_cuti) => {
@@ -260,6 +353,8 @@ const Cuti = ({ loader, setLoader }) => {
             await getMonitoringCuti(userList);
             await getApprovalCuti(userList);
             await getCutiBalance();
+            await getJenisCutiOptions();
+            await getEmployee();
         };
         init();
     }, [reload]);
@@ -278,6 +373,10 @@ const Cuti = ({ loader, setLoader }) => {
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link eventKey="approval" className="mt-0" style={bottomTabStyle(activeTab, "approval")}>Approval</Nav.Link>
+                    </Nav.Item>
+
+                    <Nav.Item>
+                        <Nav.Link eventKey="adjust-cuti" className="mt-0" style={bottomTabStyle(activeTab, "adjust-cuti")}>Penyesuaian Cuti</Nav.Link>
                     </Nav.Item>
                 </Nav>
 
@@ -363,6 +462,60 @@ const Cuti = ({ loader, setLoader }) => {
                         <div className="table-responsive">
                             <BasicTableCostControl column={COLUMNS_APPROVAL} datatable={datatableApproval} />
                         </div>
+                    </Tab.Pane>
+
+                    {/* Pengajuan */}
+                    <Tab.Pane eventKey="adjust-cuti" className="border p-3 rounded">
+                      
+                        <Row className="gy-3">
+                            <Col xl={12}>
+                                <label className="form-label">Employee <span style={{ color: "red" }}>*</span></label>
+                                {/* <Select options={userOptions} placeholder="Pilih karyawan" classNamePrefix="Select2"
+                                    onChange={(s) => setFormData({ ...formData, id_approver: s?.value || "" })}
+                                    value={userOptions.find(u => u.value === formData.id_approver) || null} isClearable /> */}
+                                    <Select isMulti name="employee" options={employeeUser} className="default basic-multi-select custom-multi "
+                                        menuPlacement='auto' classNamePrefix="Select2" value={formDataAdjust.id_employee} onChange={(selected) => setFormDataAdjust({...formDataAdjust, id_employee: selected})}
+                                    />
+                            </Col>
+                            <Col xl={12}>
+                                <label className="form-label">Jenis Cuti <span style={{ color: "red" }}>*</span></label>
+                                <Select options={jenisOptions} placeholder="Pilih jenis cuti..." classNamePrefix="Select2"
+                                    onChange={(s) => setFormDataAdjust({ ...formDataAdjust, jenis_cuti: s?.value || "", kode_cuti: s?.kode })}
+                                    value={jenisOptions.find(o => o.value === formDataAdjust.jenis_cuti) || null} isClearable />
+                            </Col>
+                            <Col xl={6}>
+                                <label className="form-label">Tanggal Mulai <span style={{ color: "red" }}>*</span></label>
+                                <input type="date" className="form-control" value={formDataAdjust.tanggal_mulai}
+                                    onChange={(e) => setFormDataAdjust({ ...formDataAdjust, tanggal_mulai: e.target.value })} />
+                            </Col>
+                            <Col xl={6}>
+                                <label className="form-label">Tanggal Selesai <span style={{ color: "red" }}>*</span></label>
+                                <input type="date" className="form-control" value={formDataAdjust.tanggal_selesai}
+                                    min={formData.tanggal_mulai}
+                                    onChange={(e) => setFormDataAdjust({ ...formDataAdjust, tanggal_selesai: e.target.value })} />
+                            </Col>
+                            {/* <Col xl={12}>
+                                <label className="form-label">Alasan Cuti <span style={{ color: "red" }}>*</span></label>
+                                <textarea className="form-control" rows={3} placeholder="Tuliskan alasan pengajuan cuti..."
+                                    value={formData.alasan_cuti}
+                                    onChange={(e) => setFormData({ ...formData, alasan_cuti: e.target.value })} />
+                            </Col> */}
+                            {/*   */}
+                            
+                            {/* <Col xl={12}>
+                                <label className="form-label">Upload Dokumen <span className="text-muted ms-1" style={{ fontSize: "12px" }}>(opsional)</span></label>
+                                <FilePond name="files" acceptedFileTypes={["application/pdf", "image/*"]} maxFileSize="5MB"
+                                    labelIdle='Drag & Drop file atau <span class="filepond--label-action">Browse</span>'
+                                    labelMaxFileSize="Maksimal ukuran file: 5MB"
+                                    files={dokumenFiles} onupdatefiles={setDokumenFiles} />
+                            </Col> */}
+                            <Col xl={12}>
+                                <div className="d-flex gap-2 justify-content-end">
+                                    <Button variant="secondary" onClick={resetFormAdjust}>Reset</Button>
+                                    <Button variant="primary" onClick={submitAdjust}>Create Cuti</Button>
+                                </div>
+                            </Col>
+                        </Row>
                     </Tab.Pane>
 
                 </Tab.Content>
