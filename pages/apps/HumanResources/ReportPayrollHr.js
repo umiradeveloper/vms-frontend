@@ -30,7 +30,7 @@ const ReportPayrollHr = () => {
         },
         {
             Header: "Project",
-            accessor: "Project",
+            accessor: "project",
         },
         {
             Header: "Jabatan",
@@ -59,6 +59,10 @@ const ReportPayrollHr = () => {
         {
             Header: "Tunjangan Makan",
             accessor: "tunjangan_makan",
+        },
+        {
+            Header: "Tunjangan Pulsa",
+            accessor: "tunjangan_pulsa",
         },
         {
             Header: "Tunjangan Lembur",
@@ -166,7 +170,7 @@ const ReportPayrollHr = () => {
                 const tableData = [];
                 if (result.data.data.length > 0) {
                     for (const datas of result.data.data) {
-                        const total_pendapatan = parseInt(datas.payroll?.gaji_pokok ?? 0, 10) + parseInt(datas.payroll?.tunjangan_jabatan ?? 0, 10) + parseInt(datas.payroll?.tunjangan_operasional ?? 0, 10) + parseInt(datas.payroll?.tunjangan_transport ?? 0, 10) + parseInt(datas.payroll?.tunjangan_makan ?? 0, 10) + parseInt(datas.payroll?.tunjangan_lembur ?? 0, 10) + parseInt(datas.payroll?.bpjs_kesehatan ?? 0, 10) + parseInt(datas.payroll?.bpjs_ketenagakerjaan ?? 0, 10);
+                        const total_pendapatan = parseInt(datas.payroll?.gaji_pokok ?? 0, 10) + parseInt(datas.payroll?.tunjangan_jabatan ?? 0, 10) + parseInt(datas.payroll?.tunjangan_operasional ?? 0, 10) + parseInt(datas.payroll?.tunjangan_transport ?? 0, 10) + parseInt(datas.payroll?.tunjangan_makan ?? 0, 10) + parseInt(datas.payroll?.tunjangan_lembur ?? 0, 10) + parseInt(datas.payroll?.bpjs_kesehatan ?? 0, 10) + parseInt(datas.payroll?.bpjs_ketenagakerjaan ?? 0, 10) + parseInt(datas.payroll?.tunjangan_pulsa ?? 0, 10);
                         const total_deduction = parseInt(datas.deduction?.potongan_kehadiran ?? 0, 10) + parseInt(datas.deduction?.pinjaman ?? 0, 10) + parseInt(datas.deduction?.bpjskes ?? 0, 10) + parseInt(datas.deduction?.bpjstk ?? 0, 10) + parseInt(datas.deduction?.pph21 ?? 0, 10);
                         // console.log("nama "+datas.payroll?.employee?.nama)
                         tableData.push({
@@ -182,6 +186,8 @@ const ReportPayrollHr = () => {
                             tunjangan_transport: toCurrency(datas.payroll?.tunjangan_transport) ?? "",
                             tunjangan_makan: toCurrency(datas.payroll?.tunjangan_makan) ?? "",
                             tunjangan_lembur: toCurrency(datas.payroll?.tunjangan_lembur) ?? "",
+                            tunjangan_pulsa: toCurrency(datas.payroll?.tunjangan_pulsa) ?? "",
+                            tunjangan_lainnya: toCurrency(datas.payroll?.tunjangan_lainnya) ?? "",
                             bpjs_kesehatan: toCurrency(datas.payroll?.bpjs_kesehatan) ?? "",
                             bpjs_ketenagakerjaan: toCurrency(datas.payroll?.bpjs_ketenagakerjaan) ?? "",
                             total_pendapatan: toCurrency(total_pendapatan),
@@ -280,6 +286,14 @@ const ReportPayrollHr = () => {
         });
     }
 
+    function cleanCurrency(value) {
+        if (typeof value === "number") return value;
+            if (!value) return 0;
+
+            return parseInt(String(value).replace(/[^0-9-]/g, ""), 10) || 0;
+    }
+
+
     const exportExcel = () => {
         if (!datatable || datatable.length === 0) {
             swalAlert(
@@ -298,27 +312,28 @@ const ReportPayrollHr = () => {
             Jabatan: row.jabatan_karyawan,
             "Status Pajak": row.status_pajak,
 
-            "Gaji Pokok": row.gaji_pokok,
-            "Tunjangan Jabatan": row.tunjangan_jabatan,
-            "Tunjangan Operasional": row.tunjangan_operasional,
-            "Tunjangan Transport": row.tunjangan_transport,
-            "Tunjangan Makan": row.tunjangan_makan,
-            "Tunjangan Lembur": row.tunjangan_lembur,
-            "Tunjangan Lainnya": row.tunjangan_lainnya,
+            "Gaji Pokok": cleanCurrency(row.gaji_pokok),
+            "Tunjangan Jabatan": cleanCurrency(row.tunjangan_jabatan),
+            "Tunjangan Operasional": cleanCurrency(row.tunjangan_operasional),
+            "Tunjangan Transport": cleanCurrency(row.tunjangan_transport),
+            "Tunjangan Makan": cleanCurrency(row.tunjangan_makan),
+            "Tunjangan Lembur": cleanCurrency(row.tunjangan_lembur),
+            "Tunjangan Lainnya": cleanCurrency(row.tunjangan_lainnya),
+            "Tunjangan Pulsa": cleanCurrency(row.tunjangan_pulsa),
 
-            "BPJS Kesehatan": row.bpjs_kesehatan,
-            "BPJS Ketenagakerjaan": row.bpjs_ketenagakerjaan,
+            "BPJS Kesehatan": cleanCurrency(row.bpjs_kesehatan),
+            "BPJS Ketenagakerjaan": cleanCurrency(row.bpjs_ketenagakerjaan),
 
-            "Total Pendapatan": row.total_pendapatan,
+            "Total Pendapatan": cleanCurrency(row.total_pendapatan),
 
-            "Potongan Kehadiran": row.potongan_kehadiran,
-            Pinjaman: row.pinjaman,
-            "Potongan BPJS Kesehatan": row.potongan_bpjskes,
-            "Potongan BPJS Ketenagakerjaan": row.potongan_bpjstk,
-            "Potongan PPH 21": row.potongan_pph21,
+            "Potongan Kehadiran": cleanCurrency(row.potongan_kehadiran),
+            Pinjaman: cleanCurrency(row.pinjaman),
+            "Potongan BPJS Kesehatan": cleanCurrency(row.potongan_bpjskes),
+            "Potongan BPJS Ketenagakerjaan": cleanCurrency(row.potongan_bpjstk),
+            "Potongan PPH 21": cleanCurrency(row.potongan_pph21),
 
-            "Total Potongan": row.total_potongan,
-            "Gaji Bersih": row.gaji_bersih,
+            "Total Potongan": cleanCurrency(row.total_potongan),
+            "Gaji Bersih": cleanCurrency(row.gaji_bersih),
 
             Bank: row.bank,
             "Akun Bank": row.akun_bank,
