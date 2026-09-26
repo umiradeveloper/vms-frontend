@@ -41,6 +41,10 @@ const DashboardAttendance = ({ loader, setLoader }) => {
             Header: "Keterangan",
             accessor: "keterangan",
         },
+        {
+            Header: "Aksi",
+            accessor: "aksi",
+        },
 
     ];
     const [datatable, setDatatable] = useState([]);

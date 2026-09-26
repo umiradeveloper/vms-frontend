@@ -13,6 +13,7 @@ import Link from "next/link";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import SendEmailBulkPayslip from "./modals/SendEmailBulkPayslip";
 
 const ReportPayrollHr = () => {
     const COLUMNS = [
@@ -136,6 +137,13 @@ const ReportPayrollHr = () => {
     const [dataFilter, setDataFilter] = useState({
         month: "",
         year: ""
+    });
+    const nowDate = new Date();
+    
+    const [openSendPayslip, setOpenSendPayslip] = useState({
+        open: false,
+        tahun: "",
+        bulan: ""
     });
 
 
@@ -654,6 +662,7 @@ const ReportPayrollHr = () => {
             <Seo title={"Attendance Report"} />
             <PageHeaderVms title='Human Resources' item='Human Resources' active_item='HR System' />
             <LoadersSimUmira open={loader} />
+            <SendEmailBulkPayslip openModal={openSendPayslip} setOpenModal={setOpenSendPayslip} loader={loader} setLoader={setLoader} reload={reload} setReload={setReload} />
             <Row>
 
                 <Col xl={12}>
@@ -753,6 +762,17 @@ const ReportPayrollHr = () => {
                                     >
                                         <i className="ri-file-pdf-2-line me-1"></i>
                                         Export PDF
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        // onClick={exportPDF}
+                                        onClick={() => setOpenSendPayslip({open: true, tahun: dataFilter.year ?? nowDate.getFullYear() , bulan: dataFilter.month ?? nowDate.getMonth() + 1})}
+                                    >
+                                        <i className="ri-file-pdf-2-line me-1"></i>
+                                        Send Payslip to email
                                     </button>
                                 </Col>
                             </Row>
