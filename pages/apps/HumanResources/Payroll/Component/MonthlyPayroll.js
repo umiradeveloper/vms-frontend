@@ -287,7 +287,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                     {/* Absensi summary */}
                     <Row className="g-2 mb-3">
                         {[
-                            { label: "Hari Kerja", value: p.hari_kerja || 0, color: "#22c55e" },
+                            { label: "Kehadiran", value: p.hari_kerja || 0, color: "#22c55e" },
                             { label: "Izin", value: p.hari_izin || 0, color: "#6366f1" },
                             { label: "Sakit", value: p.hari_sakit || 0, color: "#f59e0b" },
                             { label: "Alpha", value: p.hari_alpha || 0, color: "#ef4444" },

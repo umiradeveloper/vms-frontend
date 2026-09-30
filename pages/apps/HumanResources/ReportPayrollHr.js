@@ -108,6 +108,10 @@ const ReportPayrollHr = () => {
             accessor: "potongan_pph21",
         },
         {
+            Header: "Potongan Lainnya",
+            accessor: "potongan_lainnya",
+        },
+        {
             Header: "Total Potongan",
             accessor: "total_potongan",
         },
@@ -204,6 +208,7 @@ const ReportPayrollHr = () => {
                             potongan_bpjskes: toCurrency(datas.deduction?.bpjskes) ?? "",
                             potongan_bpjstk: toCurrency(datas.deduction?.bpjstk) ?? "",
                             potongan_pph21: toCurrency(datas.deduction?.pph21) ?? "",
+                            potongan_lainnya: toCurrency(datas.deduction?.potongan_lainnya) ?? "",
                             total_potongan: toCurrency(total_deduction),
                             gaji_bersih: toCurrency(total_pendapatan - total_deduction),
                             bank: datas.master?.employee?.bank_name ?? "",
@@ -338,6 +343,7 @@ const ReportPayrollHr = () => {
             Pinjaman: cleanCurrency(row.pinjaman),
             "Potongan BPJS Kesehatan": cleanCurrency(row.potongan_bpjskes),
             "Potongan BPJS Ketenagakerjaan": cleanCurrency(row.potongan_bpjstk),
+            "Potongan Lainnya": cleanCurrency(row.potongan_lainnya),
             "Potongan PPH 21": cleanCurrency(row.potongan_pph21),
 
             "Total Potongan": cleanCurrency(row.total_potongan),
