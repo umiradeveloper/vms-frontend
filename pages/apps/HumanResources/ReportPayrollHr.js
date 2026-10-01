@@ -183,7 +183,7 @@ const ReportPayrollHr = () => {
                 if (result.data.data.length > 0) {
                     for (const datas of result.data.data) {
                         const total_pendapatan = parseInt(datas.payroll?.gaji_pokok ?? 0, 10) + parseInt(datas.payroll?.tunjangan_jabatan ?? 0, 10) + parseInt(datas.payroll?.tunjangan_operasional ?? 0, 10) + parseInt(datas.payroll?.tunjangan_transport ?? 0, 10) + parseInt(datas.payroll?.tunjangan_makan ?? 0, 10) + parseInt(datas.payroll?.tunjangan_lembur ?? 0, 10) + parseInt(datas.payroll?.bpjs_kesehatan ?? 0, 10) + parseInt(datas.payroll?.bpjs_ketenagakerjaan ?? 0, 10) + parseInt(datas.payroll?.tunjangan_pulsa ?? 0, 10);
-                        const total_deduction = parseInt(datas.deduction?.potongan_kehadiran ?? 0, 10) + parseInt(datas.deduction?.pinjaman ?? 0, 10) + parseInt(datas.deduction?.bpjskes ?? 0, 10) + parseInt(datas.deduction?.bpjstk ?? 0, 10) + parseInt(datas.deduction?.pph21 ?? 0, 10);
+                        const total_deduction = parseInt(datas.deduction?.potongan_kehadiran ?? 0, 10) + parseInt(datas.deduction?.pinjaman ?? 0, 10) + parseInt(datas.deduction?.bpjskes ?? 0, 10) + parseInt(datas.deduction?.bpjstk ?? 0, 10) + parseInt(datas.deduction?.pph21 ?? 0, 10)+ parseInt(datas.deduction?.potongan_lainnya ?? 0, 10);
                         // console.log("nama "+datas.payroll?.employee?.nama)
                         tableData.push({
                             nip: datas.master?.employee?.nip ?? "",
