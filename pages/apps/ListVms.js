@@ -96,6 +96,20 @@ const ListVms = () => {
         });
         saveAs(blob, `${fileName}.xlsx`);
     };
+    const convertTanggal = (tanggal) => {
+        if(tanggal == ""){
+            return "-";
+        }
+        const date = new Date(tanggal);
+
+        const text = `${String(date.getDate()).padStart(2, "0")}-${String(
+        date.getMonth() + 1
+        ).padStart(2, "0")}-${date.getFullYear()} ${date.getHours()}:${String(
+        date.getMinutes()
+        ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+
+        return text;
+    }
     const getPengajuan = async () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoader(true);
@@ -115,7 +129,7 @@ const ListVms = () => {
                     pengajuanArr.push({
                         // id_pengajuan: user.id_pengajuan,
                         nama_perusahaan: user.nama_perusahaan,
-                        tanggal_pengajuan: user.tanggal_pengajuan,
+                        tanggal_pengajuan: user.approvedAt,
                         alamat_perusahaan: user.alamat_perusahaan,
                         kualifikasi_usaha: user.kualifikasi_usaha?.kualifikasi,
                         klasifikasi_usaha: user.klasifikasi_usaha,
@@ -130,7 +144,7 @@ const ListVms = () => {
                     });
                     xlsxArr.push({
                         nama_perusahaan: user.nama_perusahaan,
-                        tanggal_pengajuan: user.tanggal_pengajuan,
+                        tanggal_pengajuan: convertTanggal(user.approvedAt ?? ""),
                         alamat_perusahaan: user.alamat_perusahaan,
                         kualifikasi_usaha: user.kualifikasi_usaha?.kualifikasi,
                         klasifikasi_usaha: user.klasifikasi_usaha,
