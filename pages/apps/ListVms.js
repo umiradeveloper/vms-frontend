@@ -33,6 +33,11 @@ const ListVms = () => {
             Header: "Nama Perusahaan",
             accessor: "nama_perusahaan",
         },
+
+        {
+            Header: "Tanggal Pengajuan",
+            accessor: "tanggal_pengajuan",
+        },
         {
             Header: "Alamat Perusahaan",
             accessor: "alamat_perusahaan",
@@ -110,6 +115,7 @@ const ListVms = () => {
                     pengajuanArr.push({
                         // id_pengajuan: user.id_pengajuan,
                         nama_perusahaan: user.nama_perusahaan,
+                        tanggal_pengajuan: user.tanggal_pengajuan,
                         alamat_perusahaan: user.alamat_perusahaan,
                         kualifikasi_usaha: user.kualifikasi_usaha?.kualifikasi,
                         klasifikasi_usaha: user.klasifikasi_usaha,
@@ -124,6 +130,7 @@ const ListVms = () => {
                     });
                     xlsxArr.push({
                         nama_perusahaan: user.nama_perusahaan,
+                        tanggal_pengajuan: user.tanggal_pengajuan,
                         alamat_perusahaan: user.alamat_perusahaan,
                         kualifikasi_usaha: user.kualifikasi_usaha?.kualifikasi,
                         klasifikasi_usaha: user.klasifikasi_usaha,
