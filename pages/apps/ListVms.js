@@ -150,7 +150,11 @@ const ListVms = () => {
                         klasifikasi_usaha: user.klasifikasi_usaha,
                         kategori: user.kategori,
                         spesialisasi: user.spesialisasi,
-                        kategori: user.kategori
+                        kategori: user.kategori,
+                        no_telp_pic: user.no_hp_pic ?? "",
+                        nama_pic: user.nama_pic ?? "",
+                        no_telp_direktur: user.no_hp_direktur ?? "",
+                        nama_direktur: user.nama_direktur ?? "",
                     })
                 }
                 setDatatable(pengajuanArr)
