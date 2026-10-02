@@ -10,6 +10,8 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
     const now = new Date();
     const [loaderLocal, setLoaderLocal] = useState(false);
 
+    const [lockPayroll, setLockPayroll] = useState("off");
+
     const MONTHS = [
         { value: "1", label: "Januari" },
         { value: "2", label: "Februari" },
@@ -99,7 +101,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                 { headers: authHeader() }
             );
             console.log("payroll response:", res.data);
-            console.log("first record:", res.data.data?.[0]);
+            // console.log("first record:", res.data.data?.[0]);
 
             if (res.status === 200) {
                 const data = res.data.data || [];
@@ -160,6 +162,54 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
         
     };
 
+    const generateLockPayroll = async() => {
+        setLoader(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            await apiConfig.get(
+                `${apiUrl}/HR-Payroll/lock-payslip?bulan=${bulan}&tahun=${tahun}&status=${(lockPayroll == 'off')?'on':'off'}`,
+                { headers: authHeader() }
+            );
+            Swal.fire("Berhasil", "Lock Payroll", "success");
+            setReload(p => !p);
+            setLockPayroll((lockPayroll == 'off')?'on':'off')
+        } catch (e) {
+            Swal.fire("Gagal", e.response?.data?.message, "error");
+        }finally{
+            setLoader(false);
+        }
+    }
+
+    const getGenerateLockPayroll = async() => {
+        setLoader(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        try {
+            const result = await apiConfig.get(
+                `${apiUrl}/HR-Payroll/get-lock-payslip?bulan=${bulan}&tahun=${tahun}`,
+                { headers: authHeader() }
+            );
+            if(result.status == 200){
+                if(result.data.data){
+                    if(result.data.data){
+                        setLockPayroll(result.data.data?.status ?? "off")
+                    }else{
+                        setLockPayroll("off");
+                    }
+                }else{
+                    setLockPayroll("off");
+                }
+            }
+            
+            // setReload(p => !p);
+            // setLockPayroll((lockPayroll == 'off')?'on':'off')
+        } catch (e) {
+            console.log(e);
+            Swal.fire("Gagal", e.response?.data?.message, "error");
+        }finally{
+            setLoader(false);
+        }
+    }
+
     const handleDelete = async () => {
         const confirm = await Swal.fire({
             title: "Hapus Payroll",
@@ -189,8 +239,11 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
         
     };
 
+    
+
     useEffect(() => {
         getPayroll();
+        getGenerateLockPayroll();
     }, [reload, bulan, tahun]);
 
     const bulanLabel = MONTHS.find(m => m.value === bulan)?.label;
@@ -208,12 +261,14 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
     const pendapatanBruto = (p.gaji_pokok || 0) + totalTunjangan + (p.bpjs_kesehatan || 0)+ (p.bpjs_ketenagakerjaan || 0);
     const takeHomePay = pendapatanBruto - totalPotongan;
 
+
     return (
         <>
             <LoadersSimUmira open={loaderLocal} />
             {/* ── Filter & Actions ── */}
             
             <div className="d-flex flex-wrap align-items-end gap-3 mb-3">
+                
                 <div>
                     <label className="form-label mb-1" style={{ fontSize: "12px" }}>Bulan</label>
                     <select className="form-select form-select-sm" value={bulan}
@@ -226,16 +281,23 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                     <input type="number" className="form-control form-control-sm" value={tahun}
                         onChange={(e) => setTahun(e.target.value)} style={{ width: "90px" }} />
                 </div>
+                 <div>
+                    <label className="form-label mb-1" style={{ fontSize: "12px" }}>Lock Payroll</label>
+                    <div className={`toggle toggle-success ${lockPayroll}`} onClick={generateLockPayroll}>
+                        <span></span>
+                    </div>
+                </div>
                 <div className="d-flex gap-2 ms-auto">
-                    <button className="btn btn-sm btn-success" onClick={handleGenerate}>
+                    <button className="btn btn-sm btn-success" onClick={handleGenerate} disabled={(lockPayroll == "on")?true:false}>
                         <i className="ri-calculator-line me-1" /> Generate
                     </button>
                     {datatable.length > 0 && (
-                        <button className="btn btn-sm btn-danger" onClick={handleDelete}>
+                        <button className="btn btn-sm btn-danger" onClick={handleDelete} disabled={(lockPayroll == "on")?true:false}>
                             <i className="ri-delete-bin-line me-1" /> Hapus
                         </button>
                     )}
                 </div>
+               
             </div>
 
             {/* ── Table ── */}
@@ -250,7 +312,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                         <div className="text-center py-5 text-muted">
                             <i className="ri-file-list-3-line" style={{ fontSize: "40px", opacity: 0.3 }} />
                             <p className="mt-2 mb-3">Belum ada data payroll untuk {bulanLabel} {tahun}</p>
-                            <button className="btn btn-sm btn-primary" onClick={handleGenerate}>
+                            <button className="btn btn-sm btn-primary" onClick={handleGenerate} disabled={(lockPayroll == "on")?true:false}>
                                 <i className="ri-calculator-line me-1" /> Generate Payroll Sekarang
                             </button>
                         </div>
