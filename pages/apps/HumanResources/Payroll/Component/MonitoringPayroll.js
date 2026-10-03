@@ -3,6 +3,7 @@ import { Col, Modal, Row, Button } from "react-bootstrap";
 import BasicTableCostControl from "@/pages/apps/DataTables/DataTablesCostControl";
 import apiConfig from "@/utils/AxiosConfig";
 import Swal from "sweetalert2";
+import UpdatePayrollMaster from "@/pages/apps/HumanResources/Payroll/Component/Modals/UpdatePayrollMaster";
 
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -15,10 +16,14 @@ const toCurrency = (value) => {
     }).format(Number(value));
 };
 
-const PayrollMaster = ({ loader, setLoader, reload }) => {
+const PayrollMaster = ({ loader, setLoader, reload, setReload }) => {
     const [datatable, setDataTable] = useState([]);
     const [showDetail, setShowDetail] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
+    const [openModalEdit, setOpenModalEdit] = useState({
+        open: false,
+        datas: {}
+    })
 
     const authHeader = () => ({ "Authorization": "Bearer " + localStorage.getItem("token") });
 
@@ -34,6 +39,11 @@ const PayrollMaster = ({ loader, setLoader, reload }) => {
                         className="btn btn-sm btn-primary"
                         onClick={() => { setSelectedData(row.original.rawData); setShowDetail(true); console.log(row.original.rawData); }}>
                         <i className="ri-eye-line" />
+                    </button>
+                    <button
+                        className="btn btn-sm btn-success"
+                        onClick={() => setOpenModalEdit({open: true, datas: row.original.rawData})}>
+                        <i className="ri-edit-line" />
                     </button>
                     <button
                         className="btn btn-sm btn-danger"
@@ -273,6 +283,7 @@ const PayrollMaster = ({ loader, setLoader, reload }) => {
 
     return (
         <>
+            <UpdatePayrollMaster openModal={openModalEdit} setOpenModal={setOpenModalEdit} setLoader={setLoader} loader={loader} reload={reload} setReload={setReload} />
             <div className="d-flex justify-content-end gap-2 mb-3">
                 <Button
                     variant="success"

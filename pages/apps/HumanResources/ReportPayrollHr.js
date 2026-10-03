@@ -214,6 +214,7 @@ const ReportPayrollHr = () => {
                             bank: datas.master?.employee?.bank_name ?? "",
                             akun_bank: datas.master?.employee?.bank_account ?? "",
                             nama_pemilik_bank: datas.master?.employee?.bank_account_holder ?? "",
+                            nik: datas.master?.employee?.nik ?? "",
                         })
                     }
                 }
@@ -352,6 +353,7 @@ const ReportPayrollHr = () => {
             Bank: row.bank,
             "Akun Bank": row.akun_bank,
             "Nama Pemilik Bank": row.nama_pemilik_bank,
+            "NIK": row.nik,
         }));
 
         const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -483,6 +485,7 @@ const ReportPayrollHr = () => {
             "Bank",
             "Akun Bank",
             "Pemilik Bank",
+            "NIK",
         ];
 
         // =========================
@@ -522,6 +525,7 @@ const ReportPayrollHr = () => {
             row.bank,
             row.akun_bank,
             row.nama_pemilik_bank,
+            row.nik,
         ]);
 
         // =========================

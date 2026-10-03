@@ -30,7 +30,7 @@ const Payroll = ({ loader, setLoader }) => {
                                         <Button variant="contained" color="success" onClick={() => setOpenModalAdd({ open: true })}>Tambah Master Payroll</Button>
                                     </Col>
                                     <Col xl={12}>
-                                        <PayrollMaster loader={loader} setLoader={setLoader} reload={reload} />
+                                        <PayrollMaster loader={loader} setReload={setReload} setLoader={setLoader} reload={reload} />
                                     </Col>
                                 </Tab.Pane>
                                 <Tab.Pane role="tabpanel" className="tab-pane text-muted" id="payroll" eventKey="second">
