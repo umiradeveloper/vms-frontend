@@ -265,7 +265,7 @@ const DetailProyekMos = () => {
             text: `Apakah Anda yakin ingin menghapus Material On-Site?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
+            confirmButtonColor: "#12808C",
             cancelButtonColor: "#d33",
             confirmButtonText: "Ya, hapus!",
             cancelButtonText: "Batal"

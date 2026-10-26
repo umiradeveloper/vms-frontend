@@ -318,8 +318,8 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                                     width: "56px",
                                                     height: "56px",
                                                     fontSize: "24px",
-                                                    background: "rgba(99,102,241,0.12)",
-                                                    color: "#4f46e5",
+                                                    background: "rgba(18,128,140,0.12)",
+                                                    color: "#12808C",
                                                 }}
                                             >
                                                 <i className="ri-shield-user-line"></i>
@@ -339,8 +339,8 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                         <div
                                             className="px-3 py-2 rounded-pill"
                                             style={{
-                                                background: "rgba(79,70,229,0.08)",
-                                                color: "#4f46e5",
+                                                background: "rgba(11,60,73,0.08)",
+                                                color: "#12808C",
                                                 fontWeight: 600,
                                                 fontSize: "13px",
                                             }}
@@ -368,7 +368,7 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                                             width: "120px",
                                                             height: "120px",
                                                             background:
-                                                                "radial-gradient(circle, rgba(79,70,229,0.12) 0%, rgba(79,70,229,0) 70%)",
+                                                                "radial-gradient(circle, rgba(11,60,73,0.12) 0%, rgba(11,60,73,0) 70%)",
                                                         }}
                                                     ></div>
 
@@ -381,7 +381,7 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                                                     width: "52px",
                                                                     height: "52px",
                                                                     background:
-                                                                        "linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)",
+                                                                        "linear-gradient(135deg, #0B3C49 0%, #12808C 100%)",
                                                                     color: "white",
                                                                     fontSize: "22px",
                                                                 }}
@@ -422,7 +422,7 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                                                 <div
                                                                     className="fw-semibold"
                                                                     style={{
-                                                                        color: "#4f46e5",
+                                                                        color: "#12808C",
                                                                     }}
                                                                 >
                                                                     {item.role?.kode_role}
@@ -492,7 +492,7 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                             key={item.id_question_exam}
                                             className="border-0 rounded-4 shadow-sm p-4 mb-4 bg-white"
                                             style={{
-                                                borderLeft: "6px solid #0d6efd",
+                                                borderLeft: "6px solid #2393C4",
                                             }}
                                         >
                                             {/* HEADER */}
@@ -509,7 +509,7 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                                             color:
                                                                 item.question_type ===
                                                                     "multiple_choice"
-                                                                    ? "#0d6efd"
+                                                                    ? "#2393C4"
                                                                     : "#198754",
                                                             padding:
                                                                 "8px 14px",
@@ -532,7 +532,7 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                                     className="px-3 py-2 rounded-3"
                                                     style={{
                                                         background:
-                                                            "linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%)",
+                                                            "linear-gradient(135deg, #2393C4 0%, #17698F 100%)",
                                                         color: "white",
                                                         minWidth: "90px",
                                                         textAlign: "center",
@@ -558,7 +558,7 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                                 className="p-4 rounded-4 mb-4"
                                                 style={{
                                                     background:
-                                                        "linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%)",
+                                                        "linear-gradient(135deg, #f8fafc 0%, #E6F4F5 100%)",
                                                 }}
                                             >
                                                 <div className="d-flex align-items-start gap-3">
@@ -568,7 +568,7 @@ const DetailExam = ({ openModal, setOpenModal }) => {
                                                             width: "42px",
                                                             height: "42px",
                                                             background:
-                                                                "linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%)",
+                                                                "linear-gradient(135deg, #2393C4 0%, #17698F 100%)",
                                                             color: "white",
                                                             fontWeight: 700,
                                                             flexShrink: 0,

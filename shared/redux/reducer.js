@@ -10,7 +10,7 @@ const UPDATE_CART_QUANTITY = "UPDATE_CART_QUANTITY";
 const initialState = {
     lang: "en",
     dir: "ltr",
-    dataMenuStyles: "light",
+    dataMenuStyles: "dark",
     dataThemeMode: "light",
     dataNavLayout: "vertical",
     dataNavStyle: "menu-click",

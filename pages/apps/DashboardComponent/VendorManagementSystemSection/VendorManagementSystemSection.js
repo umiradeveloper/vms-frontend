@@ -230,14 +230,14 @@ const VendorManagementSystemSection = ({ loader, setLoader }) => {
                                                 height: "90px",
                                                 borderRadius: "50%",
                                                 background:
-                                                    "linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%)",
+                                                    "linear-gradient(135deg, #E6F4F5 0%, #FBF5E9 100%)",
                                             }}
                                         >
                                             <i
                                                 className="ti ti-database-off"
                                                 style={{
                                                     fontSize: "42px",
-                                                    color: "#6366f1",
+                                                    color: "#12808C",
                                                 }}
                                             />
                                         </div>
@@ -292,14 +292,14 @@ const VendorManagementSystemSection = ({ loader, setLoader }) => {
                                                 height: "90px",
                                                 borderRadius: "50%",
                                                 background:
-                                                    "linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%)",
+                                                    "linear-gradient(135deg, #E6F4F5 0%, #FBF5E9 100%)",
                                             }}
                                         >
                                             <i
                                                 className="ti ti-database-off"
                                                 style={{
                                                     fontSize: "42px",
-                                                    color: "#6366f1",
+                                                    color: "#12808C",
                                                 }}
                                             />
                                         </div>

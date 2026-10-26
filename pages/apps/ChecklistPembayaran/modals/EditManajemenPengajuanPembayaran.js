@@ -591,7 +591,7 @@ const EditManajemenPengajuanPembayaran = ({ openModal, setOpenModal, loader, set
                                                             ? "linear-gradient(90deg,#16a34a,#22c55e)"
                                                             : item.checklist == 2
                                                                 ? "linear-gradient(90deg,#dc2626,#ef4444)"
-                                                                : "linear-gradient(90deg,#2563eb,#3b82f6)"
+                                                                : "linear-gradient(90deg,#17698F,#2393C4)"
                                                 }}
                                             />
 

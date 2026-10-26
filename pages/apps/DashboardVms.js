@@ -26,7 +26,7 @@ const DashboardVms = () => {
                         style={{
                             borderRadius: "28px",
                             background:
-                                "linear-gradient(135deg, #6259ca 0%, #4b6cb7 100%)",
+                                "linear-gradient(135deg, #0B3C49 0%, #12808C 60%, #1FB5B5 100%)",
                         }}
                     >
                         <Card.Body className="p-0">

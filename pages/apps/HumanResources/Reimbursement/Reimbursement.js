@@ -24,9 +24,9 @@ const jenisLabel = {
 
 const bottomTabStyle = (active, key) => ({
     backgroundColor: active === key ? "#eeeeff" : "transparent",
-    color: active === key ? "#6259ca" : "#888",
+    color: active === key ? "#12808C" : "#888",
     border: "1px solid",
-    borderColor: active === key ? "#6259ca" : "transparent",
+    borderColor: active === key ? "#12808C" : "transparent",
     borderRadius: "8px",
     fontWeight: active === key ? "500" : "400",
 });

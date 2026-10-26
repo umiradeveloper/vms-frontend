@@ -287,7 +287,7 @@ const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload
                             className="p-4"
                             style={{
                                 background:
-                                    "linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%)",
+                                    "linear-gradient(135deg, #f8fafc 0%, #E6F4F5 100%)",
                                 borderRadius: "18px",
                                 border: "1px solid #e5e7eb",
                                 boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
@@ -301,7 +301,7 @@ const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload
                                         height: "36px",
                                         borderRadius: "12px",
                                         background:
-                                            "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                                            "linear-gradient(135deg, #12808C 0%, #1FB5B5 100%)",
                                     }}
                                 >
                                     <i
@@ -350,7 +350,7 @@ const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload
                                     height: "42px",
                                     borderRadius: "14px",
                                     background:
-                                        "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                                        "linear-gradient(135deg, #12808C 0%, #1FB5B5 100%)",
                                 }}
                             >
                                 <i
@@ -407,7 +407,7 @@ const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload
                                                         ? "#22c55e"
                                                         : p.status_approver === "Rejected"
                                                             ? "#ef4444"
-                                                            : "#6366f1",
+                                                            : "#12808C",
                                                 color: "white",
                                                 fontWeight: "bold",
                                                 boxShadow:
@@ -451,13 +451,13 @@ const DetailMonitoringBk = ({ openModal, setOpenModal, loader, setLoader, reload
                                                                 ? "rgba(34,197,94,0.12)"
                                                                 : p.status_approver === "Rejected"
                                                                     ? "rgba(239,68,68,0.12)"
-                                                                    : "rgba(99,102,241,0.12)",
+                                                                    : "rgba(18,128,140,0.12)",
                                                         color:
                                                             p.status_approver === "Approved"
                                                                 ? "#16a34a"
                                                                 : p.status_approver === "Rejected"
                                                                     ? "#dc2626"
-                                                                    : "#4f46e5",
+                                                                    : "#12808C",
                                                     }}
                                                 >
                                                     {p.status_approver}

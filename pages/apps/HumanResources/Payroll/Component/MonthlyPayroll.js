@@ -350,7 +350,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                     <Row className="g-2 mb-3">
                         {[
                             { label: "Kehadiran", value: p.hari_kerja || 0, color: "#22c55e" },
-                            { label: "Izin", value: p.hari_izin || 0, color: "#6366f1" },
+                            { label: "Izin", value: p.hari_izin || 0, color: "#12808C" },
                             { label: "Sakit", value: p.hari_sakit || 0, color: "#f59e0b" },
                             { label: "Alpha", value: p.hari_alpha || 0, color: "#ef4444" },
                         ].map((s, i) => (
@@ -412,7 +412,7 @@ const MonthlyPayroll = ({ loader, setLoader }) => {
                     </Row>
 
                     {/* Take Home Pay */}
-                    <div className="mt-3 p-3 rounded text-center" style={{ background: "#6259ca", color: "#fff" }}>
+                    <div className="mt-3 p-3 rounded text-center" style={{ background: "#12808C", color: "#fff" }}>
                         <p className="mb-0" style={{ fontSize: "12px", opacity: 0.8 }}>TAKE HOME PAY</p>
                         <h4 className="mb-0 fw-bold">{toCurrency(takeHomePay)}</h4>
                     </div>

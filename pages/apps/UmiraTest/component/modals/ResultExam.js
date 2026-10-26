@@ -338,8 +338,8 @@ const ResultExam = ({ openModal, setOpenModal }) => {
                                                     width: "56px",
                                                     height: "56px",
                                                     fontSize: "24px",
-                                                    background: "rgba(99,102,241,0.12)",
-                                                    color: "#4f46e5",
+                                                    background: "rgba(18,128,140,0.12)",
+                                                    color: "#12808C",
                                                 }}
                                             >
                                                 <i className="ri-shield-user-line"></i>
@@ -359,8 +359,8 @@ const ResultExam = ({ openModal, setOpenModal }) => {
                                         <div
                                             className="px-3 py-2 rounded-pill"
                                             style={{
-                                                background: "rgba(79,70,229,0.08)",
-                                                color: "#4f46e5",
+                                                background: "rgba(11,60,73,0.08)",
+                                                color: "#12808C",
                                                 fontWeight: 600,
                                                 fontSize: "13px",
                                             }}
@@ -388,7 +388,7 @@ const ResultExam = ({ openModal, setOpenModal }) => {
                                                             width: "120px",
                                                             height: "120px",
                                                             background:
-                                                                "radial-gradient(circle, rgba(79,70,229,0.12) 0%, rgba(79,70,229,0) 70%)",
+                                                                "radial-gradient(circle, rgba(11,60,73,0.12) 0%, rgba(11,60,73,0) 70%)",
                                                         }}
                                                     ></div>
 
@@ -401,7 +401,7 @@ const ResultExam = ({ openModal, setOpenModal }) => {
                                                                     width: "52px",
                                                                     height: "52px",
                                                                     background:
-                                                                        "linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)",
+                                                                        "linear-gradient(135deg, #0B3C49 0%, #12808C 100%)",
                                                                     color: "white",
                                                                     fontSize: "22px",
                                                                 }}
@@ -442,7 +442,7 @@ const ResultExam = ({ openModal, setOpenModal }) => {
                                                                 <div
                                                                     className="fw-semibold"
                                                                     style={{
-                                                                        color: "#4f46e5",
+                                                                        color: "#12808C",
                                                                     }}
                                                                 >
                                                                     {item.role?.kode_role}
