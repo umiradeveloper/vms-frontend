@@ -54,7 +54,7 @@ const jenisReimbursementLabel = {
 };
 
 const tabStyle = (active, key) => ({
-    backgroundColor: active === key ? "#12808C" : "transparent",
+    backgroundColor: active === key ? "#0A5A70" : "transparent",
     color: active === key ? "#fff" : "",
 });
 

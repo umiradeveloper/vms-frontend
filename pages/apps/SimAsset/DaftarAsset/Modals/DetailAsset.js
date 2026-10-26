@@ -93,7 +93,7 @@ const DetailAsset = ({ openModal, setOpenModal }) => {
                     className="p-4 text-white"
                     style={{
                         background:
-                            "linear-gradient(135deg,#0B3C49 0%, #12808C 100%)"
+                            "linear-gradient(135deg,#063B4A 0%, #0A5A70 100%)"
                     }}
                 >
                     <div className="d-flex justify-content-between align-items-center">

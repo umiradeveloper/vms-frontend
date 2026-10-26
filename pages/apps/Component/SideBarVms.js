@@ -778,12 +778,12 @@ const SideBarVmsClient = ({ local_varaiable, ThemeChanger }) => {
 			<aside className="app-sidebar sticky bg-white" id="sidebar" onMouseEnter={() => Onhover()} onMouseLeave={() => Outhover()}>
 				<div className="main-sidebar-header">
 					<Link className="header-logo" href={"/apps/DashboardVms"}>
-						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira2.png`} alt="Umira Sinergi Global" className="desktop-logo" />
-						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-sg-icon.png`} alt="Umira Sinergi Global" className="toggle-logo" />
-						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira2.png`} alt="Umira Sinergi Global" className="desktop-dark" />
-						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-sg-icon.png`} alt="Umira Sinergi Global" className="toggle-dark" />
-						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira2.png`} alt="Umira Sinergi Global" className="desktop-white" />
-						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-sg-icon.png`} alt="Umira Sinergi Global" className="toggle-white" />
+						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-trim.png`} alt="Umira" className="desktop-logo" />
+						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-icon.png`} alt="Umira" className="toggle-logo" />
+						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-trim.png`} alt="Umira" className="desktop-dark" />
+						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-icon.png`} alt="Umira" className="toggle-dark" />
+						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-trim.png`} alt="Umira" className="desktop-white" />
+						<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-icon.png`} alt="Umira" className="toggle-white" />
 					</Link>
 				</div>
 

@@ -45,7 +45,7 @@ const DaftarSatuan = () => {
             text: `Apakah Anda yakin ingin menghapus satuan '${item.nama_satuan}'?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#12808C",
+            confirmButtonColor: "#0A5A70",
             cancelButtonColor: "#d33",
             confirmButtonText: "Ya, hapus!",
             cancelButtonText: "Batal"
@@ -87,7 +87,7 @@ const DaftarSatuan = () => {
             text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#12808C",
+            confirmButtonColor: "#0A5A70",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!",
             });

@@ -121,7 +121,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                             width:220px;
                             height:220px;
                             border-radius:50%;
-                            background:rgba(31,181,181,0.08);
+                            background:rgba(47,143,166,0.08);
                             top:-100px;
                             right:-80px;
                         "></div>
@@ -130,7 +130,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                         <div style="
                             position:relative;
                             padding:22px 24px;
-                            background:linear-gradient(135deg,#1FB5B5 0%,#12808C 100%);
+                            background:linear-gradient(135deg,#2F8FA6 0%,#0A5A70 100%);
                             color:white;
                         ">
     
@@ -267,10 +267,10 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                             margin-bottom:25px;
                             padding:24px;
                             border-radius:24px;
-                            background:linear-gradient(135deg,#0B3C49 0%,#12808C 100%);
+                            background:linear-gradient(135deg,#063B4A 0%,#0A5A70 100%);
                             color:white;
                             overflow:hidden;
-                            box-shadow:0 10px 30px rgba(11,60,73,0.25);
+                            box-shadow:0 10px 30px rgba(6,59,74,0.25);
                         ">
     
                             <div style="
@@ -788,7 +788,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                                                     <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
                                                         style={{
                                                             background:
-                                                                "linear-gradient(135deg, #2393C4 0%, #0B3C49 100%)"
+                                                                "linear-gradient(135deg, #2A87A8 0%, #063B4A 100%)"
                                                         }}
                                                     >
 
@@ -819,7 +819,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                                                     <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
                                                         style={{
                                                             background:
-                                                                "linear-gradient(135deg, #2393C4 0%, #17698F 100%)"
+                                                                "linear-gradient(135deg, #2A87A8 0%, #0A5A70 100%)"
                                                         }}
                                                     >
 
@@ -848,7 +848,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                                                     <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
                                                         style={{
                                                             background:
-                                                                "linear-gradient(135deg, #E3B04B 0%, #B07614 100%)"
+                                                                "linear-gradient(135deg, #C98552 0%, #A65A2A 100%)"
                                                         }}
                                                     >
 
@@ -879,7 +879,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                                                     <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
                                                         style={{
                                                             background:
-                                                                "linear-gradient(135deg, #F0C66B 0%, #B07614 100%)"
+                                                                "linear-gradient(135deg, #D9A27A 0%, #A65A2A 100%)"
                                                         }}
                                                     >
 
@@ -1224,7 +1224,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                                                             className="position-relative overflow-hidden rounded-4 p-4 h-100 border-0"
                                                             style={{
                                                                 background:
-                                                                    "linear-gradient(135deg, #E3B04B 0%, #B07614 100%)",
+                                                                    "linear-gradient(135deg, #C98552 0%, #A65A2A 100%)",
                                                                 boxShadow: "0 10px 30px rgba(245,158,11,0.25)",
                                                             }}
                                                         >
@@ -1351,7 +1351,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                                                             ? "linear-gradient(90deg,#16a34a,#22c55e)"
                                                             : item.checklist == 2
                                                                 ? "linear-gradient(90deg,#dc2626,#ef4444)"
-                                                                : "linear-gradient(90deg,#17698F,#2393C4)"
+                                                                : "linear-gradient(90deg,#0A5A70,#2A87A8)"
                                                 }}
                                             />
 
@@ -1551,7 +1551,7 @@ const DetailApprovalChecklistPembayaranProyek = ({ openModal, setOpenModal, load
                                                                     ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
                                                                     : showData.layak_bayar == "Tidak Layak Bayar"
                                                                         ? "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"
-                                                                        : "linear-gradient(135deg, #2393C4 0%, #17698F 100%)",
+                                                                        : "linear-gradient(135deg, #2A87A8 0%, #0A5A70 100%)",
                                                             boxShadow:
                                                                 "0 10px 30px rgba(0,0,0,0.12)",
                                                         }}

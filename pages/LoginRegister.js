@@ -234,7 +234,7 @@ const LoginRegister = () => {
 
 											<Col lg={6} xl={5} className="d-none d-lg-block text-center bg-primary details border-end umira-login-panel" style={{ borderRight: "1px solid rgba(255,255,255,0.3)" }}>
 												<div className="mt-5 pt-4 p-2 position-absolute">
-													<Link href={"/apps/DashboardVms"}><img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira2.png`} className="header-brand-img mb-4" alt="Umira Sinergi Global" /></Link>
+													<Link href={"/apps/DashboardVms"}><img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-trim.png`} className="header-brand-img mb-4" alt="Umira" /></Link>
 													<div className="clearfix"></div>
 													{/* <img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/svgs/user.svg`} className="ht-100 mb-0" alt="user" /> */}
 													<h5 className="mt-4">Information Management System</h5>
@@ -245,8 +245,8 @@ const LoginRegister = () => {
 												<div className="main-container container-fluid">
 													<Row className="row-sm">
 														<Card.Body className="mt-2 mb-2">
-															<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-sg-icon.png`} style={{ height: "3.5rem" }} className="d-lg-none header-brand-img text-start float-start mb-4 error-logo-light" alt="logo" />
-															<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-sg-icon.png`} style={{ height: "3.5rem" }} className="d-lg-none header-brand-img text-start float-start mb-4 error-logo" alt="logo" />
+															<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-trim.png`} style={{ height: "2.75rem" }} className="d-lg-none header-brand-img text-start float-start mb-4 error-logo-light" alt="logo" />
+															<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-trim.png`} style={{ height: "2.75rem" }} className="d-lg-none header-brand-img text-start float-start mb-4 error-logo" alt="logo" />
 															<div className="clearfix"></div>
 															<form>
 																<h5 className="text-start mb-2">Sign In to Your Account</h5>
@@ -304,7 +304,7 @@ const LoginRegister = () => {
 
 											<Col lg={6} xl={5} className="d-none d-lg-block text-center bg-primary details umira-login-panel">
 												<div className="mt-5 pt-5 p-2 position-absolute">
-													<Link href={"/apps/DashboardVms"}><img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira2.png`} className="header-brand-img mb-4" alt="Umira Sinergi Global" /></Link>
+													<Link href={"/apps/DashboardVms"}><img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-trim.png`} className="header-brand-img mb-4" alt="Umira" /></Link>
 													<div className="clearfix"></div>
 													{/* <img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/svgs/user.svg`} className="ht-100 mb-0" alt="user" /> */}
 													<h5 className="mt-4">Register Your Account</h5>
@@ -315,7 +315,7 @@ const LoginRegister = () => {
 												<div className="main-container container-fluid">
 													<Row className="row-sm">
 														<Card.Body className="mt-2 mb-2">
-															<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-sg-icon.png`} style={{ height: "3.5rem" }} className="d-lg-none header-brand-img text-start float-start mb-4 error-logo-light" alt="logo" />
+															<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira-trim.png`} style={{ height: "2.75rem" }} className="d-lg-none header-brand-img text-start float-start mb-4 error-logo-light" alt="logo" />
 															<img src={`${process.env.NODE_ENV === "production" ? basePath : ""}/assets/images/brand-logos/logo-umira.png`} className=" d-lg-none header-brand-img text-start float-start mb-4 error-logo" alt="logo" />
 															<div className="clearfix"></div>
 															<h5 className="text-start mb-2">Register Account</h5>

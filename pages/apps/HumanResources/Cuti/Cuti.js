@@ -42,9 +42,9 @@ const jenisCutiLabel = {
 
 const bottomTabStyle = (active, key) => ({
     backgroundColor: active === key ? "#eeeeff" : "transparent",
-    color: active === key ? "#12808C" : "#888",
+    color: active === key ? "#0A5A70" : "#888",
     border: "1px solid",
-    borderColor: active === key ? "#12808C" : "transparent",
+    borderColor: active === key ? "#0A5A70" : "transparent",
     borderRadius: "8px",
     fontWeight: active === key ? "500" : "400",
 });

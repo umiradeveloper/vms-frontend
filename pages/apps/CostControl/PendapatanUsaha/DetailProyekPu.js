@@ -260,7 +260,7 @@ const DetailProyekPu = () => {
             text: `Apakah Anda yakin ingin menghapus Pendapatan Usaha?`,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#12808C",
+            confirmButtonColor: "#0A5A70",
             cancelButtonColor: "#d33",
             confirmButtonText: "Ya, hapus!",
             cancelButtonText: "Batal"

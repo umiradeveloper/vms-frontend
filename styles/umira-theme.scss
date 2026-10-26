@@ -1,116 +1,119 @@
 // =====================================================================
-//  UMIRA SINERGI GLOBAL — Brand Theme
-//  Palet diambil dari logo Umira Sinergi Global:
-//    Navy Teal   #0B3C49  (bola/globe gelap)
-//    Teal        #12808C  (warna utama / primary)
-//    Turquoise   #1FB5B5  (aksen swoosh)
-//    Ocean Blue  #2393C4  (swoosh biru)
-//    Gold        #C98A1E  (huruf "A" emas)
-//    Silver      #C9CFD6  (huruf "umir" perak)
-//  File ini di-load paling akhir (styles/globals.scss) sehingga
-//  menimpa warna bawaan template Spruha.
+//  UMIRA — Brand Theme (Construction . Development . Investment)
+//  Palet diambil dari logo Umira:
+//    Teal Umira   #0A5A70  (huruf "umira" — warna utama)
+//    Teal Deep    #063B4A  (gradasi bawah huruf)
+//    Teal Soft    #2F8FA6  (aksen ringan)
+//    Copper       #A65A2A  (ornamen bintang — aksen)
+//    Copper Light #C98552
+//  Gaya: simpel & bersih — latar terang, sidebar putih, aksen tembaga tipis.
+//  File ini di-load paling akhir (styles/globals.scss).
 // =====================================================================
 
-$umira-navy:       #0B3C49;
-$umira-navy-deep:  #072A33;
-$umira-teal:       #12808C;
-$umira-turquoise:  #1FB5B5;
-$umira-ocean:      #2393C4;
-$umira-gold:       #C98A1E;
-$umira-gold-light: #E3B04B;
-$umira-silver:     #C9CFD6;
-$umira-slate:      #5B7480;
+$umira-teal:         #0A5A70;
+$umira-teal-deep:    #063B4A;
+$umira-teal-soft:    #2F8FA6;
+$umira-teal-tint:    #E7F1F4;
+$umira-copper:       #A65A2A;
+$umira-copper-light: #C98552;
+$umira-copper-tint:  #F8EFE8;
+$umira-ink:          #1E2F36;
+$umira-slate:        #5E717A;
 
 // ---------------------------------------------------------------------
-// 1. Token warna global (light mode)
+// 1. Token warna (light mode)
 // ---------------------------------------------------------------------
 :root,
 html[data-theme-mode="light"] {
-	--umira-navy:       #{$umira-navy};
-	--umira-navy-deep:  #{$umira-navy-deep};
-	--umira-teal:       #{$umira-teal};
-	--umira-turquoise:  #{$umira-turquoise};
-	--umira-ocean:      #{$umira-ocean};
-	--umira-gold:       #{$umira-gold};
-	--umira-gold-light: #{$umira-gold-light};
-	--umira-silver:     #{$umira-silver};
-	--umira-gradient:      linear-gradient(135deg, #{$umira-navy} 0%, #{$umira-teal} 60%, #{$umira-turquoise} 100%);
-	--umira-gradient-gold: linear-gradient(135deg, #{$umira-gold-light} 0%, #{$umira-gold} 100%);
+	--umira-teal:         #{$umira-teal};
+	--umira-teal-deep:    #{$umira-teal-deep};
+	--umira-teal-soft:    #{$umira-teal-soft};
+	--umira-teal-tint:    #{$umira-teal-tint};
+	--umira-copper:       #{$umira-copper};
+	--umira-copper-light: #{$umira-copper-light};
+	--umira-copper-tint:  #{$umira-copper-tint};
+	--umira-gradient:        linear-gradient(135deg, #{$umira-teal-deep} 0%, #{$umira-teal} 55%, #{$umira-teal-soft} 100%);
+	--umira-gradient-copper: linear-gradient(135deg, #{$umira-copper-light} 0%, #{$umira-copper} 100%);
 
-	--secondary-rgb:  91, 116, 128;   // slate-silver (tombol Close / Batal)
-	--info-rgb:       35, 147, 196;   // ocean blue
-	--warning-rgb:    214, 150, 40;   // gold-amber
-	--success-rgb:    22, 160, 110;
-	--danger-rgb:     220, 76, 92;
-	--teal-rgb:       31, 181, 181;
-	--dark-rgb:       11, 60, 73;     // btn-dark = navy Umira
+	--secondary-rgb: 94, 113, 122;   // slate (tombol Close / Batal)
+	--info-rgb:      42, 135, 168;   // teal-biru lembut
+	--warning-rgb:   208, 138, 46;   // amber-tembaga
+	--success-rgb:   46, 139, 106;
+	--danger-rgb:    200, 80, 90;
+	--teal-rgb:      47, 143, 166;
+	--dark-rgb:      6, 59, 74;      // btn-dark = teal gelap
 
-	--body-bg-rgb:        238, 243, 245;
-	--light-rgb:          238, 243, 245;
-	--default-background: #eef3f5;
-	--default-text-color: #17313a;
-	--default-border:     #dfe8eb;
-	--bootstrap-card-border: #dfe8eb;
-	--list-hover-focus-bg:#eaf4f5;
-	--text-muted:         #6b8089;
-	--input-border:       #d9e4e8;
+	--body-bg-rgb:        245, 247, 248;
+	--light-rgb:          240, 244, 245;
+	--default-background: #f5f7f8;
+	--default-text-color: #{$umira-ink};
+	--default-border:     #e4eaec;
+	--bootstrap-card-border: #e8edef;
+	--list-hover-focus-bg:   #f0f5f6;
+	--text-muted:         #73858c;
+	--input-border:       #dde5e8;
 
-	--header-prime-color:  #3d5a64;
-	--header-border-color: #e3ebee;
-	--sidemenu-active-bgcolor: rgb(238, 243, 245);
+	--header-prime-color:  #4a5f68;
+	--header-border-color: #e8edef;
+	--sidemenu-active-bgcolor: rgb(245, 247, 248);
 }
 
 // Warna utama dikunci ke teal Umira (menimpa pilihan warna lama di switcher)
 html,
 html[style] {
-	--primary-rgb: 18, 128, 140 !important;
+	--primary-rgb: 10, 90, 112 !important;
 }
 
 // ---------------------------------------------------------------------
-// 2. Dark mode — tetap dalam nuansa navy Umira
+// 2. Dark mode
 // ---------------------------------------------------------------------
 html[data-theme-mode="dark"] {
-	--body-bg-rgb:  9, 30, 37;
-	--custom-white: rgb(9, 30, 37);
-	--form-control-bg: #0c2630;
-	--input-border: #1d3d48;
-	--light-rgb: 22, 50, 60;
-	--dark-rgb: 230, 240, 243;
-	--default-text-color: #d6e4e8;
-	--sidemenu-active-bgcolor: rgb(9, 30, 37);
-	--primary-rgb: 31, 181, 181 !important; // turquoise agar kontras di latar gelap
+	--body-bg-rgb:  13, 27, 32;
+	--custom-white: rgb(13, 27, 32);
+	--form-control-bg: #12262d;
+	--input-border: #22393f;
+	--light-rgb: 26, 44, 50;
+	--dark-rgb: 230, 238, 240;
+	--default-text-color: #d7e2e5;
+	--sidemenu-active-bgcolor: rgb(13, 27, 32);
+	--primary-rgb: 63, 160, 184 !important; // teal lebih terang agar kontras
 }
 
 // ---------------------------------------------------------------------
-// 3. Sidebar navy dengan aksen emas
+// 3. Sidebar putih bersih
 // ---------------------------------------------------------------------
 html[data-menu-styles],
-html[data-menu-styles][data-theme-mode] {
-	--menu-bg: #{$umira-navy};
-	--menu-prime-color: rgba(214, 228, 232, 0.78);
-	--menu-border-color: rgba(255, 255, 255, 0.08);
+html[data-menu-styles][data-theme-mode="light"] {
+	--menu-bg: #ffffff;
+	--menu-prime-color: #4a5f68;
+	--menu-border-color: #edf1f2;
 }
 html[data-menu-styles][data-theme-mode="dark"] {
-	--menu-bg: #{$umira-navy-deep};
+	--menu-bg: #10232a;
+	--menu-prime-color: rgba(215, 226, 229, 0.75);
+	--menu-border-color: rgba(255, 255, 255, 0.06);
 }
 
-.app-sidebar {
+html .app-sidebar {
 	background: var(--menu-bg);
-	box-shadow: 4px 0 24px rgba(7, 42, 51, 0.12);
+	border-inline-end: 1px solid var(--menu-border-color);
+	box-shadow: none;
 
 	.main-sidebar-header {
 		background: var(--menu-bg);
-		border-block-end: 1px solid rgba(201, 138, 30, 0.35);
-
+		border-block-end: 1px solid var(--menu-border-color);
 		.header-logo img {
-			height: 2.6rem;
+			height: 2.25rem;
+			width: auto;
 			object-fit: contain;
 		}
 	}
 
-	.slide__category {
-		color: $umira-gold-light;
-		opacity: 0.85;
+	.slide__category,
+	.slide__category .category-name {
+		color: $umira-copper;
+		opacity: 1;
+		font-weight: 600;
 		letter-spacing: 0.08rem;
 	}
 
@@ -118,59 +121,53 @@ html[data-menu-styles][data-theme-mode="dark"] {
 	.side-menu__item:hover .side-menu__label,
 	.side-menu__item:hover .side-menu__icon,
 	.side-menu__item:hover .side-menu__angle {
-		color: #fff;
-		fill: #fff;
+		color: $umira-teal !important;
+		fill: $umira-teal !important;
 	}
 
 	.slide-menu .side-menu__item.active,
-	.slide-menu .side-menu__item.active .side-menu__label {
-		color: $umira-gold-light !important;
-	}
+	.slide-menu .side-menu__item.active .side-menu__label,
 	.slide-menu .side-menu__item.active:before {
-		color: $umira-gold-light !important;
+		color: $umira-copper !important;
 		opacity: 1;
 	}
+	.side-menu__label1 a {
+		color: $umira-ink;
+	}
+}
+html[data-theme-mode="dark"] .app-sidebar .side-menu__item:hover .side-menu__label,
+html[data-theme-mode="dark"] .app-sidebar .side-menu__item:hover .side-menu__icon {
+	color: #fff !important;
 }
 
-// Item menu aktif (tab melengkung) — label teal, ikon bulat gradasi Umira + cincin emas
+// Item menu aktif: tab menyatu dengan latar, label teal, ikon bulat teal + cincin tembaga
 html[data-nav-layout="vertical"] .app-sidebar .main-sidebar .slide.active > .side-menu__item .side-menu__label,
 html[data-nav-layout="vertical"] .app-sidebar .main-sidebar .slide.active > .side-menu__item .side-menu__angle {
 	color: var(--primary-color) !important;
 	font-weight: 600;
 }
 html[data-nav-layout="vertical"] .app-sidebar .main-sidebar .slide.active > .side-menu__item .side-menu__icon {
-	background: var(--umira-gradient) !important;
+	background: var(--primary-color) !important;
 	color: #fff !important;
 	fill: #fff !important;
-	box-shadow: 0 0 0 2px rgba(201, 138, 30, 0.55), 0 6px 14px rgba(11, 60, 73, 0.3) !important;
-}
-// Sub-menu di dalam tab aktif berlatar terang → teks gelap agar terbaca
-html[data-nav-layout="vertical"] .app-sidebar .main-sidebar .slide.active .slide-menu .side-menu__item {
-	color: rgba(214, 228, 232, 0.78);
-}
-
-// Header horizontal (jika layout horizontal dipakai)
-html[data-nav-layout="horizontal"] .app-sidebar .side-menu__item.active,
-html[data-nav-layout="horizontal"] .app-sidebar .side-menu__item.active .side-menu__label,
-html[data-nav-layout="horizontal"] .app-sidebar .side-menu__item.active .side-menu__icon {
-	color: $umira-gold-light !important;
-	fill: $umira-gold-light !important;
+	box-shadow: 0 0 0 2px rgba(166, 90, 42, 0.45), 0 4px 10px rgba(10, 90, 112, 0.2) !important;
 }
 
 // ---------------------------------------------------------------------
-// 4. Header atas — putih bersih dengan garis aksen brand
+// 4. Header — putih, garis aksen tipis teal → tembaga
 // ---------------------------------------------------------------------
 .app-header {
-	border-block-end: 0;
-	box-shadow: 0 2px 14px rgba(11, 60, 73, 0.06);
+	border-block-end: 1px solid var(--header-border-color);
+	box-shadow: none;
 
 	&::after {
 		content: "";
 		position: absolute;
 		inset-inline: 0;
-		inset-block-end: 0;
-		height: 3px;
-		background: linear-gradient(90deg, #{$umira-navy} 0%, #{$umira-teal} 45%, #{$umira-turquoise} 75%, #{$umira-gold} 100%);
+		inset-block-end: -1px;
+		height: 2px;
+		background: linear-gradient(90deg, #{$umira-teal} 0%, #{$umira-teal-soft} 60%, #{$umira-copper-light} 100%);
+		opacity: 0.85;
 		pointer-events: none;
 	}
 }
@@ -181,40 +178,44 @@ html[data-nav-layout="horizontal"] .app-sidebar .side-menu__item.active .side-me
 body {
 	color: var(--default-text-color);
 }
-
 a {
 	color: var(--primary-color);
 }
 a:hover {
-	color: $umira-navy;
+	color: $umira-teal-deep;
 }
 
-// Judul halaman & breadcrumb
 .page-header .main-content-title,
 .page-title {
-	color: $umira-navy;
+	color: $umira-teal-deep;
 	font-weight: 700;
 }
-html[data-theme-mode="dark"] .page-header .main-content-title,
-html[data-theme-mode="dark"] .page-title {
-	color: #e6f2f4;
-}
 .breadcrumb-item.active {
-	color: var(--primary-color);
+	color: $umira-copper;
 }
 
-// Kartu
 .card {
-	border-color: var(--bootstrap-card-border);
-	box-shadow: 0 4px 18px rgba(11, 60, 73, 0.05);
+	border: 1px solid var(--bootstrap-card-border);
+	box-shadow: 0 1px 2px rgba(6, 59, 74, 0.04), 0 6px 20px rgba(6, 59, 74, 0.04);
 }
-.card .card-header .card-title {
-	color: $umira-navy;
-	font-weight: 600;
-	position: relative;
+.card .card-header {
+	border-block-end: 1px solid var(--default-border);
+	.card-title {
+		color: $umira-teal-deep;
+		font-weight: 600;
+	}
 }
-html[data-theme-mode="dark"] .card .card-header .card-title {
-	color: #e6f2f4;
+
+html[data-theme-mode="dark"] {
+	.page-header .main-content-title,
+	.page-title,
+	.card .card-header .card-title,
+	.modal-header .modal-title {
+		color: #e6eef0;
+	}
+	.table thead th {
+		color: #cfdde1;
+	}
 }
 
 // Tombol
@@ -225,8 +226,8 @@ html[data-theme-mode="dark"] .card .card-header .card-title {
 	&:focus,
 	&:active,
 	&.active {
-		background: $umira-navy !important;
-		border-color: $umira-navy !important;
+		background: $umira-teal-deep !important;
+		border-color: $umira-teal-deep !important;
 		color: #fff !important;
 	}
 }
@@ -239,8 +240,8 @@ html[data-theme-mode="dark"] .card .card-header .card-title {
 	}
 }
 .btn-dark {
-	background: $umira-navy;
-	border-color: $umira-navy;
+	background: $umira-teal-deep;
+	border-color: $umira-teal-deep;
 	color: #fff;
 	&:hover,
 	&:focus {
@@ -249,13 +250,13 @@ html[data-theme-mode="dark"] .card .card-header .card-title {
 		color: #fff !important;
 	}
 }
-.btn-gold,
-.btn-umira-gold {
-	background: var(--umira-gradient-gold);
-	border: 0;
+.btn-copper,
+.btn-umira-copper {
+	background: $umira-copper;
+	border-color: $umira-copper;
 	color: #fff;
 	&:hover {
-		filter: brightness(0.95);
+		background: darken($umira-copper, 6%);
 		color: #fff;
 	}
 }
@@ -263,22 +264,22 @@ html[data-theme-mode="dark"] .card .card-header .card-title {
 	background: var(--umira-gradient) !important;
 	color: #fff;
 }
-.text-umira-gold {
-	color: $umira-gold !important;
+.text-umira-copper {
+	color: $umira-copper !important;
 }
 
-// Form fokus
+// Form
 .form-control:focus,
 .form-select:focus {
-	border-color: rgba(18, 128, 140, 0.55);
-	box-shadow: 0 0 0 0.2rem rgba(18, 128, 140, 0.15);
+	border-color: rgba(10, 90, 112, 0.5);
+	box-shadow: 0 0 0 0.2rem rgba(10, 90, 112, 0.12);
 }
 .form-check-input:checked {
 	background-color: var(--primary-color);
 	border-color: var(--primary-color);
 }
 
-// Nav tabs / pills
+// Tabs / pills
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
 	background: var(--primary-color);
@@ -286,20 +287,17 @@ html[data-theme-mode="dark"] .card .card-header .card-title {
 }
 .nav-tabs .nav-link.active {
 	color: var(--primary-color);
-	border-block-end-color: var(--primary-color);
+	border-block-end-color: $umira-copper;
 }
 
-// Tabel — header navy lembut
+// Tabel
 .table > thead > tr > th,
 .table thead th {
-	color: $umira-navy;
+	color: $umira-teal-deep;
 	font-weight: 600;
 }
-html[data-theme-mode="dark"] .table thead th {
-	color: #cfe3e7;
-}
 
-// Pagination
+// Pagination & progress
 .page-item.active .page-link {
 	background-color: var(--primary-color);
 	border-color: var(--primary-color);
@@ -308,45 +306,38 @@ html[data-theme-mode="dark"] .table thead th {
 .page-link {
 	color: var(--primary-color);
 }
-
-// Progress
 .progress-bar {
 	background-color: var(--primary-color);
 }
 
-// Modal header
+// Modal
 .modal-header {
 	border-block-end: 1px solid var(--default-border);
 	.modal-title {
-		color: $umira-navy;
+		color: $umira-teal-deep;
 		font-weight: 600;
 	}
-}
-html[data-theme-mode="dark"] .modal-header .modal-title {
-	color: #e6f2f4;
 }
 
 // Scrollbar
 ::-webkit-scrollbar-thumb {
-	background: rgba(18, 128, 140, 0.35);
+	background: rgba(10, 90, 112, 0.25);
 	border-radius: 8px;
 }
 
 // ---------------------------------------------------------------------
 // 6. Library pihak ketiga
 // ---------------------------------------------------------------------
-// react-data-table-component
 .rdt_TableHeadRow {
-	background: #f1f7f8 !important;
-	color: $umira-navy !important;
+	background: #f3f7f8 !important;
+	color: $umira-teal-deep !important;
 	font-weight: 600;
 }
 html[data-theme-mode="dark"] .rdt_TableHeadRow {
-	background: #0f2f39 !important;
-	color: #cfe3e7 !important;
+	background: #142b32 !important;
+	color: #cfdde1 !important;
 }
 
-// SweetAlert2
 .swal2-styled.swal2-confirm {
 	background-color: $umira-teal !important;
 }
@@ -355,13 +346,12 @@ html[data-theme-mode="dark"] .rdt_TableHeadRow {
 }
 .swal2-icon.swal2-info,
 .swal2-icon.swal2-question {
-	border-color: $umira-turquoise !important;
-	color: $umira-turquoise !important;
+	border-color: $umira-teal-soft !important;
+	color: $umira-teal-soft !important;
 }
 
-// React Datepicker
 .react-datepicker__header {
-	background-color: #eaf4f5;
+	background-color: $umira-teal-tint;
 }
 .react-datepicker__day--selected,
 .react-datepicker__day--keyboard-selected,
@@ -371,7 +361,6 @@ html[data-theme-mode="dark"] .rdt_TableHeadRow {
 	color: #fff !important;
 }
 
-// Flatpickr
 .flatpickr-day.selected,
 .flatpickr-day.startRange,
 .flatpickr-day.endRange {
@@ -379,61 +368,66 @@ html[data-theme-mode="dark"] .rdt_TableHeadRow {
 	border-color: $umira-teal !important;
 }
 
-// Grid.js
 .gridjs-pages button.gridjs-currentPage {
 	background-color: $umira-teal !important;
 	color: #fff !important;
 }
 
 // ---------------------------------------------------------------------
-// 7. Halaman login / registrasi
+// 7. Halaman login / registrasi — terang & minimalis
 // ---------------------------------------------------------------------
 .main-signin-wrapper {
 	background:
-		radial-gradient(circle at 12% 18%, rgba(31, 181, 181, 0.18) 0, transparent 42%),
-		radial-gradient(circle at 88% 82%, rgba(201, 138, 30, 0.16) 0, transparent 40%),
-		linear-gradient(160deg, #eef5f7 0%, #e3eef1 100%);
+		radial-gradient(circle at 10% 15%, rgba(10, 90, 112, 0.08) 0, transparent 40%),
+		radial-gradient(circle at 90% 85%, rgba(166, 90, 42, 0.08) 0, transparent 40%),
+		#f5f7f8;
 
 	.signpages .card {
-		border: 0;
-		border-radius: 22px;
+		border: 1px solid #e8edef;
+		border-radius: 20px;
 		overflow: hidden;
-		box-shadow: 0 24px 60px rgba(11, 60, 73, 0.18);
+		box-shadow: 0 20px 50px rgba(6, 59, 74, 0.1);
 	}
 
 	.details.umira-login-panel {
-		background: var(--umira-gradient) !important;
-		border-inline-end: 3px solid $umira-gold !important;
-		color: #fff;
+		background: #fff !important;
+		border-inline-end: 1px solid #edf1f2 !important;
 
-		// template menimpa panel dengan overlay putih (:before) — ganti dengan gradasi Umira
+		// template menimpa panel dengan overlay (:before) — ganti dengan tint lembut
 		&:before {
 			background:
-				radial-gradient(circle at 85% 15%, rgba(201, 138, 30, 0.35) 0, transparent 45%),
-				var(--umira-gradient) !important;
+				radial-gradient(circle at 50% 100%, rgba(166, 90, 42, 0.07) 0, transparent 55%),
+				linear-gradient(180deg, #ffffff 0%, #{$umira-teal-tint} 100%) !important;
 			border-radius: 0 !important;
+		}
+		&:after {
+			content: "";
+			position: absolute;
+			inset-inline: 22%;
+			inset-block-end: 2.25rem;
+			height: 3px;
+			border-radius: 3px;
+			background: linear-gradient(90deg, #{$umira-teal} 0%, #{$umira-copper-light} 100%);
 		}
 		> div {
 			z-index: 1;
 			inset-inline: 0;
 		}
-
 		h5 {
-			color: #fff !important;
+			color: $umira-teal-deep !important;
 			font-weight: 700;
-			letter-spacing: 0.02rem;
 		}
 		span {
-			color: rgba(230, 242, 244, 0.85) !important;
+			color: #6b7f86 !important;
 		}
 		.header-brand-img {
-			max-width: 85%;
+			max-width: 78%;
 			height: auto;
-			filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.25));
 		}
 	}
 
 	.nav-pills {
-		box-shadow: 0 6px 18px rgba(11, 60, 73, 0.1);
+		border: 1px solid #e8edef;
+		box-shadow: 0 6px 18px rgba(6, 59, 74, 0.06);
 	}
 }

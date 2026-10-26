@@ -179,14 +179,14 @@ const ChecklistPembayaranSection = ({loader, setLoader}) => {
                                                 height: "90px",
                                                 borderRadius: "50%",
                                                 background:
-                                                    "linear-gradient(135deg, #E6F4F5 0%, #FBF5E9 100%)",
+                                                    "linear-gradient(135deg, #E7F1F4 0%, #F8EFE8 100%)",
                                             }}
                                         >
                                             <i
                                                 className="ti ti-database-off"
                                                 style={{
                                                     fontSize: "42px",
-                                                    color: "#12808C",
+                                                    color: "#0A5A70",
                                                 }}
                                             />
                                         </div>

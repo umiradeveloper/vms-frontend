@@ -78,7 +78,7 @@ const CostControlSection = ({ loader, setLoader }) => {
                                     grid: {
                                         borderColor: '#f2f6f7',
                                     },
-                                    colors: ["rgb(18, 128, 140)", "rgba(18, 128, 140, 0.3)", "rgba(201, 138, 30, 0.6)"],
+                                    colors: ["rgb(10, 90, 112)", "rgba(10, 90, 112, 0.3)", "rgba(166, 90, 42, 0.55)"],
                                     yaxis: {
                                         // min: 1,
                                         // max: 10,
@@ -206,7 +206,7 @@ const CostControlSection = ({ loader, setLoader }) => {
     // 			grid: {
     // 				borderColor: '#f2f6f7',
     // 			},
-    // 			colors: ["rgb(18, 128, 140)", "rgba(18, 128, 140, 0.3)","rgba(201, 138, 30, 0.6)"],
+    // 			colors: ["rgb(10, 90, 112)", "rgba(10, 90, 112, 0.3)","rgba(166, 90, 42, 0.55)"],
     // 			yaxis: {
     // 				title: {
     // 					text: '',
@@ -324,7 +324,7 @@ const CostControlSection = ({ loader, setLoader }) => {
                                             height: "38px",
                                             borderRadius: "12px",
                                             background:
-                                                "linear-gradient(135deg, #12808C 0%, #1FB5B5 100%)",
+                                                "linear-gradient(135deg, #0A5A70 0%, #2F8FA6 100%)",
                                             minWidth: "38px",
                                         }}
                                     >

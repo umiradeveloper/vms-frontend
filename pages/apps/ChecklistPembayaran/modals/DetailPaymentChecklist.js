@@ -126,7 +126,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                         width:220px;
                         height:220px;
                         border-radius:50%;
-                        background:rgba(31,181,181,0.08);
+                        background:rgba(47,143,166,0.08);
                         top:-100px;
                         right:-80px;
                     "></div>
@@ -135,7 +135,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                     <div style="
                         position:relative;
                         padding:22px 24px;
-                        background:linear-gradient(135deg,#1FB5B5 0%,#12808C 100%);
+                        background:linear-gradient(135deg,#2F8FA6 0%,#0A5A70 100%);
                         color:white;
                     ">
 
@@ -272,10 +272,10 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                         margin-bottom:25px;
                         padding:24px;
                         border-radius:24px;
-                        background:linear-gradient(135deg,#0B3C49 0%,#12808C 100%);
+                        background:linear-gradient(135deg,#063B4A 0%,#0A5A70 100%);
                         color:white;
                         overflow:hidden;
-                        box-shadow:0 10px 30px rgba(11,60,73,0.25);
+                        box-shadow:0 10px 30px rgba(6,59,74,0.25);
                     ">
 
                         <div style="
@@ -985,7 +985,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                     <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
                                                         style={{
                                                             background:
-                                                                "linear-gradient(135deg, #2393C4 0%, #0B3C49 100%)"
+                                                                "linear-gradient(135deg, #2A87A8 0%, #063B4A 100%)"
                                                         }}
                                                     >
 
@@ -1016,7 +1016,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                     <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
                                                         style={{
                                                             background:
-                                                                "linear-gradient(135deg, #2393C4 0%, #17698F 100%)"
+                                                                "linear-gradient(135deg, #2A87A8 0%, #0A5A70 100%)"
                                                         }}
                                                     >
 
@@ -1045,7 +1045,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                     <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
                                                         style={{
                                                             background:
-                                                                "linear-gradient(135deg, #E3B04B 0%, #B07614 100%)"
+                                                                "linear-gradient(135deg, #C98552 0%, #A65A2A 100%)"
                                                         }}
                                                     >
 
@@ -1076,7 +1076,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                     <div className="rounded-4 p-4 text-white position-relative overflow-hidden"
                                                         style={{
                                                             background:
-                                                                "linear-gradient(135deg, #F0C66B 0%, #B07614 100%)"
+                                                                "linear-gradient(135deg, #D9A27A 0%, #A65A2A 100%)"
                                                         }}
                                                     >
 
@@ -1421,7 +1421,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                             className="position-relative overflow-hidden rounded-4 p-4 h-100 border-0"
                                                             style={{
                                                                 background:
-                                                                    "linear-gradient(135deg, #E3B04B 0%, #B07614 100%)",
+                                                                    "linear-gradient(135deg, #C98552 0%, #A65A2A 100%)",
                                                                 boxShadow: "0 10px 30px rgba(245,158,11,0.25)",
                                                             }}
                                                         >
@@ -1548,7 +1548,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                             ? "linear-gradient(90deg,#16a34a,#22c55e)"
                                                             : item.checklist == 2
                                                                 ? "linear-gradient(90deg,#dc2626,#ef4444)"
-                                                                : "linear-gradient(90deg,#17698F,#2393C4)"
+                                                                : "linear-gradient(90deg,#0A5A70,#2A87A8)"
                                                 }}
                                             />
 
@@ -1732,7 +1732,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                                 ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
                                                                 : showData.layak_bayar == "Tidak Layak Bayar"
                                                                     ? "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"
-                                                                    : "linear-gradient(135deg, #2393C4 0%, #17698F 100%)",
+                                                                    : "linear-gradient(135deg, #2A87A8 0%, #0A5A70 100%)",
                                                         boxShadow:
                                                             "0 10px 30px rgba(0,0,0,0.12)",
                                                     }}
@@ -1925,7 +1925,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                                 width: "65px",
                                                                 height: "65px",
                                                                 background:
-                                                                    "linear-gradient(135deg,#1FB5B5 0%,#17698F 100%)",
+                                                                    "linear-gradient(135deg,#2F8FA6 0%,#0A5A70 100%)",
                                                                 color: "#fff",
                                                             }}
                                                         >
@@ -1966,7 +1966,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                 style={{
                                                     background: "#fff",
                                                     border: "1px solid #e2e8f0",
-                                                    borderLeft: "4px solid #1FB5B5",
+                                                    borderLeft: "4px solid #2F8FA6",
                                                 }}
                                             >
                                                 <small className="text-muted d-block mb-2">
@@ -2127,8 +2127,8 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                                         <span
                                                                             className="rounded-pill px-3 py-1"
                                                                             style={{
-                                                                                background: "#E6F4F5",
-                                                                                color: "#0B3C49",
+                                                                                background: "#E7F1F4",
+                                                                                color: "#063B4A",
                                                                                 fontSize: "12px",
                                                                                 fontWeight: "600",
                                                                             }}
@@ -2170,7 +2170,7 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                                     style={{
                                                                         background: "#fff",
                                                                         border: "1px solid #e2e8f0",
-                                                                        borderLeft: "4px solid #12808C",
+                                                                        borderLeft: "4px solid #0A5A70",
                                                                     }}
                                                                 >
 
@@ -2207,9 +2207,9 @@ const DetailPaymentChecklist = ({ openModal, setOpenModal, loader, setLoader }) 
                                                                     className="btn rounded-pill px-4 py-2 border-0"
                                                                     style={{
                                                                         background:
-                                                                            "linear-gradient(135deg,#0B3C49 0%,#12808C 100%)",
+                                                                            "linear-gradient(135deg,#063B4A 0%,#0A5A70 100%)",
                                                                         color: "#fff",
-                                                                        boxShadow: "0 6px 18px rgba(11,60,73,0.25)",
+                                                                        boxShadow: "0 6px 18px rgba(6,59,74,0.25)",
                                                                     }}
                                                                     onClick={() =>
                                                                         window.open(item.qrCode, "_blank")
