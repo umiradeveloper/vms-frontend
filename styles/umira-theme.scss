@@ -140,6 +140,32 @@ html[data-theme-mode="dark"] .app-sidebar .side-menu__item:hover .side-menu__ico
 	color: #fff !important;
 }
 
+// Menu TIDAK AKTIF — mode light
+// Ganti dua nilai di bawah untuk mengubah warna teks & ikon menu yang tidak aktif.
+html[data-theme-mode="light"] {
+	--umira-menu-inactive-text: #33474f;   // warna teks menu tidak aktif
+	--umira-menu-inactive-icon: #5e717a;   // warna ikon menu tidak aktif
+}
+html[data-theme-mode="light"] .app-sidebar .side-menu__item:not(.active),
+html[data-theme-mode="light"] .app-sidebar .side-menu__item:not(.active) .side-menu__label,
+html[data-theme-mode="light"] .app-sidebar .side-menu__item:not(.active) .side-menu__angle,
+html[data-theme-mode="light"] .app-sidebar .slide-menu .side-menu__item:not(.active)::before {
+	color: var(--umira-menu-inactive-text) !important;
+	font-weight: 500;
+}
+html[data-theme-mode="light"] .app-sidebar .side-menu__item:not(.active) .side-menu__icon {
+	color: var(--umira-menu-inactive-icon) !important;
+	fill: var(--umira-menu-inactive-icon) !important;
+}
+
+html[data-theme-mode="light"] .app-sidebar .side-menu__item:not(.active):hover,
+html[data-theme-mode="light"] .app-sidebar .side-menu__item:not(.active):hover .side-menu__label,
+html[data-theme-mode="light"] .app-sidebar .side-menu__item:not(.active):hover .side-menu__icon,
+html[data-theme-mode="light"] .app-sidebar .side-menu__item:not(.active):hover .side-menu__angle {
+	color: var(--primary-color) !important;
+	fill: var(--primary-color) !important;
+}
+
 // Item menu aktif: tab menyatu dengan latar, label teal, ikon bulat teal + cincin tembaga
 html[data-nav-layout="vertical"] .app-sidebar .main-sidebar .slide.active > .side-menu__item .side-menu__label,
 html[data-nav-layout="vertical"] .app-sidebar .main-sidebar .slide.active > .side-menu__item .side-menu__angle {
